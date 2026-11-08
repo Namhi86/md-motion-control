@@ -1,0 +1,38 @@
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/tmp/cm-ad/yt/lyly.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomav01iso2mp41
+    encoder         : Lavf63.1.102
+  Duration: 00:15:08.25, start: 0.000000, bitrate: 293 kb/s
+  Stream #0:0[0x1](und): Video: av1 (libdav1d) (Main) (av01 / 0x31307661), yuv420p(tv, bt709), 1280x720 [SAR 1:1 DAR 16:9], 160 kb/s, 23.98 fps, 23.98 tbr, 24k tbn (default)
+    Metadata:
+      handler_name    : ISO Media file produced by Google Inc.
+  Stream #0:1[0x2](und): Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 127 kb/s (default)
+    Metadata:
+      handler_name    : ISO Media file produced by Google Inc.
+[Parsed_volumedetect_0 @ 0x13110b980] n_samples: 0
+Stream mapping:
+  Stream #0:1 -> #0:0 (aac (native) -> pcm_s16le (native))
+Press [q] to stop, [?] for help
+Output #0, null, to 'pipe:':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomav01iso2mp41
+    encoder         : Lavf63.1.102
+  Stream #0:0(und): Audio: pcm_s16le, 44100 Hz, stereo, s16, 1411 kb/s (default)
+    Metadata:
+      encoder         : Lavc63.1.102 pcm_s16le
+      handler_name    : ISO Media file produced by Google Inc.
+[Parsed_volumedetect_0 @ 0x12fe0f420] n_samples: 2540160
+[Parsed_volumedetect_0 @ 0x12fe0f420] mean_volume: -23.5 dB
+[Parsed_volumedetect_0 @ 0x12fe0f420] max_volume: -5.6 dB
+[Parsed_volumedetect_0 @ 0x12fe0f420] histogram_5db: 14
+[Parsed_volumedetect_0 @ 0x12fe0f420] histogram_6db: 58
+[Parsed_volumedetect_0 @ 0x12fe0f420] histogram_7db: 156
+[Parsed_volumedetect_0 @ 0x12fe0f420] histogram_8db: 480
+[Parsed_volumedetect_0 @ 0x12fe0f420] histogram_9db: 1066
+[Parsed_volumedetect_0 @ 0x12fe0f420] histogram_10db: 2255
+[out#0/null @ 0x13110c9b0] video:0KiB audio:4961KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+size=N/A time=00:00:28.80 bitrate=N/A speed=1.19e+03x elapsed=0:00:00.02    

@@ -1,0 +1,45 @@
+/* The beginner tour (guide-spotlight.js): a dark layer made of FOUR boxes around a bright hole (the hole is a real gap: a click there reaches the real button, a click on the dark part stops here),
+   a lime ring around the hole, and a popup with an arrow. z-index: above the header, the guide card (1000) and the form's popups, below the shared picker (#pop, 1301) so a choice list that the
+   tour asks for still opens over it. Every text is 14px or more; exactly one lime button per popup. */
+.guide-tour { position: fixed; inset: 0; z-index: 1200; pointer-events: none; }
+.guide-tour[hidden] { display: none; }
+body:not([data-auth="main"]) .guide-tour { display: none !important; }
+.guide-tour-dark { position: fixed; background: rgba(6, 7, 9, .78); pointer-events: auto; } /* nothing here is animated: the boxes, the ring and the popup are on their place the moment a step changes (a hidden or covered window never runs a transition or an animation, and a ring that slides or fades in points at the wrong button, or at none, for a moment) */
+.guide-tour-ring { position: fixed; box-sizing: border-box; border: 2px solid #d1fe17; border-radius: 12px; box-shadow: 0 0 0 4px rgba(209, 254, 23, .18), 0 0 22px rgba(209, 254, 23, .35); pointer-events: none; } /* no animation either: measured in the real app, a window that is hidden or covered never runs it, and a ring stuck at its first frame (opacity 0) would leave the popup pointing at nothing */
+.guide-tour-popup { position: fixed; box-sizing: border-box; padding: 16px 18px 14px; background: #1f2124; color: #f7f7f8;
+  border: 1px solid rgba(255, 255, 255, .12); border-radius: 16px; box-shadow: 0 16px 40px rgba(0, 0, 0, .55); pointer-events: auto; } /* no transition on the popup: while it slid it would pass over the circled button */
+.guide-tour-popup:focus { outline: none; }
+/* The words scroll when the window is tiny, and `overflow-y: auto` makes overflow-x `auto` too, so this box CLIPS everything drawn outside its padding box: the focus ring of a button on its
+   edge (outline 2px + offset 2px = 4px outside the button) was cut off on the left and at the bottom. The padding gives the ring its room inside the box, the negative margin of the same
+   size gives that room back to the layout, so the popup looks exactly as before. --ring is the reach of the ring (outline-width + outline-offset below). */
+.guide-tour-popup { --ring: 4px; }
+.guide-tour-body { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; overscroll-behavior: contain; padding: var(--ring); margin: calc(-1 * var(--ring)); }
+.guide-tour-arrow { position: absolute; width: 14px; height: 14px; background: #1f2124; border: 1px solid rgba(255, 255, 255, .12); transform: rotate(45deg); }
+.guide-tour-arrow[data-side="top"] { top: -8px; border-right: 0; border-bottom: 0; }
+.guide-tour-arrow[data-side="bottom"] { bottom: -8px; border-left: 0; border-top: 0; }
+.guide-tour-arrow[data-side="left"] { left: -8px; border-right: 0; border-top: 0; }
+.guide-tour-arrow[data-side="right"] { right: -8px; border-left: 0; border-bottom: 0; }
+.guide-tour-title { margin: 0; padding-right: 28px; font-size: 18px; font-weight: 700; line-height: 1.3; }
+.guide-tour-line { margin: 0; font-size: 14px; line-height: 1.5; color: #c9cacb; }
+.guide-tour-line:first-child { color: #f7f7f8; padding-right: 28px; }
+.guide-tour-title + .guide-tour-line { padding-right: 0; }
+.guide-tour-line--hint { max-height: 96px; overflow-y: auto; overscroll-behavior: contain; padding: 10px 12px; background: rgba(229, 131, 125, .12); border: 1px solid rgba(229, 131, 125, .35); border-radius: 10px; color: #f7f7f8; }
+.guide-tour-line--count { color: #f7f7f8; font-weight: 600; }
+.guide-tour-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.guide-tour-btn { height: 36px; padding: 0 16px; border: 1px solid rgba(255, 255, 255, .22); border-radius: 10px; background: none; color: #f7f7f8; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.guide-tour-btn:hover:not(:disabled) { background: rgba(255, 255, 255, .07); }
+.guide-tour-btn--primary { border: 0; background: #d1fe17; color: #14151a; }
+.guide-tour-btn--primary:hover:not(:disabled) { background: #d1fe17; filter: brightness(1.05); }
+.guide-tour-btn:disabled { opacity: .45; cursor: default; }
+.guide-tour-skip { align-self: flex-start; padding: 4px 0; border: 0; background: none; color: #898a8b; font: inherit; font-size: 14px; text-decoration: underline; cursor: pointer; }
+.guide-tour-skip:hover { color: #f7f7f8; }
+.guide-tour-x { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .06); color: #f7f7f8; font: inherit; font-size: 14px; cursor: pointer; }
+.guide-tour-x:hover { background: rgba(255, 255, 255, .12); }
+.guide-tour-btn:focus-visible, .guide-tour-skip:focus-visible, .guide-tour-x:focus-visible { outline: 2px solid #d1fe17; outline-offset: 2px; } /* 2px + 2px = --ring (4px) */
+/* The dark scrollbar of the app (ui.css .cv-scroll), the same three values as the card's (guide.css): 6px, thumb rgba(255, 255, 255, .14), radius 3px, no track colour, for the two boxes of the tour that
+   can scroll: the words of the popup and the long hint inside it. ::-webkit-scrollbar for Chrome / Electron; `scrollbar-color` only as the fallback of a browser without it (a box that has both
+   loses the ::-webkit-scrollbar width in Chrome: measured, 11px instead of 6px). */
+.guide-tour-body::-webkit-scrollbar, .guide-tour-line--hint::-webkit-scrollbar { width: 6px; }
+.guide-tour-body::-webkit-scrollbar-thumb, .guide-tour-line--hint::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .14); border-radius: 3px; }
+@supports not selector(::-webkit-scrollbar) { .guide-tour-body, .guide-tour-line--hint { scrollbar-color: rgba(255, 255, 255, .14) transparent; scrollbar-width: thin; } }
+/* prefers-reduced-motion: nothing here moves or fades, so there is nothing to switch off */

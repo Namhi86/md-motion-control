@@ -1,0 +1,34 @@
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'yt/lyly.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomav01iso2mp41
+    encoder         : Lavf63.1.102
+  Duration: 00:15:08.25, start: 0.000000, bitrate: 293 kb/s
+  Stream #0:0[0x1](und): Video: av1 (libdav1d) (Main) (av01 / 0x31307661), yuv420p(tv, bt709), 1280x720 [SAR 1:1 DAR 16:9], 160 kb/s, 23.98 fps, 23.98 tbr, 24k tbn (default)
+    Metadata:
+      handler_name    : ISO Media file produced by Google Inc.
+  Stream #0:1[0x2](und): Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 127 kb/s (default)
+    Metadata:
+      handler_name    : ISO Media file produced by Google Inc.
+Stream mapping:
+  Stream #0:0 -> #0:0 (av1 (libdav1d) -> wrapped_avframe (native))
+Press [q] to stop, [?] for help
+[Parsed_showinfo_1 @ 0x107504370] config in time_base: 1/24000, frame_rate: 24000/1001
+[Parsed_showinfo_1 @ 0x107504370] config out time_base: 0/0, frame_rate: 0/0
+[Parsed_showinfo_1 @ 0x107504370] n:   0 pts: 136806 pts_time:5.70025 duration:   1001 duration_time:0.0417083 fmt:yuv420p cl:unspecified sar:1/1 s:1280x720 i:P iskey:1 type:I checksum:C508EE41 plane_checksum:[62F70A91 19D71832 A14FCB7E] mean:[98 123 133] stdev:[50.2 2.7 4.5]
+[Parsed_showinfo_1 @ 0x107504370] color_range:tv color_space:bt709 color_primaries:bt709 color_trc:bt709
+Output #0, null, to 'pipe:':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomav01iso2mp41
+    encoder         : Lavf63.1.102
+  Stream #0:0(und): Video: wrapped_avframe, yuv420p(tv, bt709, progressive), 1280x720 [SAR 1:1 DAR 16:9], q=2-31, 200 kb/s, 23.98 fps, 23.98 tbn (default)
+    Metadata:
+      encoder         : Lavc63.1.102 wrapped_avframe
+      handler_name    : ISO Media file produced by Google Inc.
+[Parsed_showinfo_1 @ 0x107504370] n:   1 pts: 450119 pts_time:18.754958 duration:   1001 duration_time:0.0417083 fmt:yuv420p cl:unspecified sar:1/1 s:1280x720 i:P iskey:1 type:I checksum:EF9ACA81 plane_checksum:[F61650F3 236F9EA2 AB26DADD] mean:[68 124 133] stdev:[37.8 2.7 4.2]
+[Parsed_showinfo_1 @ 0x107504370] color_range:tv color_space:bt709 color_primaries:bt709 color_trc:bt709
+[out#0/null @ 0x135e04820] video:1KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+frame=    2 fps=0.0 q=-0.0 Lsize=N/A time=00:00:18.81 bitrate=N/A speed=60.3x elapsed=0:00:00.31    

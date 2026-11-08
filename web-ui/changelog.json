@@ -1,0 +1,240 @@
+[
+  {
+    "version": "0.1.32",
+    "date": "2026-11-06",
+    "notes": [
+      "Motion control mới: tải một video và ảnh nhân vật, app cắt đoạn, chép lời (sửa được như CapCut), làm lại bằng nhân vật của bạn rồi ghép thành phim. Chọn được thư mục lưu, tắt app mở lại vẫn còn.",
+      "Sửa lỗi Veo/Flow báo không mở được dự án mới do phiên Google hết hạn: app tự làm mới phiên rồi thử lại.",
+      "Muse: khi máy chủ video của Muse gặp lỗi, app báo rõ là lỗi phía Muse và gợi ý bấm Tạo lại."
+    ]
+  },
+  {
+    "version": "0.1.31",
+    "date": "2026-11-02",
+    "notes": [
+      "Giọng nói: tạo giọng đọc từ văn bản dài (không giới hạn độ dài), từ file phụ đề .srt hoặc nhiều file .txt, có thư mục lưu riêng và tên file lấy từ vài từ đầu của văn bản.",
+      "Giọng nói tiếng Việt chia hai nhóm \"Đã qua bộ lọc\" và \"Chưa qua bộ lọc\" để dễ chọn; màn hình dùng được cả tiếng Việt và tiếng Anh."
+    ]
+  },
+  {
+    "version": "0.1.30",
+    "date": "2026-11-01",
+    "notes": [
+      "Bổ sung thêm trường hợp lỗi khi dùng tính năng phân tích video."
+    ]
+  },
+  {
+    "version": "0.1.29",
+    "date": "2026-10-31",
+    "notes": [
+      "Có bản cho Mac chip Intel: tải ở share.mdmotion.local/app, app tự cập nhật đúng bản theo chip của máy."
+    ]
+  },
+  {
+    "version": "0.1.28",
+    "date": "2026-10-31",
+    "notes": [
+      "Fix 100% tải video Seedance không dính logo.",
+      "Acc hết lượt Pro 7 ngày: hệ thống tự reset limit để dùng được tiếp."
+    ]
+  },
+  {
+    "version": "0.1.26",
+    "date": "2026-10-30",
+    "notes": [
+      "Sửa lỗi Muse không tạo được ảnh và video (muse.ai vừa đổi cách đăng nhập kênh tạo): Muse chạy lại bình thường."
+    ]
+  },
+  {
+    "version": "0.1.25",
+    "date": "2026-10-29",
+    "notes": [
+      "Omni 1.1 Flash có thêm độ dài 4, 6, 10 giây (ngoài 8 giây) và chọn được 720p hoặc 360p. Giá credit Flow hiện đúng từng lựa chọn; 360p rẻ bằng khoảng một nửa.",
+      "Sửa lỗi lệnh Omni bị từ chối khi acc Gmail đang để 360p: app giờ luôn chọn đúng độ phân giải và độ dài trước khi tạo."
+    ]
+  },
+  {
+    "version": "0.1.24",
+    "date": "2026-10-28",
+    "notes": [
+      "Sửa lỗi Phân tích video báo \"AI Studio vừa đổi giao diện\": acc Gmail lần đầu mở AI Studio giờ được app tự đồng ý điều khoản (chỉ ô bắt buộc, không đăng ký email).",
+      "Phân tích xong, app xoá cuộc trò chuyện trên AI Studio đúng lúc, video của bạn không còn nằm lại trong acc Gmail.",
+      "Màn Setup tài khoản mới: thanh bên trái, lọc acc theo trạng thái, tìm acc, thêm acc gập gọn, cài đặt chung ở mục riêng.",
+      "Người cài mới: công tắc \"Hiện cửa sổ đăng nhập\" bật sẵn để tự tích captcha khi cần."
+    ]
+  },
+  {
+    "version": "0.1.23",
+    "date": "2026-10-28",
+    "notes": [
+      "Fix reset limit model tạo video seedance."
+    ]
+  },
+  {
+    "version": "0.1.22",
+    "date": "2026-10-27",
+    "notes": [
+      "Bàn sáng tạo có màn đầu: thanh bên chọn Bàn của tôi, Mẫu dựng sẵn, Mẫu của tôi, Chia sẻ. Mỗi dự án có nhiều bàn, bàn lưu trên máy cùng ảnh, tắt app mở lại vẫn còn.",
+      "Lưu bàn thành mẫu của riêng bạn và chia sẻ cho người khác bằng một mã 10 ký tự. Mẫu chỉ gửi sơ đồ (khối, dây, prompt, cài đặt), không gửi ảnh của bạn.",
+      "Thanh nhập nổi dưới khối đang chọn: gõ prompt, chọn model, tỷ lệ, rồi bấm Tạo ngay trong thanh. Góc máy, Phong cách, Ánh sáng, Bố cục chọn bằng thẻ có ảnh minh hoạ.",
+      "Thư viện chung: xem mọi ảnh, video đã tải lên hoặc đã tạo trong một cửa sổ, có thư mục, tìm kiếm, lọc ảnh hoặc video. Xoá luôn hỏi: chỉ gỡ khỏi thư viện hay xoá cả tệp.",
+      "Khối mới Video tham chiếu: thả một video ngắn (dùng 3 giây đầu) cùng ảnh chủ thể, Google Flow tạo clip có cùng chuyển động. Lệnh chỉ chạy khi bạn tự bấm Tạo và đồng ý về quyền dùng video.",
+      "Thêm khối Nhóm, Ghi chú, Trợ lý ở bảng dấu cộng và menu chuột phải.",
+      "Lưu ý: bàn giữ ảnh của bạn trên máy nên thư mục dữ liệu sẽ lớn dần theo số ảnh."
+    ]
+  },
+  {
+    "version": "0.1.21",
+    "date": "2026-10-24",
+    "notes": [
+      "Fix lỗi không reg được video Seedance 2.5."
+    ]
+  },
+  {
+    "version": "0.1.20",
+    "date": "2026-10-24",
+    "notes": [
+      "Lệnh Muse chạy lâu không còn bị báo \"Lỗi\" khi Muse vẫn đang làm: app hỏi thẳng Muse, còn làm thì cứ chờ, chỉ báo lỗi khi Muse lỗi thật hoặc đứng yên quá lâu.",
+      "Muse đổi proxy tiết kiệm hơn: không còn bỏ oan proxy tốt khi mạng chậm.",
+      "Ghi chú trên thẻ lệnh đúng nền tảng: lệnh Muse nói về Muse, lệnh Veo nói về Google Flow (không còn nhắc cửa sổ Dola)."
+    ]
+  },
+  {
+    "version": "0.1.19",
+    "date": "2026-10-23",
+    "notes": [
+      "Muse chạy nhiều lệnh cùng lúc ổn định hơn: mất kết nối thì app tự nối lại, chờ lâu hơn khi chạy nhiều, không còn báo lỗi oan trong khi video vẫn đang làm.",
+      "Lệnh Muse báo hết giờ thì app tự đi lấy lại video sau 3, 8 và 15 phút (không gửi lại lệnh, không tốn lượt).",
+      "Setup → Muse: dán nhiều email một lần (mỗi dòng, dấu phẩy hoặc từ Excel; dòng email|mật khẩu|2fa chỉ lấy email), ô Cookie nhận cả JSON. Dán nhầm ô thì app nói rõ.",
+      "Acc Muse không gắn proxy thì chạy thẳng; proxy hỏng thì app tự đổi proxy khác."
+    ]
+  },
+  {
+    "version": "0.1.18",
+    "date": "2026-10-23",
+    "notes": [
+      "Một acc Muse làm được nhiều ảnh/video cùng lúc, mỗi lệnh một đoạn chat riêng. Chỉnh số lệnh ở Setup tài khoản, mục Muse (mặc định 3, tối đa 20). Áp cho mọi tính năng.",
+      "Bàn sáng tạo: khối video đổi được giữa Veo, Seedance và Muse ngay ở ô Model (ảnh: Nano và Muse), đổi một khối hoặc cả bàn.",
+      "Muse tự lấy video về khi kết nối bị chậm, không còn báo \"chờ quá lâu\" trong khi video đã xong."
+    ]
+  },
+  {
+    "version": "0.1.17",
+    "date": "2026-10-23",
+    "notes": [
+      "Bàn sáng tạo có nút \"Mẫu\": 11 mẫu dựng sẵn (thời trang, bán hàng, kể chuyện, hiệu ứng), bấm ▶ để xem video mẫu trước khi dùng.",
+      "Veo chạy ổn định hơn: 1 ảnh được dùng làm khung đầu nên video có tiếng; Google báo lỗi bất thường thì app tự thử lại khi chưa bị trừ credit.",
+      "Muse làm video theo đúng tỉ lệ bạn chọn (9:16, 16:9…).",
+      "Nhập tệp .txt mỗi dòng một prompt (không có dòng trống) giờ ra đủ từng lệnh; nạp xong app báo số prompt và mở sẵn danh sách."
+    ]
+  },
+  {
+    "version": "0.1.16",
+    "date": "2026-10-22",
+    "notes": [
+      "Cập nhật tính năng Bàn sáng tạo."
+    ]
+  },
+  {
+    "version": "0.1.15",
+    "date": "2026-10-22",
+    "notes": [
+      "Mới: nút \"Tách skill\" trong khung chi tiết video. App xem video và viết sẵn skill Pro, Muse và prompt Veo để làm video cùng khuôn cho sản phẩm khác.",
+      "Skill tách ra sửa được ngay trong khung, rồi bấm \"Dùng ngay\", \"Đăng Kho\" hoặc \"Tải xuống\". Cần một acc Gmail ở mục Veo."
+    ]
+  },
+  {
+    "version": "0.1.14",
+    "date": "2026-10-22",
+    "notes": [
+      "Video Pro ra bản không logo ổn định hơn: nút \"Lấy lại video\" tải được bản sạch.",
+      "Tạo ảnh Nano Banana chạy được với acc Gmail của Veo.",
+      "Ô mô tả video không còn giới hạn 8000 ký tự."
+    ]
+  },
+  {
+    "version": "0.1.13",
+    "date": "2026-10-22",
+    "notes": [
+      "Khi Dola hỏi \"Bạn sinh ngày nào?\", app tự điền một ngày sinh hợp lệ rồi bấm \"Tiếp\", acc không còn kẹt ở hộp này."
+    ]
+  },
+  {
+    "version": "0.1.12",
+    "date": "2026-10-22",
+    "notes": [
+      "Đăng nhập Facebook bằng id|mật khẩu|2FA không còn kẹt ở hộp \"Cho phép sử dụng cookie của Facebook\": app tự bấm \"Cho phép tất cả cookie\".",
+      "Khi Google đòi bấm \"Yes\" trên điện thoại để xác nhận đăng nhập, app đợi tới 60 giây thay vì báo lỗi ngay. Acc Gmail không có khoá 2FA không còn bị đánh \"Cookie hỏng\" khi bạn chưa kịp cầm điện thoại."
+    ]
+  },
+  {
+    "version": "0.1.10",
+    "date": "2026-10-22",
+    "notes": [
+      "Veo và Tạo ảnh Nano Banana chạy được khi Google Flow của bạn hiện tiếng Việt (trước đây báo \"Trang Google Flow chưa sẵn sàng\")."
+    ]
+  },
+  {
+    "version": "0.1.9",
+    "date": "2026-10-21",
+    "notes": [
+      "Phân tích video nhận video nặng tới 2 GB. Video nặng hơn 100 MB được app tự nén xuống bản nhẹ trước khi phân tích, không mất nội dung.",
+      "Ô thả video ghi rõ giới hạn mới."
+    ]
+  },
+  {
+    "version": "0.1.8",
+    "date": "2026-10-21",
+    "notes": [
+      "Sửa lỗi Pro không đính được ảnh trên Windows (\"Không thấy chỗ đính kèm ảnh của Dola\"): app nay chờ và thử lại.",
+      "Nút \"Đặt lại\" của acc Veo không còn làm acc vừa lỗi bị kiểm tra lại ngay.",
+      "Cửa sổ đăng nhập Google của Veo theo đúng công tắc \"Hiện cửa sổ đăng nhập\"."
+    ]
+  },
+  {
+    "version": "0.1.7",
+    "date": "2026-10-21",
+    "notes": [
+      "Bỏ chế độ \"Nhanh\". Chỉ còn \"Nhanh + tiếng\", \"Pro\", Veo và Muse. Các video cũ làm bằng \"Nhanh\" vẫn xem và \"Tạo lại\" được.",
+      "\"Nhanh + tiếng\" chạy được khi Dola không còn model Seedance 2.5 trong bảng \"Tạo video\": app dùng model Dola đang chọn sẵn."
+    ]
+  },
+  {
+    "version": "0.1.6",
+    "date": "2026-10-21",
+    "notes": [
+      "Bấm \"Tôi đã làm xong\" ở màn Mở khoá không còn báo nhầm \"Không kết nối được máy chủ\": app chờ tối đa 100 giây để kiểm tra bài của bạn.",
+      "Khi mạng lỗi, app cho biết lý do cụ thể hơn (quá chậm, lỗi DNS, bị chặn…) để dễ tự xử lý.",
+      "Pro lấy được video và tải bản sạch không logo ổn định hơn, tự gửi lại tối đa 5 lần khi Dola báo lỗi."
+    ]
+  },
+  {
+    "version": "0.1.5",
+    "date": "2026-10-20",
+    "notes": [
+      "Windows: nhận ra Chrome thật mà không cần công cụ ngoài, hết báo \"không xác định được tiến trình\".",
+      "Không còn hiện hộp hỏi khoá bảo mật khi đăng nhập acc."
+    ]
+  },
+  {
+    "version": "0.1.4",
+    "date": "2026-10-20",
+    "notes": [
+      "Tải video Dola về bản sạch, không có logo."
+    ]
+  },
+  {
+    "version": "0.1.2",
+    "date": "2026-10-20",
+    "notes": [
+      "Sửa lỗi app bị tắt ngay khi mở ở bản 0.1.1 do thiếu một số thành phần."
+    ]
+  },
+  {
+    "version": "0.1.1",
+    "date": "2026-10-20",
+    "notes": [
+      "Thêm 4 skill hệ thống trong Kho skill, dùng cho Pro và Muse."
+    ]
+  }
+]

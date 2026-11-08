@@ -1,0 +1,56 @@
+/* The panels of the Motion control workspace: head (small-caps title + facts chips), body, foot; the player placeholder, the empty timeline card, the list of clips of a restored film. */
+.cm-panel-head { display: flex; align-items: center; gap: 12px; flex: 0 0 auto; min-height: 44px; padding: 8px 16px; border-bottom: 1px solid rgba(255, 255, 255, .06); }
+.cm-panel-title { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #8b8d92; }
+.cm-panel-meta, .cm-strip { margin: 0; font-size: 12.5px; color: #a8aaae; }
+.cm-panel-head .cm-panel-meta:last-child, .cm-panel-head .cm-strip { margin-left: auto; }
+.cm-panel-body { position: relative; display: grid; place-items: center; flex: 1 1 auto; min-height: 0; overflow: hidden; background: radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, .03), transparent 60%), #08090a; }
+.cm-panel-body--scroll { display: flex; flex-direction: column; place-items: initial; padding: 10px 12px 12px; background: #0a0b0d; }
+.cm-panel-foot { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; flex: 0 0 auto; min-height: 50px; padding: 8px 16px; border-top: 1px solid rgba(255, 255, 255, .06); background: rgba(0, 0, 0, .2); }
+.cm-panel-foot[hidden], .cm-panel-foot:has(> .cm-done:empty):not(:has(> .an-err:not([hidden]))) { display: none; } /* an empty foot (no film yet) takes no room */
+.cm-panel-foot--split { justify-content: space-between; flex-wrap: nowrap; }
+.cm-panel-foot .an-err { flex: 1 1 100%; }
+.cm-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
+.cm-video[hidden] { display: none; }
+
+/* the facts of a video: small chips with an icon (clock, frame, file) */
+.cm-facts { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.cm-fact-sep { display: none; }
+.cm-fact { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0 9px 0 7px; font-size: 11.5px; font-weight: 600; line-height: 1; color: #c3c5c9; white-space: nowrap; background: rgba(255, 255, 255, .06); border-radius: 999px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06); }
+.cm-fact::before { content: ''; flex: 0 0 auto; width: 12px; height: 12px; background: currentColor; opacity: .7; -webkit-mask: var(--ico) center / contain no-repeat; mask: var(--ico) center / contain no-repeat; }
+.cm-fact--time { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='12' cy='13' r='8'/%3E%3Cpath d='M12 9v4l2.5 2M9 2h6'/%3E%3C/svg%3E"); }
+.cm-fact--ratio { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linejoin='round'%3E%3Crect x='6' y='2.5' width='12' height='19' rx='2.5'/%3E%3C/svg%3E"); }
+.cm-fact--size { --ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 3h7l5 5v13H7z'/%3E%3Cpath d='M14 3v5h5'/%3E%3C/svg%3E"); }
+
+/* the empty result panel: a calm outlined play frame with a slow shimmer, then one sentence */
+.cm-placeholder { position: relative; display: flex; flex-direction: column; align-items: center; gap: 16px; margin: 0; padding: 16px 24px; max-width: 340px; font-size: 13px; line-height: 1.55; text-align: center; color: #8b8d92; }
+.cm-placeholder[hidden] { display: none; }
+.cm-placeholder::before { content: ''; width: 112px; height: 70px; border-radius: 14px; border: 1px solid rgba(255, 255, 255, .14); background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, .09) 50%, transparent 65%) 0 0 / 260% 100% no-repeat, rgba(255, 255, 255, .025); box-shadow: 0 10px 30px rgba(0, 0, 0, .4), inset 0 1px 0 rgba(255, 255, 255, .06); animation: cm-sheen 3.2s ease-in-out infinite; -webkit-mask: none; }
+.cm-placeholder::after { content: ''; position: absolute; left: calc(50% - 6px); top: 47px; width: 0; height: 0; border-style: solid; border-width: 9px 0 9px 15px; border-color: transparent transparent transparent rgba(255, 255, 255, .5); filter: drop-shadow(0 0 8px rgba(255, 255, 255, .12)); }
+@keyframes cm-sheen { 0% { background-position: 130% 0, 0 0; } 60%, 100% { background-position: -30% 0, 0 0; } }
+.cm-bigdrop { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; position: absolute; inset: 14px; color: #a8aaae; font: inherit; background: rgba(255, 255, 255, .015); border: 1px dashed rgba(255, 255, 255, .16); border-radius: 14px; cursor: pointer; }
+.cm-bigdrop:hover:not(:disabled), .an-drop-on .cm-bigdrop { color: #f7f7f8; border-color: rgba(255, 255, 255, .4); background: rgba(255, 255, 255, .04); }
+.cm-bigdrop[hidden] { display: none; }
+.cm-done { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; flex: 1 1 auto; }
+.cm-ok { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 600; color: #f7f7f8; }
+
+/* no plan yet */
+.cm-empty { min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; flex: 1 1 auto; margin: 10px; padding: 16px; text-align: center; border: 1px dashed rgba(255, 255, 255, .12); border-radius: 14px; background: rgba(255, 255, 255, .015); }
+.cm-empty-title { margin: 0; font-size: 15px; font-weight: 600; }
+.cm-empty-hint { margin: 0; font-size: 12.5px; color: #8b8d92; }
+.cm-skel { display: flex; flex-direction: column; gap: 6px; width: min(520px, 100%); margin-top: 8px; }
+.cm-skel[hidden] { display: none; }
+.cm-skel-row { height: 14px; border-radius: 7px; background: linear-gradient(90deg, rgba(255, 255, 255, .04) 25%, rgba(255, 255, 255, .1) 50%, rgba(255, 255, 255, .04) 75%) 0 0 / 200% 100%; animation: cm-shine 1.4s linear infinite; }
+@keyframes cm-shine { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .cm-skel-row, .cm-placeholder::before { animation: none; } }
+
+/* a film that kept running while the page was closed: its clips, one row each */
+.cm-clips { display: flex; flex-direction: column; gap: 8px; flex: 1 1 auto; min-height: 0; padding: 12px; overflow-y: auto; background: #0f1012; border: 1px solid rgba(255, 255, 255, .07); border-radius: 16px; }
+.cm-clips[hidden] { display: none; }
+.cm-clip { display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: rgba(255, 255, 255, .04); border-radius: 12px; font-size: 13px; }
+.cm-clip-n { display: grid; place-items: center; flex: 0 0 auto; width: 24px; height: 24px; font-weight: 700; color: #14151a; background: #8b8d92; border-radius: 50%; }
+.cm-clip--done .cm-clip-n { background: #d1fe17; }
+.cm-clip--making .cm-clip-n, .cm-clip--queued .cm-clip-n, .cm-clip--cutting .cm-clip-n { background: #ffa230; }
+.cm-clip--failed .cm-clip-n, .cm-clip--cancelled .cm-clip-n { background: #e5837d; }
+.cm-clip-state { flex: 1 1 auto; min-width: 0; }
+.cm-clip--failed .cm-clip-state { color: #e5837d; }
+.cm-clip .an-btn { flex: 0 0 auto; white-space: nowrap; }

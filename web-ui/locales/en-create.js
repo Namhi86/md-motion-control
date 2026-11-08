@@ -1,0 +1,342 @@
+// English for the Create video area: the page (index.html #view-create), the form, the Muse / Nano Banana / Veo texts, the queue and its settings, the history list,
+// the video detail panel, the prompt cards, "What's new" and the version label. Key = the Vietnamese sentence exactly as the code or the markup has it.
+// Words follow plans/261029-0812-md-motion-english/glossary.md. Keys reached through tx() (texts of site/shared/ files and of other tables) are in `dynamic`.
+export const dynamic = [
+  "Video tham chiếu", "Phụ đề tự động", "Thay nhân vật, đồ vật, bối cảnh", "Nâng độ nét video", "Quảng cáo theo video mẫu", "Tạo phụ đề cho video", "Bỏ skill",
+  "Ghi chú hướng dẫn cho AI (file .md hoặc .txt) - đính kèm cùng lệnh", "Thêm skill (.md/.txt)", "Kho: ", "Skill từ Kho chỉ làm video tối đa 15 giây.",
+  "Skill từ Kho không hợp lệ. Hãy chọn lại skill.", "Chỉ dùng một skill mỗi lần: bỏ tệp skill hoặc bỏ skill từ Kho.",
+  "Skill từ Kho chỉ dùng cho video Seedance Pro hoặc Muse.", "Skill từ Kho: video Muse dài từ 2 đến 15 giây.", "Skill này chỉ có bản cho chế độ mà app của bạn chưa có.",
+  // 404.html: its static markup is translated by not-found.js (applyStatic); the scanner reads index.html only, so these are listed here
+  "Không tìm thấy", "Trang hoặc tệp này không có trên MD Motion Control.", "Không tìm thấy · MD Motion Control",
+];
+
+export default {
+  // index.html: the Create video page
+  "Tạo Video": "Create video",
+  "Tạo Ảnh": "Create image",
+  "Tạo video AI từ mô tả hoặc ảnh": "Create AI videos from a description or images",
+  "Mô tả video": "Video description",
+  "Mô tả ảnh": "Image description",
+  "Mô tả cảnh quay…": "Describe the scene…",
+  "Mô tả cảnh quay… Gõ @ để nhắc một phần tử": "Describe the scene… Type @ to mention an element",
+  "Nhập tệp .txt / .csv": "Import .txt / .csv file",
+  "Thời lượng": "Duration",
+  "Tỷ lệ khung hình": "Aspect ratio",
+  "Chế độ Dola": "Dola mode",
+  "Bản ổn định": "Stable",
+  "Cần tạo nhiều, ổn định, ít bị chặn? Dùng": "Need to create a lot, reliably and with fewer blocks? Use",
+  "Tới": "Up to",
+  "mỗi video (app này chỉ 10)": "per video (this app allows only 10)",
+  "30 ảnh tham chiếu": "30 reference images",
+  "Thêm": "Add",
+  "âm thanh, video tham chiếu": "sound, reference videos",
+  ", clip": ", clips",
+  "tới 30 giây": "up to 30 seconds",
+  ", tới": ", up to",
+  "Nhiều model khác (Veo, Kling, Gemini Omni…),": "More models (Veo, Kling, Gemini Omni…), with",
+  "ít vướng bộ lọc ảnh": "fewer image-filter blocks",
+  "hơn": "than this app",
+  "Chạy trên server riêng,": "Runs on its own server,",
+  "không phụ thuộc acc Dola": "independent of Dola accounts",
+  "Dùng thử MD Motion Control": "Try MD Motion Control",
+  "Lưu ý:": "Note:",
+  "app này đang chạy": "this app currently runs",
+  "miễn phí qua Dola": "for free through Dola",
+  ". Dola có thể đổi hoặc chặn bất kỳ lúc nào, nên có lúc tạo lỗi hoặc dừng. Cần chạy đều và chắc chắn thì dùng MD Motion Control.":
+    ". Dola can change or block it at any time, so creating sometimes fails or stops. If you need steady, reliable runs, use MD Motion Control.",
+  "Lịch sử": "History",
+  "Chưa có video nào trong phiên này.": "No videos in this session yet.",
+
+  // app.js
+  "Đang thêm…": "Adding…",
+  "Thêm ảnh tham chiếu": "Add reference images",
+  "Ô mô tả đang có chữ chưa xếp hàng. Bấm \"Tạo lại\" thêm một lần nữa để thay bằng lệnh này, hoặc bấm \"{button}\" để xếp chữ đang có.":
+    "The description box has text that is not queued yet. Click \"Recreate\" once more to replace it with this prompt, or click \"{button}\" to queue the text that is there.",
+  "{handles} không còn trong thư viện phần tử: giữ nguyên thành chữ.": "Not in the element library any more: {handles} (kept as plain text).",
+  "Không lấy lại được ảnh tham chiếu: {why}": "Could not get the reference images back: {why}",
+  "Chưa có acc sẵn sàng: lệnh sẽ chờ. Vào \"Setup tài khoản\" để thêm cookie.": "No account is ready: prompts will wait. Go to \"Accounts\" to add a cookie.",
+
+  // ui-text.js: errors, queue notes, machine note
+  "lỗi không rõ": "unknown error",
+  "Hàng đợi đang tạm dừng — bấm Tiếp tục để chạy": "The queue is paused — click Resume to run",
+  "Máy không có mạng, tự chạy lại khi có mạng": "No internet connection; it runs again by itself when the connection is back",
+  "Dola đang báo bận — các acc đang đợi, tự chạy lại khi được (thử lại sau {left}, lần {n})":
+    "Dola says it is busy — accounts are waiting and will retry by themselves (next try in {left}, attempt {n})",
+  "Các acc đang nghỉ, tự chạy lại sau {left}": "Accounts are resting; the queue runs again by itself in {left}",
+  "Chưa có acc dùng được: thêm hoặc kiểm tra cookie ở Setup tài khoản": "No usable account: add one or check the cookie in Accounts",
+  "Máy bạn đang trống {free} GB RAM (tổng {total} GB): nên chạy khoảng {threads} (chỉ là gợi ý, bạn chọn số khác được).":
+    "Your computer has {free} GB of free RAM (of {total} GB). We suggest running about {threads} (just a suggestion; you can pick another number).",
+
+  // ui-text.js: the video detail panel
+  "MÔ TẢ": "DESCRIPTION",
+  "CHI TIẾT": "DETAILS",
+  "Xem chi tiết video": "View video details",
+  "Không mở được thư mục.": "Could not open the folder.",
+  "Mô hình": "Model",
+  "Thời lượng yêu cầu": "Requested duration",
+  "Tỉ lệ": "Aspect ratio",
+  "Dung lượng": "File size",
+  "Ngày giờ": "Date and time",
+  "Tài khoản Dola": "Dola account",
+  "Số lần thử": "Attempts",
+
+  // ui-text.js: hand-off to MD Motion Control
+  "Hãy đăng nhập lại MD Motion Control.": "Please sign in to MD Motion Control again.",
+  "Chưa có tệp video trên máy. Bấm \"Lấy lại video\" trước.": "There is no video file on this computer. Click \"Get video again\" first.",
+  "Tệp nằm ngoài thư mục lưu nên app không dùng.": "The file is outside the save folder, so the app will not use it.",
+  "Tệp video không còn trên đĩa. Bấm \"Lấy lại video\".": "The video file is no longer on the disk. Click \"Get video again\".",
+  "Video lớn hơn 50 MB nên không gửi được.": "The video is larger than 50 MB, so it cannot be sent.",
+  "Clip này không có tiếng nên không dùng được Phụ đề tự động.": "This clip has no sound, so Auto subtitles cannot be used.",
+  "Xưởng này chưa hỗ trợ.": "This studio is not supported yet.",
+  "Đăng nhập MD Motion Control đang tạm tắt, thử lại sau.": "MD Motion Control sign-in is temporarily off. Try again later.",
+  "Bấm hơi nhanh, đợi vài giây rồi thử lại.": "Too fast: wait a few seconds, then try again.",
+  "Máy chủ không nhận tệp này (không phải video).": "The server did not accept this file (it is not a video).",
+  "Máy chủ đang bận, thử lại sau.": "The server is busy. Try again later.",
+  "Video này đang được gửi.": "This video is already being sent.",
+  "Phiên đăng nhập vừa đổi, bấm lại.": "Your sign-in just changed. Click again.",
+  "LÀM TIẾP VỚI MD MOTION CONTROL": "CONTINUE WITH MD MOTION CONTROL",
+  "Đang gửi…": "Sending…",
+  "Đang chuẩn bị…": "Preparing…",
+  "Đang tải lên…": "Uploading…",
+  "Đang xử lý…": "Processing…",
+  "Đang mở trình duyệt…": "Opening the browser…",
+  "Đã mở {label} trong trình duyệt.": "Opened {label} in the browser.",
+  "Lưu tới {date}.": "Kept until {date}.",
+  "Lưu theo gói của bạn.": "Kept as your plan allows.",
+  "Chép": "Copy",
+  "Đã chép": "Copied",
+  "Bấm hơi nhanh": "Too fast",
+  "Không có lời nhắc": "No prompt to copy",
+  "Không chép được": "Could not copy",
+  "Video đã tạo xong nhưng chưa có tệp trên máy.": "The video is done but there is no file on this computer.",
+  "Bấm \"Lấy lại video\" để tải về.": "Click \"Get video again\" to download it.",
+  "Không phát được video này: tệp đã mất hoặc địa chỉ đã hết hạn.": "This video cannot be played: the file is gone or the link has expired.",
+  "Bấm \"Lấy lại video\" để tải lại.": "Click \"Get video again\" to download it again.",
+
+  // ui-text.js: how prompts are shared between accounts
+  "Tự xoay": "Auto rotate",
+  "Lần lượt từng acc; acc hết lượt hoặc bận thì nhường acc khác.": "One account after another; an account that is out of quota or busy hands over to another.",
+  "Chia đều mọi tài khoản": "Split evenly across all accounts",
+  "Prompt được chia đều cho mọi acc sẵn sàng.": "Prompts are split evenly across all ready accounts.",
+  "Chỉ định tài khoản": "Fixed account",
+  "Chỉ chạy bằng acc bạn chọn, không xoay sang acc khác.": "Runs only on the account you pick and never rotates to another.",
+
+  // studios of the hand-off block (shared/qm-studios.js, through tx)
+  "Video tham chiếu": "Reference video",
+  "Phụ đề tự động": "Auto subtitles",
+  "Thay nhân vật, đồ vật, bối cảnh": "Swap characters, objects and backgrounds",
+  "Nâng độ nét video": "Make the video sharper",
+  "Quảng cáo theo video mẫu": "An ad from a sample video",
+  "Tạo phụ đề cho video": "Add subtitles to the video",
+
+  // history.js
+  "Bị gián đoạn": "Interrupted",
+  "Đã huỷ": "Cancelled",
+  "Không tạo được video.": "Could not create the video.",
+  "App đã tắt khi lệnh đang chạy: xem các nút bên dưới.": "The app was closed while this prompt was running: see the buttons below.",
+  "Bạn đã huỷ lệnh này.": "You canceled this prompt.",
+  "Dola đang bận — tự chạy lại": "Dola is busy — will retry by itself",
+  "Máy không có mạng — tự chạy lại": "Offline — will retry by itself",
+  "Đang chờ tới lượt": "Waiting for its turn",
+  "Đang chạy…": "Running…",
+  "Đã lưu: ": "Saved: ",
+  "Sẽ lưu vào: ": "Will save to: ",
+  "Xem thêm": "See more",
+  "Thu gọn": "See less",
+
+  // history-view.js, history-filter.js, history-rerun.js
+  "Dạng danh sách": "List view",
+  "Dạng lưới": "Grid view",
+  "Kiểu xem lịch sử": "History view",
+  "Không có lệnh nào ở mục này.": "No prompts in this category.",
+  "Xoá {count} khỏi lịch sử? {warns}": "Delete {count} from the history? {warns}",
+  "Video đã lưu vẫn nằm trong thư mục.": "Saved videos stay in their folder.",
+  "Đã chọn {n}": "{n} chosen",
+  "Tạo lại ({n})": "Recreate ({n})",
+  "Đang chạy: huỷ trước khi xoá": "Running: cancel it before deleting",
+  "Không tạo lại được: {why}": "Could not recreate: {why}",
+  "Không xoá được các lệnh đã chọn.": "Could not delete the selected prompts.",
+  "Đã xoá {count}. Video đã lưu vẫn nằm trong thư mục.": "Deleted {count}. Saved videos stay in their folder.",
+  "Đã xoá {gone}/{total} lệnh. Lệnh đang chạy phải huỷ trước.": "Deleted {gone}/{total} prompts. A running prompt has to be canceled first.",
+  "Chọn để xoá: {prompt}": "Select to delete: {prompt}",
+  "Mọi lệnh trong lịch sử": "Every prompt in the history",
+  "Đang chạy và đang chờ tới lượt": "Running and waiting for their turn",
+  "Thành công": "Done",
+  "Đã tạo xong video": "Video created",
+  "Lỗi, hoặc bị gián đoạn vì app tắt giữa chừng": "Failed, or interrupted because the app closed midway",
+  "Chưa có ảnh nào.": "No images yet.",
+  "Nhập mô tả rồi bấm \"Tạo ảnh\".": "Type a description, then click \"Create image\".",
+  "Chưa có video nào.": "No videos yet.",
+  "Nhập mô tả rồi bấm \"Tạo video\".": "Type a description, then click \"Create video\".",
+  "Không thêm được vào hàng đợi ({reason}).": "Could not add to the queue ({reason}).",
+  "Không tạo lại được lệnh nào.": "No prompt could be recreated.",
+  "Đã tạo lại {added}/{total} lệnh.": "Recreated {added}/{total} prompts.",
+
+  // queue-ui.js, queue-toolbar.js
+  "Chưa có mô tả ảnh.": "No image description yet.",
+  "Chưa có mô tả video.": "No video description yet.",
+  "Không thêm được vào hàng đợi: {why}": "Could not add to the queue: {why}",
+  "Không đọc được cài đặt hàng đợi: {why}": "Could not read the queue settings: {why}",
+  "Không lưu được cài đặt: {why}": "Could not save the settings: {why}",
+  "Không đọc được số đếm hàng đợi: {why}": "Could not read the queue counts: {why}",
+  "Không đọc được danh sách acc: {why}": "Could not read the account list: {why}",
+  "Ngừng lấy lệnh mới; việc đang chạy vẫn chạy tiếp": "Stop taking new prompts; running work keeps running",
+  "Đang tạm dừng: không lấy lệnh mới, việc đang chạy vẫn chạy tiếp. Bấm để chạy tiếp": "Paused: no new prompts are taken, and running work keeps running. Click to resume",
+  "Tạm dừng": "Pause",
+  "Tiếp tục": "Resume",
+
+  // queue-settings-ui.js, thread-picker.js
+  "Số luồng": "Threads",
+  "Chia prompt cho tài khoản": "Split prompts across accounts",
+  "Chạy bằng acc": "Run with account",
+  "Mở cửa sổ của từng acc để bạn nhìn thấy (cần khi Facebook đòi captcha hoặc đồng ý). Chỉ áp cho cửa sổ mở sau đó, cửa sổ đang mở giữ nguyên.":
+    "Open the window of each account so you can see it (needed when Facebook asks for a captcha or consent). It only applies to windows opened afterwards; windows that are already open stay as they are.",
+  "Hiện cửa sổ": "Show windows",
+  "Cần khi Facebook đòi captcha hoặc đồng ý": "Needed when Facebook asks for a captcha or consent",
+  "Chạy hàng loạt": "Batch run",
+  "Số luồng chạy cùng lúc": "Threads running at once",
+  "Theo số acc sẵn sàng và sức máy.": "Follows the number of ready accounts and the power of your computer.",
+  "Máy này nên chạy khoảng {threads} (chỉ là gợi ý, bạn chọn số khác được).": "We suggest running about {threads} on this computer (just a suggestion; you can pick another number).",
+  "Mỗi luồng dùng một acc riêng.": "Each thread uses its own account.",
+  "Cách chia prompt cho tài khoản": "How prompts are split across accounts",
+  "Chưa có tài khoản nào. Thêm cookie ở \"Setup tài khoản\".": "No accounts yet. Add a cookie in \"Accounts\".",
+  "Chỉ chạy bằng tài khoản nào?": "Run only with which account?",
+  "Chọn tài khoản…": "Choose an account…",
+  "Nhập số nguyên từ 1 đến 100.": "Enter a whole number from 1 to 100.",
+  "Bạn chọn {chosen}, máy gợi ý {cap}: có thể chậm hoặc treo máy.": "You chose {chosen}, the suggestion is {cap}: it may be slow or freeze your computer.",
+  "Số khác": "Other number",
+  "Số luồng khác": "Other number of threads",
+  "Áp dụng": "Apply",
+
+  // queue-prompt-box.js, save-dir-ui.js
+  "Chỉ nhận tệp .txt hoặc .csv.": "Only .txt or .csv files are accepted.",
+  "Tệp quá lớn (tối đa 2 MB).": "The file is too large (2 MB at most).",
+  "Tệp \"{name}\" không có lệnh nào.": "The file \"{name}\" has no prompts.",
+  "Đã nạp {count} từ tệp \"{name}\".": "Loaded {count} from the file \"{name}\".",
+  "Tệp có hơn {n} lệnh, chỉ lấy {n} lệnh đầu.": "The file has more than {n} prompts; only the first {n} were taken.",
+  "Không đọc được tệp \"{name}\": {why}": "Could not read the file \"{name}\": {why}",
+  "Các lệnh bấm \"Tạo video\" từ giờ sẽ lưu video vào thư mục này. Lệnh đã thêm trước đó giữ thư mục lúc thêm.":
+    "Prompts queued with \"Create video\" from now on save their videos in this folder. Prompts added earlier keep the folder they had when they were added.",
+  "Lưu video vào": "Save videos to",
+  "Mở thư mục này": "Open this folder",
+  "Mở thư mục lưu video": "Open the video folder",
+  "không đọc được": "cannot be read",
+
+  // muse-form.js: Muse and Nano Banana texts
+  "Tạo ảnh (Muse)": "Create image (Muse)",
+  "Video 2-60 giây từ chữ hoặc từ ảnh: Muse tự chia thành các clip ~10 giây rồi ghép thành một file, có tiếng. 10 giây ~1 phút, 30 giây ~4-6 phút. Cần thêm acc Muse ở Setup.":
+    "Videos of 2-60 seconds from text or from images: Muse splits them into clips of ~10 seconds and joins them into one file, with sound. 10 seconds takes ~1 minute, 30 seconds ~4-6 minutes. You need to add a Muse account in Accounts.",
+  "Tạo ảnh từ chữ bằng Muse, khoảng 25 giây, ra file webp 1920x1280. Cần acc Muse.":
+    "Create images from text with Muse, about 25 seconds each, as a 1920x1280 webp file. Needs a Muse account.",
+  "Muse Video là model duy nhất của Muse. Video có tiếng, làm bằng acc Muse (thêm ở Setup).":
+    "Muse Video is the only Muse model. Videos come with sound and are made with a Muse account (add one in Accounts).",
+  "Muse Image là model ảnh duy nhất. Làm bằng acc Muse (thêm ở Setup).": "Muse Image is the only image model. It is made with a Muse account (add one in Accounts).",
+  "Muse Image làm bằng acc Muse (thêm ở Setup), khoảng 25 giây mỗi ảnh. Không chọn tỉ lệ: ảnh ra khung 1920x1280.":
+    "Muse Image uses a Muse account (add one in Accounts) and takes about 25 seconds per image. There is no aspect ratio to pick: images come out at 1920x1280.",
+  "Nano Banana làm bằng acc Gmail Veo (thêm ở Setup → Veo), chạy trên Google Flow, khoảng 25 giây mỗi ảnh. Chọn được tỉ lệ, kèm ảnh tham chiếu nếu muốn.":
+    "Nano Banana uses a Veo Gmail account (add one in Accounts → Veo), runs on Google Flow and takes about 25 seconds per image. You can pick the aspect ratio and add reference images if you like.",
+  "Muse làm video theo tỉ lệ bạn chọn (app ghi tỉ lệ vào lời lệnh).": "Muse makes the video in the aspect ratio you pick (the app writes the ratio into the prompt).",
+  "Muse không chọn tỉ lệ: ảnh ra khung 1920x1280.": "Muse has no aspect ratio to pick: images come out at 1920x1280.",
+  "Muse làm các đoạn ~10 giây theo kịch bản của bạn rồi ghép thành một file. Hướng dẫn nằm dưới ô mô tả.":
+    "Muse makes parts of ~10 seconds from your script and joins them into one file. The instructions are under the description box.",
+  "Chưa có acc Muse sẵn sàng: lệnh sẽ chờ. Vào \"Setup tài khoản\" để thêm hoặc đăng nhập acc Muse.":
+    "No Muse account is ready: prompts will wait. Go to \"Accounts\" to add or sign in a Muse account.",
+  "Chưa có acc Gmail Veo sẵn sàng: lệnh sẽ chờ. Vào \"Setup tài khoản\" → Veo để thêm.": "No Veo Gmail account is ready: prompts will wait. Go to \"Accounts\" → Veo to add one.",
+  "[0-10s] một chiếc diều bay trên hồ lúc bình minh. [10-20s] diều bay qua bến cảng đêm.": "[0-10s] a kite flying over a lake at dawn. [10-20s] the kite flies past a harbor at night.",
+  "Viết kịch bản theo mốc giây, mỗi mốc ~10 giây. Ví dụ: {sample} Muse tự làm các clip rồi ghép thành một file. Không để dòng trống giữa các mốc.":
+    "Write the script by time marks, about 10 seconds each. Example: {sample} Muse makes the clips and joins them into one file. Do not leave empty lines between the marks.",
+  "Chèn mẫu": "Insert sample",
+  "Ô đang có chữ: bấm lần nữa để thay": "The box has text: click again to replace it",
+  "Ảnh đã tạo xong nhưng chưa có tệp trên máy.": "The image is done but there is no file on this computer.",
+  "Thử nút \"Lấy lại\" bên dưới hoặc bấm \"Tạo lại\".": "Try the \"Get video again\" button below, or click \"Recreate\".",
+  "Không mở được ảnh này: tệp đã mất.": "This image cannot be opened: the file is gone.",
+  "Bấm \"Tạo lại\" để làm ảnh mới.": "Click \"Recreate\" to make a new image.",
+  "Muse làm từng đoạn {seconds} giây rồi ghép: khoảng {minutes}.": "Muse makes it in parts of {seconds} seconds and joins them: about {minutes}.",
+  "{name} nhận tối đa {images}: các ảnh thừa đã bỏ.": "{name} takes up to {images}: the extra images were dropped.",
+  "Thêm 1 ảnh tham chiếu": "Add 1 reference image",
+  // the duration popover of a Veo model that says its lengths (veo-durations-ui.js)
+  "Độ phân giải": "Resolution",
+  "Giá tính cho 1 clip bằng credit Flow của acc Gmail; 360p rẻ hơn nhưng kém nét hơn.": "The price is for 1 clip, in the Flow credits of the Gmail account; 360p costs less but is less sharp.",
+  "Giá tính cho 1 clip 720p bằng credit Flow của acc Gmail.": "The price is for 1 720p clip, in the Flow credits of the Gmail account.",
+  "Veo 3.1 chỉ làm clip 8 giây ở 720p.": "Veo 3.1 only makes 8-second clips at 720p.",
+  "Theo prompt": "By prompt",
+  "Muse · Ảnh": "Muse · Image",
+  "Có tiếng": "With sound",
+
+  // muse-ui.js, muse-parallel-setting.js
+  "Bạn tự viết kịch bản theo mốc giây trong ô mô tả; thanh thời lượng không dùng": "You write the script by time marks in the description box; the duration bar is not used",
+  "Mô tả ảnh…": "Describe the image…",
+  "Đổi ảnh": "Change image",
+  "Thêm ảnh": "Add image",
+  "Bỏ ảnh": "Remove image",
+  "Không chọn được ảnh: {why}": "Could not pick the image: {why}",
+  "Số lệnh cùng lúc mỗi acc Muse": "Prompts at once per Muse account",
+  "Mỗi acc Muse làm được nhiều ảnh/video cùng lúc, mỗi lệnh một đoạn chat riêng. Đã thử 20 lệnh một lúc vẫn ra đủ. Áp cho Tạo video, Tạo ảnh, Phân tích video và Bàn sáng tạo.":
+    "Each Muse account can make several images/videos at once, each prompt in its own chat. We tried 20 prompts at once and all of them came out. Applies to Create video, Create image, Analyze video and Studio.",
+  "Nhập một số nguyên từ {min} đến {max}.": "Enter a whole number from {min} to {max}.",
+  "Cần cập nhật app lên bản mới để đổi số lệnh cùng lúc của acc Muse.": "Update the app to a newer version to change how many prompts a Muse account runs at once.",
+  "App chưa nhận cài đặt này: cập nhật app lên bản mới.": "The app did not accept this setting: update the app to a newer version.",
+  "Không đổi được số lệnh cùng lúc: {why}": "Could not change how many prompts run at once: {why}",
+
+  // model-groups.js, image-models.js, target-pills.js
+  "Tạo video AI có tiếng bằng Veo trên Google Flow": "Create AI videos with sound using Veo on Google Flow",
+  "Tạo video AI có tiếng từ chữ hoặc từ ảnh": "Create AI videos with sound from text or images",
+  "Tạo ảnh AI từ mô tả": "Create AI images from a description",
+  "Tạo ảnh AI bằng Nano Banana trên Google Flow": "Create AI images with Nano Banana on Google Flow",
+  "Nhiều lệnh: cách nhau bằng một dòng trống (mỗi lệnh = 1 ảnh)": "Several prompts: separate them with an empty line (each prompt = 1 image)",
+  "Tạo ảnh (Nano Banana)": "Create image (Nano Banana)",
+  "CÓ TIẾNG, dùng điểm miễn phí hằng ngày, khoảng 4 phút. Chỉ làm 4-10 giây (lệnh dài hơn sẽ ra 10s). Dễ bị Dola chặn nếu cảnh có hát hoặc nhạc.":
+    "WITH SOUND, uses the free daily points, about 4 minutes. Only makes 4-10 seconds (a longer prompt comes out at 10s). Dola may block it if the scene has singing or music.",
+  "Đủ 15s và CÓ TIẾNG, nhưng chậm hơn, hay bị Dola báo bận (app tự gửi lại) và hạn mức Pro riêng 7 ngày. Hết hạn mức thì app đổi sang acc khác.":
+    "Full 15s WITH SOUND, but slower: Dola often says it is busy (the app sends again by itself) and Pro has its own 7-day quota. When the quota runs out, the app switches to another account.",
+  "Acc Dola miễn phí chỉ làm tới 15s: lệnh dài hơn mà Dola báo lỗi thì app tự gửi lại bản 15s (acc trả phí có thể làm dài hơn).":
+    "Free Dola accounts only make up to 15s: if a longer prompt makes Dola report an error, the app sends the 15s version again by itself (paid accounts may make longer ones).",
+  "Seedance 2.5 là mã app đã chạy thật; hai bản còn lại gửi theo tên trên màn hình Dola, chưa chạy thử.":
+    "Seedance 2.5 is the code the app has really run; the other two are sent by their name on the Dola screen and have not been tested.",
+  "Giá mỗi clip tính bằng credit Flow của acc Gmail. Veo 3.1 sẽ ngừng trên Gemini API từ 22/10; trên Flow vẫn còn, Omni 1.1 Flash là bản thay thế. {images}":
+    "The price of a clip is counted in the Flow credits of the Gmail account. Veo 3.1 stops on the Gemini API from Oct 22; it is still on Flow, and Omni 1.1 Flash is the replacement. {images}",
+
+  // veo-images-text.js: reference images and prompt checks
+  "Veo chưa nhận ảnh tham chiếu: đã bỏ ảnh đã chọn.": "Veo does not take reference images yet: the picked images were dropped.",
+  "{name} nhận tối đa {images}; ảnh được đưa vào Flow theo thứ tự bạn chọn.\nChưa đo: Flow có dùng đúng ảnh hay không sẽ biết sau lần chạy thật đầu tiên.":
+    "{name} takes up to {images}; the images go into Flow in the order you pick them.\nNot measured yet: whether Flow uses the right images will only be known after the first real run.",
+  "Chưa nhận ảnh tham chiếu (cần cập nhật app).": "Does not take reference images yet (update the app).",
+  "Ảnh tham chiếu tối đa: {models}; ảnh được đưa vào Flow theo thứ tự bạn chọn.": "Most reference images: {models}; the images go into Flow in the order you pick them.",
+  "Lệnh #{index} nhắc {images} — tối đa {max} mỗi lệnh.": "Prompt #{index} mentions {images} — {max} at most per prompt.",
+  "Lệnh #{index} dùng {images} nhưng {name} chưa nhận ảnh tham chiếu (cần cập nhật app).": "Prompt #{index} uses {images} but {name} does not take reference images yet (update the app).",
+  "Lệnh #{index} dùng {images} — {name} nhận tối đa {max}.": "Prompt #{index} uses {images} — {name} takes up to {max}.",
+  "Lệnh #{index} nhắc phần tử mất ảnh: {handles}.": "Prompt #{index} mentions elements whose image is gone: {handles}.",
+  "Chưa có phần tử nào. Bấm + ở khay Phần tử để tạo.": "No elements yet. Click + in the element tray to create one.",
+
+  // prompt-cards, prompt-editor, skill-ui, version-label, whats-new-ui
+  "Nhập prompt… Gõ @ để nhắc một phần tử": "Type a prompt… Type @ to mention an element",
+  "Nhập prompt…": "Type a prompt…",
+  "Xoá prompt này": "Delete this prompt",
+  "Prompt {n}": "Prompt {n}",
+  "Xoá prompt {n}": "Delete prompt {n}",
+  "+ Thêm prompt": "+ Add prompt",
+  "Đã đủ {max} prompt.": "The limit of {max} prompts is reached.",
+  "Không chọn được skill: {why}": "Could not pick the skill: {why}",
+  "Đã bỏ skill \"{title}\" của Kho vì chế độ này không dùng skill đó.": "Removed the skill \"{title}\" from Skills because this mode does not use it.",
+  "Bỏ skill": "Remove skill",
+  "Ghi chú hướng dẫn cho AI (file .md hoặc .txt) - đính kèm cùng lệnh": "Instructions for the AI (an .md or .txt file), attached to the prompt",
+  "Phiên bản app {version}": "App version {version}",
+  "giao diện {version}": "interface {version}",
+  "Có gì mới": "What's new",
+  "Bản bạn đang dùng": "Your version",
+  "Mới": "New",
+  "Bấm để xem có gì mới": "Click to see what's new",
+  "Phiên bản {version}": "Version {version}",
+
+  // 404.html
+  "Không tìm thấy": "Not found",
+  "Trang hoặc tệp này không có trên MD Motion Control.": "This page or file is not on MD Motion Control.",
+  "Không tìm thấy · MD Motion Control": "Not found · MD Motion Control",
+
+  // sentences of site/shared/skill-store-form.js reached through tx()
+  "Skill từ Kho chỉ làm video tối đa 15 giây.": "Skills from the Skills tab only make videos of up to 15 seconds.",
+  "Skill từ Kho không hợp lệ. Hãy chọn lại skill.": "This skill from the Skills tab is not valid. Pick the skill again.",
+  "Chỉ dùng một skill mỗi lần: bỏ tệp skill hoặc bỏ skill từ Kho.": "Use only one skill at a time: remove the skill file or the skill from the Skills tab.",
+  "Skill từ Kho chỉ dùng cho video Seedance Pro hoặc Muse.": "Skills from the Skills tab only work with Seedance Pro or Muse videos.",
+  "Skill từ Kho: video Muse dài từ 2 đến 15 giây.": "Skill from the Skills tab: Muse videos last 2 to 15 seconds.",
+};

@@ -1,0 +1,19 @@
+/* "Có gì mới" (whats-new-ui.js): the version label under the logo gets role=button once the changelog is read (before that, or when it cannot be read, it is the plain text it always was),
+   a lime "Mới" dot sits beside it while the installed version was not looked at, and the panel is the guide's card (guide.css .guide-panel) on the right. Fixed: the form never moves.
+   The dot keeps the 11px of the label it sits on; the panel's texts are 14px or more. */
+.qm-version[role="button"] { cursor: pointer; }
+.qm-version[role="button"]:hover { opacity: 1; color: #f7f7f8; }
+.qm-version[role="button"]:focus-visible { outline: 2px solid #d1fe17; outline-offset: 3px; border-radius: 4px; opacity: 1; }
+.wn-dot { display: inline-block; margin-left: 6px; padding: 2px 6px; border-radius: 8px; background: #d1fe17; color: #14151a; font-size: 11px; font-weight: 700; line-height: 1; }
+/* At the top right, where the form is not (the form column is on the left); a click outside closes it. */
+.wn-panel { left: auto; right: 16px; width: min(420px, calc(100vw - 32px)); max-height: min(560px, calc(100vh - 92px)); }
+.wn-entry { padding: 12px 0; border-top: 1px solid rgba(255, 255, 255, .08); }
+.wn-entry:first-child { border-top: 0; }
+.wn-entry--now { margin: 0 -8px; padding: 12px 8px; border-radius: 10px; border-top-color: transparent; background: rgba(209, 254, 23, .07); }
+.wn-entry--now + .wn-entry { border-top-color: transparent; }
+.wn-entry-head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.wn-version { font-size: 14px; font-weight: 700; color: #d1fe17; }
+.wn-date { font-size: 14px; color: #898a8b; }
+.wn-now { margin-left: auto; padding: 2px 8px; border-radius: 8px; background: #d1fe17; color: #14151a; font-size: 14px; font-weight: 700; }
+.wn-notes { margin: 6px 0 0; padding-left: 18px; }
+.wn-note { margin: 4px 0 0; font-size: 14px; line-height: 1.5; color: #c9cacb; }

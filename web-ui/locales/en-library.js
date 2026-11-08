@@ -1,0 +1,123 @@
+// English for the "Thư viện" window (library-*.js): tabs, sidebar, folders, the cards, the upload tile, the bar of ticked items, and the questions about renaming and removing.
+// Key = the Vietnamese sentence exactly as the code has it. Words follow plans/261029-0812-md-motion-english/glossary.md ("Tạo lại" = Recreate, "Lấy lại video" = Get video again,
+// "Mở thư mục" = Open folder). The sentences of library-text.js are the library's own table (one place for the wording); the app's own `note` sentences are shown as they come.
+export const dynamic = [];
+
+export default {
+  // library-text.js: the frame
+  'Thư viện': 'Library',
+  'Đóng': 'Close',
+  'Đã tải lên': 'Uploaded',
+  'Đã tạo': 'Created',
+  'Yêu thích{sense}': 'Favorites{sense}', // {sense} is an empty marker (see library-text.js): the tab "Favorites" is not the button "Favorite"
+  'Phần tử (@)': 'Elements (@)',
+  'Tất cả': 'All',
+  'Đã ghim': 'Pinned',
+  'Thư mục': 'Folders',
+  'Thư mục mới': 'New folder',
+  'Tên thư mục': 'Folder name',
+  'Ảnh': 'Images',
+  'Tìm theo tên hoặc prompt': 'Search by name or prompt',
+  'Tìm trong thư viện': 'Search the library',
+  'Huỷ': 'Cancel',
+  'Chọn ({n})': 'Choose ({n})',
+  'Chọn': 'Choose',
+  'Đã chọn {n}/{max}': '{n}/{max} chosen',
+  'Đã chọn {n}': '{n} chosen',
+  'Tải lên': 'Upload',
+  'Ảnh png, jpg, webp. Kéo thả vào đây cũng được.': 'png, jpg or webp images. You can also drag and drop them here.',
+  'Đang tải lên…': 'Uploading…',
+  'Không tải lên được.': 'Could not upload.',
+  'Đang tải…': 'Loading…',
+  'Đang quét thư mục của app…': 'Scanning the app folder…',
+  'Thử lại': 'Try again',
+  'Thư viện vừa có thay đổi.': 'The library just changed.',
+  'Làm mới': 'Refresh',
+  'Thư viện chưa có gì': 'The library is empty',
+  'Ảnh và video bạn tải lên hoặc tạo trong app sẽ hiện ở đây.': 'Images and videos you upload or create in the app will show up here.',
+  'Không có mục nào khớp.': 'No items match.',
+  'Thử bỏ bớt bộ lọc hoặc đổi từ khoá.': 'Try removing a filter or changing the keyword.',
+  'Không đọc được thư viện.': 'Could not read the library.',
+  'App đang bị khoá, chưa mở được thư viện.': 'The app is locked, so the library cannot be opened yet.',
+  'Dữ liệu yêu thích và ghim đang bận nên chưa sửa được.': 'The favorites and pins data is busy, so it cannot be changed yet.',
+  '{n}+ mục': '{n}+ items',
+  'Ảnh đã xoá hoặc không tìm thấy': 'The image was deleted or cannot be found',
+  'Video đã xoá hoặc không tìm thấy': 'The video was deleted or cannot be found',
+  'Ổ đĩa chưa cắm': 'Drive not connected',
+  'Đang bận': 'Busy',
+  'Không dùng được ở đây': 'Cannot be used here',
+  'Quản lý trong màn Phần tử': 'Manage it on the Elements screen',
+  'Chưa có ảnh nhỏ': 'No thumbnail yet',
+  'Không tên': 'No name',
+  'Ghim': 'Pin',
+  'Bỏ ghim': 'Unpin',
+  'Yêu thích': 'Favorite',
+  'Bỏ yêu thích': 'Unfavorite',
+  'Thêm{sense}': 'More{sense}', // the ⋯ button; the plain "Thêm" of the other screens is "Add"
+  'Chỉ chọn được tối đa {max}.': 'You can choose up to {max}.',
+  'Chọn thêm được {n}, tối đa {max}.': 'Only {n} more could be chosen; the limit is {max}.',
+  'App đang bị khoá, chưa làm được.': 'The app is locked, so this cannot be done yet.',
+  'Dữ liệu thư viện đang bận, thử lại sau ít giây.': 'The library data is busy. Try again in a few seconds.',
+  'Chưa làm được, thử lại.': 'Could not do that. Try again.',
+
+  // library-upload-tile.js: reached through tn() only (see the code)
+
+  // library-actions.js: the bar over the grid while items are ticked
+  'Chuyển vào thư mục ▾': 'Move to folder ▾',
+  'Chuyển vào thư mục': 'Move to folder',
+  'Thao tác với mục đã chọn': 'Actions for the chosen items',
+  '{n} đã chọn': '{n} chosen',
+  'Đổi tên': 'Rename',
+  'Xoá…': 'Delete…',
+  'Bỏ chọn': 'Deselect',
+
+  // library-session.js: the menu of a card
+  'Xem': 'View',
+
+  // library-folders.js
+  'Đổi tên thư mục': 'Rename folder',
+  'Lưu': 'Save',
+  'Xoá thư mục "{name}"?': 'Delete the folder "{name}"?',
+  'Chỉ thư mục bị xoá. Ảnh và video bên trong vẫn còn trong thư viện, chỉ không còn nằm trong thư mục nào.': 'Only the folder is deleted. The images and videos inside stay in the library; they just are not in any folder anymore.',
+  'Xoá thư mục': 'Delete folder',
+  'Đã xoá thư mục.': 'Folder deleted.',
+  '{label}: {name}': '{label}: {name}',
+  'Tạo và chuyển vào': 'Create and move in',
+  'Chuyển vào: {name}': 'Move to: {name}',
+  'Chuyển vào: Thư mục mới…': 'Move to: New folder…',
+  'Bỏ khỏi thư mục': 'Remove from folder',
+
+  // library-edit.js: rename
+  'Chỉ đổi tên hiển thị trong thư viện, tên tệp trên máy giữ nguyên.': 'This only changes the name shown in the library; the file name on your computer stays the same.',
+  'Tên mới': 'New name',
+  'Tên phải có từ 1 đến 120 ký tự.': 'The name must be 1 to 120 characters long.',
+
+  // library-remove-ask.js: the question asked every time, and the words for a refusal
+  'Xoá mục này?': 'Delete this item?',
+  'Xoá {n} mục?': 'Delete {n} items?',
+  'Chỉ gỡ khỏi thư viện': 'Remove from library only',
+  'Xoá cả file (vào Thùng rác)': 'Delete the file too (to Trash)',
+  'Tệp đang được một bàn, một mẫu hoặc một lệnh dùng thì được giữ lại, chỉ gỡ khỏi thư viện.': 'A file that a board, a template or a prompt is using is kept, and only removed from the library.',
+  'Tệp nằm ngoài thư mục của app luôn được giữ nguyên, chỉ tệp trong thư mục của app mới vào Thùng rác.': 'A file outside the app folder is always left alone; only files inside the app folder go to the Trash.',
+  '{what} {rule}': '{what} {rule}',
+  'Các mục này có thể là tệp gốc của bạn. {rule}': 'These items may be your original files. {rule}',
+  'Đang dùng trong một bàn, mẫu hoặc lệnh, nên tệp được giữ lại.': 'It is in use on a board, a template or a prompt, so the file is kept.',
+  'Tệp gốc của bạn nằm ngoài thư mục app, app không xoá.': 'Your original file is outside the app folder, so the app does not delete it.',
+  'Là phần tử @, xoá ở hộp Phần tử.': 'It is an @ element: delete it in the Elements box.',
+  'Không chuyển được vào Thùng rác, tệp vẫn còn nguyên.': 'Could not move it to the Trash; the file is still there.',
+  'Chưa kiểm được tệp (ổ đĩa bận), thử lại sau.': 'Could not check the file (the drive is busy). Try again later.',
+  'Ổ đĩa chứa tệp chưa cắm. Cắm lại rồi thử, hoặc chọn "Chỉ gỡ khỏi thư viện".': 'The drive holding the file is not connected. Plug it in and try again, or choose "Remove from library only".',
+  'Đã gỡ {things} khỏi thư viện': 'Removed {things} from the library',
+  '{files} vào Thùng rác': '{files} to the Trash',
+  '{things} chưa xoá tệp: {why}': '{things} not deleted from disk: {why}',
+  'Không có gì thay đổi.': 'Nothing changed.',
+
+  // library-ui.js: the buttons of a history row
+  'Không làm được ({reason}).': 'Could not do that ({reason}).',
+  'lỗi': 'error',
+  'Video đã nằm trong thư mục, không cần lấy lại.': 'The video is already in the folder; there is no need to get it again.',
+  'Lấy lại video': 'Get video again',
+  'Tạo lại': 'Recreate',
+  'Mở thư mục': 'Open folder',
+  'Xoá khỏi lịch sử': 'Delete from history',
+};

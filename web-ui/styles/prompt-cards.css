@@ -1,0 +1,28 @@
+/* the prompt cards under the prompt box (prompt-cards-ui.js): a quiet toggle line, then one small card per prompt, one column */
+.cv-pc { margin-top: 6px; }
+.cv-pc[hidden], .cv-pc-body[hidden] { display: none; }
+.cv-pc-toggle { display: inline-flex; align-items: center; gap: 4px; padding: 3px 6px; margin-left: -6px; border: 0; border-radius: 6px; background: none; font: inherit;
+  font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; color: #c8c9ca; cursor: pointer; transition: color .15s, background .15s; }
+.cv-pc-toggle:hover { color: #f7f7f8; background: rgba(255, 255, 255, .05); }
+.cv-pc-body { margin-top: 6px; }
+.cv-pc-list { display: flex; flex-direction: column; gap: 6px; max-height: 300px; overflow-y: auto; padding-right: 2px; }
+.cv-pc-list::-webkit-scrollbar { width: 6px; }
+.cv-pc-list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .14); border-radius: 3px; }
+.cv-pc-card { flex: 0 0 auto; display: grid; grid-template-columns: 22px minmax(0, 1fr) 22px; gap: 6px; align-items: start; padding: 6px 6px 6px 8px;
+  border-radius: 8px; background: rgba(255, 255, 255, .04); border: 1px solid transparent; transition: border-color .15s; }
+.cv-pc-card:focus-within { border-color: rgba(209, 254, 23, .4); }
+.cv-pc-card--bad { border-color: rgba(229, 131, 125, .55); background: rgba(229, 131, 125, .07); }
+.cv-pc-num { padding-top: 1px; font-size: 11px; line-height: 18px; font-weight: 600; font-variant-numeric: tabular-nums; color: #898a8b; }
+.cv-pc-card--bad .cv-pc-num { color: #e5837d; }
+.cv-pc-ed { min-height: 18px; max-height: 120px; overflow-y: auto; outline: none; cursor: text; white-space: pre-wrap; overflow-wrap: anywhere; color: #f7f7f8; font-size: 12.5px; line-height: 1.45; }
+.cv-pc-ed:empty::before { content: attr(data-placeholder); color: #6b6c6d; pointer-events: none; }
+.cv-pc-ed .cv-chip-el { font-size: 12px; }
+.cv-pc-x { width: 22px; height: 22px; padding: 0; border: 0; border-radius: 6px; background: none; font: inherit; font-size: 12px; line-height: 22px; color: #898a8b; cursor: pointer;
+  transition: color .15s, background .15s; }
+.cv-pc-x:hover { color: #e5837d; background: rgba(229, 131, 125, .12); }
+.cv-pc-add { margin-top: 6px; padding: 4px 10px; border-radius: 6px; border: 1px dashed rgba(255, 255, 255, .2); background: none; font: inherit; font-size: 12px; font-weight: 600;
+  color: #c8c9ca; cursor: pointer; transition: background .15s, color .15s; }
+.cv-pc-add:hover:not(:disabled) { background: rgba(255, 255, 255, .06); color: #f7f7f8; }
+.cv-pc-add:disabled { opacity: .5; cursor: default; }
+@media (max-height: 1100px) { .cv-pc-list { max-height: 240px; } }
+@media (max-height: 960px) { .cv-pc-list { max-height: 200px; } } /* a low window: the left column scrolls too, keep the list short so the last card and "+ Thêm prompt" stay in reach */
