@@ -106,13 +106,26 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
     extraSources.push({ idx: idx + 1, source: extSource, resultPanel: extResultPanel, storageKey, createBtn: streamSlot.createBtn });
   });
 
+  let activeStreamIdx = 1;
+  let activeResultPanel = resultPanel;
+
   // Hàm chạy xuyên suốt 1 chạm (tự động phân tích ngầm + tạo video thành phẩm luôn) cho 1 luồng
   async function runOneClickMain() {
+    activeStreamIdx = 1;
+    activeResultPanel = resultPanel;
     if ((job && !ended) || phase === 'prepare' || phase === 'start') {
       cancel();
       return;
     }
     if (job && ended) {
+      const sCur = source.get();
+      const failedClips = latestClips.filter((c) => c.state === 'failed');
+      if (latestResult && !latestResult.ok && failedClips.length > 0 && keyOf(sCur) === planKey) {
+        for (const c of failedClips) {
+          await retry(c.i);
+        }
+        return;
+      }
       await again();
     }
     if (!source.ready()) {
@@ -138,6 +151,8 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
 
   extraSources.forEach((ext) => {
     ext.createBtn?.addEventListener('click', async () => {
+      activeStreamIdx = ext.idx;
+      activeResultPanel = ext.resultPanel || resultPanel;
       ws.streams?.forEach((st, i) => st.unit.classList.toggle('cm-stream-unit--active', i === ext.idx - 1));
       if ((job && !ended) || phase === 'prepare' || phase === 'start') {
         cancel();
@@ -157,10 +172,10 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
         images: cur.images,
         choices: {
           engine: base.engine,
-          keepMusic: base.keepMusic,
+          audioMode: base.audioMode,
           resolution: base.resolution,
           ratio: base.ratio,
-          translateTo: base.translateTo,
+          language: base.translateTo,
           voiceText: base.voiceText,
         },
       });
@@ -229,6 +244,15 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
         }
       }
     }
+    // Loại bỏ các luồng trùng hệt cùng 1 video gốc + cùng ảnh nhân vật (tránh chạy lặp 5 lần cùng 1 video khi khôi phục phiên)
+    const seenKeys = new Set();
+    targets = targets.filter((item) => {
+      const st = item.source.get();
+      const sig = `${st.video?.handle || ''}|${(st.images || []).map((im) => im.handle).join(',')}`;
+      if (seenKeys.has(sig)) return false;
+      seenKeys.add(sig);
+      return true;
+    });
     if (targets.length === 1 && targets[0].isMain) {
       await runOneClickMain();
       return;
@@ -247,6 +271,8 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
       if (batchCancelled) break;
       const item = targets[i];
       const code = String(item.idx).padStart(2, '0');
+      activeStreamIdx = item.idx;
+      activeResultPanel = item.isMain ? resultPanel : (item.ext?.resultPanel || resultPanel);
       ws.streams?.forEach((st, idx) => st.unit.classList.toggle('cm-stream-unit--active', idx === item.idx - 1));
       const lbl = item.slot.createBtn?.querySelector('.cm-stream-create-label');
       if (lbl) lbl.textContent = `⚡ Đang chạy (L${code})...`;
@@ -262,21 +288,28 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
           images: cur.images,
           choices: {
             engine: base.engine,
-            keepMusic: base.keepMusic,
+            audioMode: base.audioMode,
             resolution: base.resolution,
             ratio: base.ratio,
-            translateTo: base.translateTo,
+            language: base.translateTo,
             voiceText: base.voiceText,
           },
         });
       }
-      const ok = await prepare();
-      if (batchCancelled || !ok) break;
+      const sNow = source.get();
+      const staleNow = !!plan && !job && keyOf(sNow) !== planKey;
+      if (!plan || staleNow) {
+        const ok = await prepare();
+        if (batchCancelled || !ok) break;
+      }
       if (plan && !job && phase === 'idle') {
         await start();
         if (job && !ended) {
           await waitCurrentJobEnd();
         }
+      }
+      if (latestResult && !latestResult.ok) {
+        break;
       }
       if (lbl && !batchCancelled) {
         lbl.textContent = `✓ Đã xong (L${code})`;
@@ -327,14 +360,17 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
     const multiChecked = checkedCnt > 1;
     const batchSub = multiChecked ? `Chạy ${checkedCnt}/${totalVis} luồng đã tích` : '';
     const isWorkingNow = (job && !ended) || batchRunning || phase === 'prepare' || phase === 'start';
+    const hasFailedClip = job && ended && latestResult && !latestResult.ok && latestClips.some((c) => c.state === 'failed');
 
     act = isWorkingNow
       ? { label: t('Huỷ'), run: cancel }
-      : multiChecked
-        ? { label: `Tạo video (${batchSub})`, run: runCheckedStreams, off: readyChecked.length === 0 && !source.ready() }
-        : plan && !stale && !job
-          ? { label: isMuse ? t('Tạo video (Muse AI · 0 credit)') : t('Tạo video ({n} credit Flow)', { n: editorUi.total() }), run: runCheckedStreams, off: editorUi.busy() }
-          : { label: t('Tạo video'), run: runCheckedStreams, off: readyChecked.length === 0 && !source.ready() };
+      : hasFailedClip
+        ? { label: t('Thử lại đoạn lỗi'), run: runCheckedStreams, off: false }
+        : multiChecked
+          ? { label: `Tạo video (${batchSub})`, run: runCheckedStreams, off: readyChecked.length === 0 && !source.ready() }
+          : plan && !stale && !job
+            ? { label: isMuse ? t('Tạo video (Muse AI · 0 credit)') : t('Tạo video ({n} credit Flow)', { n: editorUi.total() }), run: runCheckedStreams, off: editorUi.busy() }
+            : { label: t('Tạo video'), run: runCheckedStreams, off: readyChecked.length === 0 && !source.ready() };
     const m = act.label.match(/^([^(]+)\((.+)\)$/);
     if (m && act.run !== cancel) {
       main.innerHTML = `<span class="cm-btn-main-top">✨ ▷ ${m[1].trim()}</span><small class="cm-btn-main-sub">(${m[2].trim()})</small>`;
@@ -351,7 +387,7 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
     if (btn1) {
       const lbl1 = btn1.querySelector('.cm-stream-create-label');
       if (lbl1) {
-        lbl1.textContent = isWorkingNow ? 'Đang tạo... (Huỷ)' : 'Tạo video (L01)';
+        lbl1.textContent = isWorkingNow ? 'Đang tạo... (Huỷ)' : hasFailedClip ? 'Thử lại đoạn lỗi (L01)' : 'Tạo video (L01)';
       }
       btn1.disabled = !isWorkingNow && !source.ready();
     }
@@ -423,7 +459,8 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
       });
       if (!r?.ok) { if (!source.dir.refuse(r)) msg.set(ct(r?.note) || t('Không bắt đầu được.')); editorUi.setLocked(false); source.setLocked(false); return; } // a folder that cannot be written is told in the sidebar box; the plan stays
       job = r; ended = false;
-      resultUi = mountResult({ panel: resultPanel, perClip: r.credits?.perClip || 20, compare: source.player, onRetry: (i) => retry(i), onAgain: () => again(), onOpen });
+      const targetPanel = activeResultPanel || resultPanel;
+      resultUi = mountResult({ panel: targetPanel, perClip: r.credits?.perClip || 20, compare: source.player, onRetry: (i) => retry(i), onAgain: () => again(), onOpen });
       resultUi.update({ clips: [], result: null });
       editorUi.setFlow(null); editorUi.reveal();
     } catch (err) { msg.set(t('Không bắt đầu được: {reason}', { reason: err.message })); editorUi.setLocked(false); source.setLocked(false); } finally { phase = 'idle'; paint(); }
@@ -452,7 +489,7 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
   async function again() {
     draft.cancel();
     try { await dola.motion.close(); } catch { /* a film still running keeps its screen */ }
-    resultUi?.destroy(); resultPanel.reset(); editorUi?.destroy();
+    resultUi?.destroy(); resultPanel.reset(); extraSources.forEach((ext) => ext.resultPanel?.reset()); editorUi?.destroy();
     plan = null; job = null; editorUi = null; resultUi = null; ended = false; shown = ''; msg.set('');
     latestClips = []; latestResult = null; latestStageText = '';
     showPlayers(false); source.setLocked(false); paint();
@@ -465,6 +502,12 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
       latestResult = e.result || null;
       latestStageText = String(e.stage || '');
       resultUi?.update({ clips: e.clips, result: e.result || null, stage: e.stage }); editorUi?.setFlow(e.clips || []);
+      if (e.result && !e.result.ok) {
+        const failedClip = latestClips.find((c) => c.state === 'failed' && c.note);
+        msg.set(ct(failedClip?.note || e.result.note) || t('Tạo video không thành công. Bấm Thử lại đoạn lỗi để chạy tiếp.'));
+      } else if (e.result && e.result.ok) {
+        msg.set('');
+      }
       if (!!e.result !== ended) { ended = !!e.result; if (editorUi) source.setLocked(!ended); paint(); } else emitMotionState();
     }
   });
@@ -487,16 +530,9 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
       source.restore(saved);
       extraSources.forEach((ext) => {
         try {
-          const raw = localStorage.getItem(ext.storageKey);
-          const parsed = raw ? JSON.parse(raw) : null;
-          if (parsed && parsed.video?.handle) {
-            ext.source.restore({ video: parsed.video, images: parsed.images || saved.images, choices: saved.choices });
-          } else {
-            ext.source.restore(saved);
-          }
-        } catch {
-          ext.source.restore(saved);
-        }
+          localStorage.removeItem(ext.storageKey);
+        } catch {}
+        ext.source.restore(saved);
       });
       showPlan(saved.plan, source.get(), saved.selected);
       return true;

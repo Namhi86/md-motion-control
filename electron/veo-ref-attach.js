@@ -1,1 +1,520 @@
-const _0x389e9e=_0x32fb;(function(_0x1ccdfe,_0x141523){const _0x2ece04=_0x32fb,_0x4a3c92=_0x1ccdfe();while(!![]){try{const _0x30a567=parseInt(_0x2ece04(0x10d))/0x1+parseInt(_0x2ece04(0x120))/0x2*(-parseInt(_0x2ece04(0x116))/0x3)+-parseInt(_0x2ece04(0x13e))/0x4*(parseInt(_0x2ece04(0x13d))/0x5)+parseInt(_0x2ece04(0x12a))/0x6*(-parseInt(_0x2ece04(0x132))/0x7)+-parseInt(_0x2ece04(0x127))/0x8+parseInt(_0x2ece04(0x117))/0x9*(parseInt(_0x2ece04(0xfd))/0xa)+-parseInt(_0x2ece04(0x107))/0xb*(-parseInt(_0x2ece04(0x13a))/0xc);if(_0x30a567===_0x141523)break;else _0x4a3c92['push'](_0x4a3c92['shift']());}catch(_0x39bad4){_0x4a3c92['push'](_0x4a3c92['shift']());}}}(_0x39a5,0xaacba));import{randomBytes}from'node:crypto';import{copyFileSync,existsSync,renameSync,rmSync,statSync}from'node:fs';import _0x38b787 from'node:os';function _0x39a5(){const _0x2c5a95=[')\x20nên\x20app\x20không\x20bấm.','\x20giây\x20(nút\x20\x22I\x20agree\x22\x20cứ\x20đổi\x20chỗ)\x20nên\x20app\x20không\x20bấm\x20gì.','none','\x20(1\x20video\x20+\x20','box','Veo:\x20đã\x20đưa\x20ảnh\x20chủ\x20thể\x20','\x20mục\x20thay\x20vì\x20','15JOiwYL','27wtRTMs','basename','ở\x20(','length','join',');\x20nút\x20\x22I\x20agree\x22\x20nay\x20','\x20cho\x20Flow,\x20chờ\x20tải\x20lên','tmpdir','Ô\x20lệnh\x20của\x20Flow\x20có\x20','65234KCnAHP','Flow\x20chưa\x20tải\x20xong\x20video\x20tham\x20chiếu\x20sau\x20','some','\x20/\x20','Lỗi\x20khi\x20đính\x20kèm\x20video\x20tham\x20chiếu:\x20','chờ\x20video\x20tải\x20lên','Không\x20thấy\x20nút\x20\x22+\x22\x20của\x20ô\x20lệnh\x20Flow','10830440GVuTGU','Không\x20bấm\x20\x22I\x20agree\x22:\x20','isVisible','6udNAoZ','Veo:\x20hộp\x20quyền\x20vẫn\x20còn\x20sau\x20cú\x20bấm\x20tại\x20(','cancelled','images','Bảng\x20ảnh\x20của\x20Flow\x20không\x20mở\x20ra','Flow\x20không\x20nhận\x20video\x20tham\x20chiếu.\x20Flow\x20nói:\x20','\x22\x20nên\x20app\x20không\x20bấm\x20gì.','tải\x20ảnh\x20chủ\x20thể\x20tiếp\x20theo','9047465QrBOjN','Không\x20tải\x20được\x20ảnh\x20lên\x20Flow\x20(không\x20thấy\x20nút\x20Upload\x20media)','why','other','tải\x20ảnh\x20chủ\x20thể\x20lên','message','veo_images_failed','note','8777400mPnlzS','\x20giây,\x20nút\x20\x22I\x20agree\x22\x20ở\x20(','\x20ảnh\x20chủ\x20thể\x20cùng\x20video\x20tham\x20chiếu','35wQSOde','246972gDjKvR','Flow\x20không\x20nhận\x20video\x20tham\x20chiếu\x20sau\x20','video','\x20(chưa\x20gửi\x20lệnh,\x20chưa\x20tốn\x20credit)','Veo:\x20Google\x20không\x20hỏi\x20quyền\x20dùng\x20video\x20(không\x20có\x20hộp\x20\x22Rights\x20to\x20use\x20this\x20video\x22),\x20đi\x20tiếp','test','round','Hộp\x20quyền\x20của\x20Flow\x20không\x20có\x20nút\x20đúng\x20chữ\x20\x22I\x20agree\x22\x20(có:\x20','reason','1827090ovsiJL','slice','videoRow','\x20giây)\x20cho\x20Flow,\x20chờ\x20hộp\x20quyền',';\x20app\x20không\x20bấm\x20thêm).','alert','Có\x20thứ\x20khác\x20nằm\x20đè\x20lên\x20nút\x20\x22I\x20agree\x22\x20(','\x20giây.',',\x20cửa\x20sổ\x20Flow\x20đang\x20ẩn','aborted','44OHQeXE','map','Veo:\x20đã\x20đưa\x20video\x20tham\x20chiếu\x20(','agreeClicks','Veo:\x20bấm\x20\x22I\x20agree\x22\x20(xác\x20nhận\x20của\x20người\x20dùng\x20lúc\x20','\x20giây\x20(không\x20hiện\x20hộp\x20quyền,\x20không\x20có\x20hàng\x20video).','467237qWqDGo','mở\x20ô\x20\x22+\x22'];_0x39a5=function(){return _0x2c5a95;};return _0x39a5();}import _0x12af3c from'node:path';import{clickPoint}from'./click-at.js';import{evalJs,PAGE_CALL_MS}from'./dola-session.js';function _0x32fb(_0x308b72,_0x1c521d){_0x308b72=_0x308b72-0xfa;const _0x39a586=_0x39a5();let _0x32fb96=_0x39a586[_0x308b72];return _0x32fb96;}import{stopDebugger}from'./image-cdp.js';import{reencodeRefVideo}from'./ref-video-reencode.js';import{ADD_AT,CHIP_COUNT,PANEL_OPEN,PLUS_AT,rowsState}from'./veo-images-page.js';import{selectRows,UPLOAD_WAIT_MS,uploadFiles,waitUploaded}from'./veo-images.js';import{until}from'./veo-flow.js';import{sleep}from'./veo-page.js';import{AGREE_AT,ANY_DIALOG,buttonTopAt,NO_SHOW_AT,RIGHTS_BOX,rowText,VIDEO_CHIPS}from'./veo-ref-page.js';import{sweepStale,VEO_TMP_DIR}from'../src/veo-image-files.js';import{agreeVerdict,REF_MAX_IMAGES,REF_MIN_IMAGES,refUploadNames}from'../src/veo-ref.js';export const RIGHTS_WAIT_MS=0x1f40;const SETTLE_EVERY_MS=0x1f4,SETTLE_CAP_MS=0xbb8,CLOSE_WAIT_MS=0xfa0,PANEL_WAIT_MS=0x1770,CHIPS_WAIT_MS=0x1f40,VIDEOCAM_SETTLE_MS=0x1388,failed=(_0x2b8d13,_0x125688)=>({'ok':![],'reason':_0x389e9e(0x138),'note':_0x2b8d13+_0x389e9e(0x141),'agreeClicks':_0x125688[_0x389e9e(0x10a)]}),at=(_0x859b91,_0x459c7b)=>evalJs(_0x859b91,_0x459c7b,{'timeout':PAGE_CALL_MS})['catch'](()=>null);async function settledAgree(_0x1c7518,_0x7f6b40){const _0x37ee9c=_0x389e9e;let _0x2c149c=null,_0x5728b9=0x0;while(_0x5728b9<SETTLE_CAP_MS&&!_0x7f6b40?.[_0x37ee9c(0x106)]){await sleep(SETTLE_EVERY_MS),_0x5728b9+=SETTLE_EVERY_MS;const _0x472c56=await at(_0x1c7518,AGREE_AT);if(_0x2c149c&&_0x472c56&&_0x472c56['x']===_0x2c149c['x']&&_0x472c56['y']===_0x2c149c['y'])return{'target':_0x472c56,'steady':!![],'waitedMs':_0x5728b9};_0x2c149c=_0x472c56;}return{'target':_0x2c149c,'steady':![],'waitedMs':_0x5728b9};}export async function answerRights(_0x5bef44,{videoRow:_0x35be43,signal:_0x2fc5eb,log:_0x1120e6,meta:_0x1f4e83,consentAt:_0x3268a0,ms:_0x49f437}){const _0x35b07c=_0x389e9e,_0x3781fd=await until(async()=>{const _0x4d4c82=_0x32fb,_0x515deb=await at(_0x5bef44,RIGHTS_BOX);if(_0x515deb)return{'box':_0x515deb};const _0x5b269c=await at(_0x5bef44,rowsState([_0x35be43]));if(_0x5b269c?.[_0x4d4c82(0x102)]&&/unsupported file type/i[_0x4d4c82(0x143)](_0x5b269c[_0x4d4c82(0x102)]))return{'alert':_0x5b269c['alert']};if(await at(_0x5bef44,rowText(_0x35be43)))return{'none':!![]};const _0x9a6f4d=await at(_0x5bef44,ANY_DIALOG);return _0x9a6f4d?{'other':_0x9a6f4d}:null;},_0x49f437,_0x2fc5eb,0x12c);if(_0x2fc5eb?.[_0x35b07c(0x106)])return _0x35b07c(0x12c);if(!_0x3781fd)return _0x35b07c(0x13f)+Math[_0x35b07c(0xfa)](_0x49f437/0x3e8)+_0x35b07c(0x10c);if(_0x3781fd['alert'])return _0x35b07c(0x12f)+_0x3781fd[_0x35b07c(0x102)];if(_0x3781fd[_0x35b07c(0x135)])return'Flow\x20hiện\x20một\x20hộp\x20lạ\x20\x22'+_0x3781fd[_0x35b07c(0x135)]+_0x35b07c(0x130);if(_0x3781fd[_0x35b07c(0x111)])return _0x1120e6(_0x35b07c(0x142)),'';if(!_0x3781fd[_0x35b07c(0x113)]['buttons'][_0x35b07c(0x122)](_0x49563d=>/^i agree$/i[_0x35b07c(0x143)](_0x49563d)))return _0x35b07c(0xfb)+_0x3781fd['box']['buttons'][_0x35b07c(0x11b)](_0x35b07c(0x123))+')\x20nên\x20app\x20không\x20bấm\x20gì.';const {target:_0x1e296e,steady:_0xa8d524,waitedMs:_0x3d8427}=await settledAgree(_0x5bef44,_0x2fc5eb);if(_0x2fc5eb?.[_0x35b07c(0x106)])return'cancelled';if(!_0xa8d524)return'Hộp\x20quyền\x20của\x20Flow\x20chưa\x20đứng\x20yên\x20sau\x20'+_0x3d8427/0x3e8+_0x35b07c(0x110);const _0x128cf8=agreeVerdict(_0x1e296e,await at(_0x5bef44,NO_SHOW_AT));if(!_0x128cf8['ok'])return _0x35b07c(0x128)+_0x128cf8[_0x35b07c(0x134)]+'.';const _0x3b110d=await at(_0x5bef44,buttonTopAt(_0x1e296e['x'],_0x1e296e['y']));if(_0x3b110d!=='I\x20agree')return _0x35b07c(0x103)+(_0x3b110d??'không\x20phải\x20nút')+_0x35b07c(0x10f);const _0x36b4e9=_0x5bef44[_0x35b07c(0x129)]?.()===![]?_0x35b07c(0x105):'';_0x1120e6('Veo:\x20hộp\x20quyền\x20đã\x20đứng\x20yên\x20sau\x20'+_0x3d8427/0x3e8+_0x35b07c(0x13b)+_0x1e296e['x']+',\x20'+_0x1e296e['y']+')'+_0x36b4e9),await clickPoint(_0x5bef44,_0x1e296e),_0x1f4e83[_0x35b07c(0x10a)]+=0x1,_0x1120e6(_0x35b07c(0x10b)+(_0x3268a0||'không\x20rõ')+')');if(!await until(async()=>await at(_0x5bef44,RIGHTS_BOX)?null:!![],CLOSE_WAIT_MS,_0x2fc5eb,0xfa)){if(_0x2fc5eb?.['aborted'])return _0x35b07c(0x12c);const _0x398e41=await at(_0x5bef44,AGREE_AT);return _0x1120e6(_0x35b07c(0x12b)+_0x1e296e['x']+',\x20'+_0x1e296e['y']+_0x35b07c(0x11c)+(_0x398e41?_0x35b07c(0x119)+_0x398e41['x']+',\x20'+_0x398e41['y']+')':'không\x20còn\x20thấy')),'Hộp\x20quyền\x20vẫn\x20còn\x20sau\x20khi\x20bấm\x20\x22I\x20agree\x22\x20(bấm\x20tại\x20'+_0x1e296e['x']+',\x20'+_0x1e296e['y']+_0x35b07c(0x101);}return'';}async function waitVideoRow(_0x51f966,_0x13859c,_0x9e8957,_0x11ad2e){const _0x14c909=_0x389e9e,_0x537ce5=await until(async()=>{const _0x2e67ce=await at(_0x51f966,rowText(_0x13859c))||'';return _0x2e67ce&&!/uploading/i['test'](_0x2e67ce)?!![]:null;},_0x9e8957,_0x11ad2e,0x190);if(_0x11ad2e?.[_0x14c909(0x106)])return _0x14c909(0x12c);if(!_0x537ce5)return _0x14c909(0x121)+Math[_0x14c909(0xfa)](_0x9e8957/0x3e8)+_0x14c909(0x104);return await until(async()=>/^videocam\b/i[_0x14c909(0x143)](await at(_0x51f966,rowText(_0x13859c))||'')?null:!![],VIDEOCAM_SETTLE_MS,_0x11ad2e,0x190),'';}export async function attachRefVideo(_0x435a14,_0x1c0a43){const _0x5cb63c=_0x389e9e,{video:_0x217166,images:_0x34f315,seconds:_0x3e6274,ffmpegPath:_0x55926d,consentAt:_0x363253,signal:_0x4c0ebc,log:log=()=>{},tmpRoot:tmpRoot=_0x38b787[_0x5cb63c(0x11e)](),uploadWaitMs:uploadWaitMs=UPLOAD_WAIT_MS,rightsWaitMs:rightsWaitMs=RIGHTS_WAIT_MS,reencode:reencode=reencodeRefVideo,rest:rest=async()=>![]}=_0x1c0a43,_0x373bd1={'agreeClicks':0x0},_0x24bd9c=()=>({'ok':![],'reason':_0x5cb63c(0x12c),'agreeClicks':_0x373bd1[_0x5cb63c(0x10a)]}),_0x333f03=_0x8cf7a5=>_0x8cf7a5===_0x5cb63c(0x12c)?_0x24bd9c():failed(_0x8cf7a5,_0x373bd1);if(!Array['isArray'](_0x34f315)||_0x34f315[_0x5cb63c(0x11a)]<REF_MIN_IMAGES||_0x34f315['length']>REF_MAX_IMAGES)return failed('Cần\x20từ\x20'+REF_MIN_IMAGES+'\x20đến\x20'+REF_MAX_IMAGES+_0x5cb63c(0x13c),_0x373bd1);const _0x183379=[_0x217166,..._0x34f315]['find'](_0x235c66=>{try{return!statSync(_0x235c66)['isFile']();}catch{return!![];}});if(_0x183379)return failed('Tệp\x20'+_0x12af3c[_0x5cb63c(0x118)](String(_0x183379))+'\x20không\x20còn\x20trên\x20máy',_0x373bd1);const _0x2bb93d=randomBytes(0x4)['toString']('hex'),_0x2266db=_0x12af3c[_0x5cb63c(0x11b)](tmpRoot,VEO_TMP_DIR,_0x2bb93d),_0x432247=refUploadNames(_0x2bb93d,_0x34f315);let _0x123b44=null;try{sweepStale(tmpRoot),_0x123b44=await reencode({'ffmpegPath':_0x55926d,'input':_0x217166,'outDir':_0x2266db,'seconds':_0x3e6274,'signal':_0x4c0ebc});if(!_0x123b44['ok'])return _0x123b44[_0x5cb63c(0xfc)]===_0x5cb63c(0x12c)?_0x24bd9c():failed(_0x123b44[_0x5cb63c(0x139)],_0x373bd1);const _0x3a7c34=_0x12af3c[_0x5cb63c(0x11b)](_0x2266db,_0x432247[_0x5cb63c(0x140)]);renameSync(_0x123b44['file'],_0x3a7c34);const _0xb2a9ab=_0x34f315[_0x5cb63c(0x108)]((_0x34c972,_0x5236a0)=>{const _0x94b17a=_0x5cb63c,_0x577970=_0x12af3c[_0x94b17a(0x11b)](_0x2266db,_0x432247[_0x94b17a(0x12d)][_0x5236a0]);return copyFileSync(_0x34c972,_0x577970),_0x577970;});if(await rest(_0x5cb63c(0x10e)))return _0x24bd9c();const _0x137400=await at(_0x435a14,PLUS_AT);if(!_0x137400)return failed(_0x5cb63c(0x126),_0x373bd1);await clickPoint(_0x435a14,_0x137400);if(!await until(()=>at(_0x435a14,PANEL_OPEN),PANEL_WAIT_MS,_0x4c0ebc,0x190))return _0x4c0ebc?.[_0x5cb63c(0x106)]?_0x24bd9c():failed(_0x5cb63c(0x12e),_0x373bd1);if(!await uploadFiles(_0x435a14,[_0x3a7c34]))return failed('Không\x20tải\x20được\x20video\x20lên\x20Flow\x20(không\x20thấy\x20nút\x20Upload\x20media)',_0x373bd1);log(_0x5cb63c(0x109)+_0x3e6274+_0x5cb63c(0x100));const _0x509ece=await answerRights(_0x435a14,{'videoRow':_0x432247[_0x5cb63c(0xff)],'signal':_0x4c0ebc,'log':log,'meta':_0x373bd1,'consentAt':_0x363253,'ms':rightsWaitMs});if(_0x509ece)return _0x333f03(_0x509ece);if(await rest(_0x5cb63c(0x125)))return _0x24bd9c();const _0x3ce62e=await waitVideoRow(_0x435a14,_0x432247[_0x5cb63c(0xff)],uploadWaitMs,_0x4c0ebc);if(_0x3ce62e)return _0x333f03(_0x3ce62e);if(await rest(_0x5cb63c(0x136)))return _0x24bd9c();for(let _0x2f56ab=0x0;_0x2f56ab<_0xb2a9ab[_0x5cb63c(0x11a)];_0x2f56ab+=0x1){if(!await uploadFiles(_0x435a14,[_0xb2a9ab[_0x2f56ab]]))return failed(_0x5cb63c(0x133),_0x373bd1);log(_0x5cb63c(0x114)+(_0x2f56ab+0x1)+'/'+_0xb2a9ab[_0x5cb63c(0x11a)]+_0x5cb63c(0x11d));const _0x28f127=await waitUploaded(_0x435a14,[_0x432247[_0x5cb63c(0x12d)][_0x2f56ab]],uploadWaitMs,_0x4c0ebc);if(_0x28f127)return _0x333f03(_0x28f127);if(_0x2f56ab<_0xb2a9ab['length']-0x1&&await rest(_0x5cb63c(0x131)))return _0x24bd9c();}const _0x300f91=await selectRows(_0x435a14,[_0x432247[_0x5cb63c(0xff)],..._0x432247[_0x5cb63c(0x12d)]],_0x4c0ebc);if(_0x300f91)return _0x333f03(_0x300f91);const _0x29361a=await at(_0x435a14,ADD_AT);if(!_0x29361a)return failed('Không\x20thấy\x20nút\x20thêm\x20vào\x20lệnh\x20của\x20Flow',_0x373bd1);await clickPoint(_0x435a14,_0x29361a);const _0x4de784=_0x34f315[_0x5cb63c(0x11a)]+0x1,_0x11ef76=await until(async()=>await at(_0x435a14,CHIP_COUNT)===_0x4de784?!![]:null,CHIPS_WAIT_MS,_0x4c0ebc,0x190);if(_0x4c0ebc?.[_0x5cb63c(0x106)])return _0x24bd9c();if(!_0x11ef76)return failed(_0x5cb63c(0x11f)+await at(_0x435a14,CHIP_COUNT)+_0x5cb63c(0x115)+_0x4de784+_0x5cb63c(0x112)+_0x34f315[_0x5cb63c(0x11a)]+'\x20ảnh)',_0x373bd1);const _0x41c4bb=await at(_0x435a14,VIDEO_CHIPS);if(_0x41c4bb!==0x1)return failed('Ô\x20lệnh\x20của\x20Flow\x20có\x20'+_0x41c4bb+'\x20video\x20thay\x20vì\x201',_0x373bd1);if(await at(_0x435a14,PANEL_OPEN)){const _0x38fb65=await at(_0x435a14,PLUS_AT);if(_0x38fb65)await clickPoint(_0x435a14,_0x38fb65);}if(await rest('xem\x20giá\x20trong\x20cài\x20đặt'))return _0x24bd9c();return{'ok':!![],'count':_0x4de784,'names':_0x432247,'agreeClicks':_0x373bd1['agreeClicks']};}catch(_0x392209){return failed(_0x5cb63c(0x124)+String(_0x392209?.[_0x5cb63c(0x137)]||_0x392209)[_0x5cb63c(0xfe)](0x0,0x78),_0x373bd1);}finally{stopDebugger(_0x435a14),_0x123b44?.['cleanup']?.();if(existsSync(_0x2266db))rmSync(_0x2266db,{'recursive':!![],'force':!![]});}}
+/**
+ * Đính kèm video tham chiếu và ảnh chủ thể vào dự án Google Flow (Omni Reference),
+ * đồng thời xử lý tự động hộp thoại xác nhận quyền sử dụng video ("Rights to use this video").
+ */
+
+import { randomBytes } from "node:crypto";
+import { copyFileSync, existsSync, renameSync, rmSync, statSync } from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { clickPoint } from "./click-at.js";
+import { evalJs, PAGE_CALL_MS } from "./dola-session.js";
+import { stopDebugger } from "./image-cdp.js";
+import { reencodeRefVideo } from "./ref-video-reencode.js";
+import { ADD_AT, CHIP_COUNT, PANEL_OPEN, PLUS_AT, rowsState } from "./veo-images-page.js";
+import { selectRows, UPLOAD_WAIT_MS, uploadFiles, waitUploaded } from "./veo-images.js";
+import { until } from "./veo-flow.js";
+import { sleep } from "./veo-page.js";
+import {
+  AGREE_AT,
+  ANY_DIALOG,
+  buttonTopAt,
+  NO_SHOW_AT,
+  RIGHTS_BOX,
+  rowText,
+  VIDEO_CHIPS,
+} from "./veo-ref-page.js";
+import { sweepStale, VEO_TMP_DIR } from "../src/veo-image-files.js";
+import {
+  agreeVerdict,
+  REF_MAX_IMAGES,
+  REF_MIN_IMAGES,
+  refUploadNames,
+} from "../src/veo-ref.js";
+
+export const RIGHTS_WAIT_MS = 8000;
+const SETTLE_EVERY_MS = 500;
+const SETTLE_CAP_MS = 3000;
+const CLOSE_WAIT_MS = 4000;
+const PANEL_WAIT_MS = 6000;
+const CHIPS_WAIT_MS = 8000;
+const VIDEOCAM_SETTLE_MS = 5000;
+
+const failed = (note, meta) => ({
+  ok: false,
+  reason: "veo_images_failed",
+  note: note + " (chưa gửi lệnh, chưa tốn credit)",
+  agreeClicks: meta.agreeClicks,
+});
+
+const at = (win, expr) => evalJs(win, expr, { timeout: PAGE_CALL_MS }).catch(() => null);
+
+/**
+ * Biểu thức DOM kích hoạt trực tiếp nút "I agree" (và tuỳ chọn "Do not show again" nếu có)
+ * bên trong hộp thoại "Rights to use this video" khi cú click chuột đầu tiên chỉ mới lấy focus.
+ */
+const DOM_CLICK_AGREE_EXPR = `(() => {
+  const walk = (root, acc = []) => {
+    for (const el of root.querySelectorAll('*')) {
+      acc.push(el);
+      if (el.shadowRoot) walk(el.shadowRoot, acc);
+    }
+    return acc;
+  };
+  const vis = (e) => {
+    const r = e.getBoundingClientRect();
+    return r.width > 4 && r.height > 4;
+  };
+  const squash = (s) => String(s || '').replace(/\\s+/g, ' ').trim();
+  const box = walk(document)
+    .filter((e) => vis(e) && /^(dialog|alertdialog)$/.test(e.getAttribute('role') || ''))
+    .find((d) => /rights to use this video/i.test(d.innerText || ''));
+  if (!box) return true;
+  const noShow = [...box.querySelectorAll('button, [role=checkbox], input[type=checkbox]')].find(
+    (b) => /do not show again|don't show again/i.test(squash(b.innerText || b.getAttribute('aria-label') || ''))
+  );
+  if (noShow && noShow.getAttribute('aria-checked') !== 'true') {
+    try { noShow.click(); } catch {}
+  }
+  const btn = [...box.querySelectorAll('button')].find((b) => /^i agree$/i.test(squash(b.innerText)));
+  if (!btn) return false;
+  try { btn.focus(); } catch {}
+  for (const type of ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'click']) {
+    try {
+      btn.dispatchEvent(new MouseEvent(type, { bubbles: true, cancelable: true, view: window, button: 0, buttons: 1 }));
+    } catch {}
+  }
+  try { btn.click(); } catch {}
+  return true;
+})()`;
+
+/**
+ * Chờ nút "I agree" trên hộp thoại quyền sử dụng video đứng yên ở một tọa độ cố định.
+ */
+async function settledAgree(win, signal) {
+  let prev = null;
+  let waitedMs = 0;
+  while (waitedMs < SETTLE_CAP_MS && !signal?.aborted) {
+    await sleep(SETTLE_EVERY_MS);
+    waitedMs += SETTLE_EVERY_MS;
+    const cur = await at(win, AGREE_AT);
+    if (prev && cur && cur.x === prev.x && cur.y === prev.y) {
+      return { target: cur, steady: true, waitedMs };
+    }
+    prev = cur;
+  }
+  return { target: prev, steady: false, waitedMs };
+}
+
+/**
+ * Xử lý hộp thoại "Rights to use this video" của Google Flow khi tải video tham chiếu lên.
+ */
+export async function answerRights(
+  win,
+  { videoRow, signal, log, meta, consentAt, ms }
+) {
+  const found = await until(
+    async () => {
+      const box = await at(win, RIGHTS_BOX);
+      if (box) return { box };
+      const rs = await at(win, rowsState([videoRow]));
+      if (rs?.alert && /unsupported file type/i.test(rs.alert)) {
+        return { alert: rs.alert };
+      }
+      if (await at(win, rowText(videoRow))) {
+        return { none: true };
+      }
+      const dlg = await at(win, ANY_DIALOG);
+      return dlg ? { other: dlg } : null;
+    },
+    ms,
+    signal,
+    300
+  );
+
+  if (signal?.aborted) return "cancelled";
+  if (!found) {
+    return (
+      "Flow không nhận video tham chiếu sau " +
+      Math.round(ms / 1000) +
+      " giây (không hiện hộp quyền, không có hàng video)."
+    );
+  }
+  if (found.alert) {
+    return "Flow không nhận video tham chiếu. Flow nói: " + found.alert;
+  }
+  if (found.other) {
+    return 'Flow hiện một hộp lạ "' + found.other + '" nên app không bấm gì.';
+  }
+  if (found.none) {
+    log(
+      'Veo: Google không hỏi quyền dùng video (không có hộp "Rights to use this video"), đi tiếp'
+    );
+    return "";
+  }
+  if (!found.box.buttons.some((b) => /^i agree$/i.test(b))) {
+    return (
+      'Hộp quyền của Flow không có nút đúng chữ "I agree" (có: ' +
+      found.box.buttons.join(" / ") +
+      ") nên app không bấm gì."
+    );
+  }
+
+  const { target, steady, waitedMs } = await settledAgree(win, signal);
+  if (signal?.aborted) return "cancelled";
+  if (!steady) {
+    return (
+      "Hộp quyền của Flow chưa đứng yên sau " +
+      waitedMs / 1000 +
+      ' giây (nút "I agree" cứ đổi chỗ) nên app không bấm gì.'
+    );
+  }
+
+  const noShowPt = await at(win, NO_SHOW_AT);
+  const verdict = agreeVerdict(target, noShowPt);
+  if (!verdict.ok) {
+    return 'Không bấm "I agree": ' + verdict.why + ".";
+  }
+
+  const topText = await at(win, buttonTopAt(target.x, target.y));
+  if (topText !== "I agree") {
+    return (
+      'Có thứ khác nằm đè lên nút "I agree" (' +
+      (topText ?? "không phải nút") +
+      ") nên app không bấm."
+    );
+  }
+
+  const hiddenSuffix = win.isVisible?.() === false ? ", cửa sổ Flow đang ẩn" : "";
+  log(
+    "Veo: hộp quyền đã đứng yên sau " +
+      waitedMs / 1000 +
+      ' giây, nút "I agree" ở (' +
+      target.x +
+      ", " +
+      target.y +
+      ")" +
+      hiddenSuffix
+  );
+
+  // Tích chọn "Do not show again" nếu có và nằm tách biệt với nút "I agree"
+  if (noShowPt && Math.abs(noShowPt.x - target.x) >= 12) {
+    await clickPoint(win, noShowPt).catch(() => {});
+    await sleep(120);
+  }
+
+  await clickPoint(win, target);
+  meta.agreeClicks += 1;
+  log(
+    'Veo: bấm "I agree" (xác nhận của người dùng lúc ' +
+      (consentAt || "không rõ") +
+      ")"
+  );
+
+  // Chờ nhanh 900ms xem hộp quyền đã đóng ngay sau cú click đầu tiên chưa
+  if (
+    await until(
+      async () => ((await at(win, RIGHTS_BOX)) ? null : true),
+      900,
+      signal,
+      180
+    )
+  ) {
+    return "";
+  }
+
+  // Nếu cửa sổ ẩn chưa nhận focus ở cú click đầu tiên, thực hiện kích hoạt DOM trực tiếp + click bồi (tối đa 3 nhịp)
+  for (let retry = 0; retry < 3 && !signal?.aborted; retry += 1) {
+    await evalJs(win, DOM_CLICK_AGREE_EXPR, {
+      userGesture: true,
+      timeout: PAGE_CALL_MS,
+    }).catch(() => null);
+
+    const curAgree = await at(win, AGREE_AT);
+    if (curAgree) {
+      await clickPoint(win, curAgree);
+    }
+
+    if (
+      await until(
+        async () => ((await at(win, RIGHTS_BOX)) ? null : true),
+        Math.round(CLOSE_WAIT_MS / 2),
+        signal,
+        200
+      )
+    ) {
+      return "";
+    }
+  }
+
+  if (signal?.aborted) return "cancelled";
+  const stillThere = await at(win, AGREE_AT);
+  log(
+    "Veo: hộp quyền vẫn còn sau cú bấm tại (" +
+      target.x +
+      ", " +
+      target.y +
+      '); nút "I agree" nay ' +
+      (stillThere
+        ? "ở (" + stillThere.x + ", " + stillThere.y + ")"
+        : "không còn thấy")
+  );
+  return (
+    'Hộp quyền vẫn còn sau khi bấm "I agree" (bấm tại ' +
+    target.x +
+    ", " +
+    target.y +
+    "; app không bấm thêm)."
+  );
+}
+
+/**
+ * Chờ hàng video tham chiếu tải xong trong bảng nguyên liệu của Google Flow.
+ */
+async function waitVideoRow(win, videoRow, waitMs, signal) {
+  const uploaded = await until(
+    async () => {
+      const txt = (await at(win, rowText(videoRow))) || "";
+      return txt && !/uploading/i.test(txt) ? true : null;
+    },
+    waitMs,
+    signal,
+    400
+  );
+  if (signal?.aborted) return "cancelled";
+  if (!uploaded) {
+    return (
+      "Flow chưa tải xong video tham chiếu sau " +
+      Math.round(waitMs / 1000) +
+      " giây."
+    );
+  }
+  await until(
+    async () =>
+      /^videocam\b/i.test((await at(win, rowText(videoRow))) || "") ? null : true,
+    VIDEOCAM_SETTLE_MS,
+    signal,
+    400
+  );
+  return "";
+}
+
+/**
+ * Tải video tham chiếu và danh sách ảnh chủ thể lên Google Flow, chọn và gắn vào ô lệnh.
+ */
+export async function attachRefVideo(win, opts) {
+  const {
+    video,
+    images,
+    seconds,
+    ffmpegPath,
+    consentAt,
+    signal,
+    log = () => {},
+    tmpRoot = os.tmpdir(),
+    uploadWaitMs = UPLOAD_WAIT_MS,
+    rightsWaitMs = RIGHTS_WAIT_MS,
+    reencode = reencodeRefVideo,
+    rest = async () => false,
+  } = opts;
+
+  const meta = { agreeClicks: 0 };
+  const cancelledOut = () => ({
+    ok: false,
+    reason: "cancelled",
+    agreeClicks: meta.agreeClicks,
+  });
+  const outcomeOf = (msg) =>
+    msg === "cancelled" ? cancelledOut() : failed(msg, meta);
+
+  if (
+    !Array.isArray(images) ||
+    images.length < REF_MIN_IMAGES ||
+    images.length > REF_MAX_IMAGES
+  ) {
+    return failed(
+      "Cần từ " +
+        REF_MIN_IMAGES +
+        " đến " +
+        REF_MAX_IMAGES +
+        " ảnh chủ thể cùng video tham chiếu",
+      meta
+    );
+  }
+
+  const missingFile = [video, ...images].find((filePath) => {
+    try {
+      return !statSync(filePath).isFile();
+    } catch {
+      return true;
+    }
+  });
+  if (missingFile) {
+    return failed(
+      "Tệp " + path.basename(String(missingFile)) + " không còn trên máy",
+      meta
+    );
+  }
+
+  const tag = randomBytes(4).toString("hex");
+  const workDir = path.join(tmpRoot, VEO_TMP_DIR, tag);
+  const names = refUploadNames(tag, images);
+  let reencoded = null;
+
+  try {
+    sweepStale(tmpRoot);
+    reencoded = await reencode({
+      ffmpegPath,
+      input: video,
+      outDir: workDir,
+      seconds,
+      signal,
+    });
+    if (!reencoded.ok) {
+      return reencoded.reason === "cancelled"
+        ? cancelledOut()
+        : failed(reencoded.note, meta);
+    }
+
+    const videoTarget = path.join(workDir, names.video);
+    renameSync(reencoded.file, videoTarget);
+
+    const imageTargets = images.map((srcPath, idx) => {
+      const dstPath = path.join(workDir, names.images[idx]);
+      copyFileSync(srcPath, dstPath);
+      return dstPath;
+    });
+
+    if (await rest('mở ô "+"')) return cancelledOut();
+
+    const plusPt = await at(win, PLUS_AT);
+    if (!plusPt) return failed('Không thấy nút "+" của ô lệnh Flow', meta);
+    await clickPoint(win, plusPt);
+
+    if (!(await until(() => at(win, PANEL_OPEN), PANEL_WAIT_MS, signal, 400))) {
+      return signal?.aborted
+        ? cancelledOut()
+        : failed("Bảng ảnh của Flow không mở ra", meta);
+    }
+
+    if (!(await uploadFiles(win, [videoTarget]))) {
+      return failed(
+        "Không tải được video lên Flow (không thấy nút Upload media)",
+        meta
+      );
+    }
+    log("Veo: đã đưa video tham chiếu (" + seconds + " giây) cho Flow, chờ hộp quyền");
+
+    const rightsErr = await answerRights(win, {
+      videoRow: names.videoRow,
+      signal,
+      log,
+      meta,
+      consentAt,
+      ms: rightsWaitMs,
+    });
+    if (rightsErr) return outcomeOf(rightsErr);
+
+    if (await rest("chờ video tải lên")) return cancelledOut();
+
+    const rowErr = await waitVideoRow(win, names.videoRow, uploadWaitMs, signal);
+    if (rowErr) return outcomeOf(rowErr);
+
+    if (await rest("tải ảnh chủ thể lên")) return cancelledOut();
+
+    for (let idx = 0; idx < imageTargets.length; idx += 1) {
+      if (!(await uploadFiles(win, [imageTargets[idx]]))) {
+        return failed(
+          "Không tải được ảnh lên Flow (không thấy nút Upload media)",
+          meta
+        );
+      }
+      log(
+        "Veo: đã đưa ảnh chủ thể " +
+          (idx + 1) +
+          "/" +
+          imageTargets.length +
+          " cho Flow, chờ tải lên"
+      );
+      const upErr = await waitUploaded(
+        win,
+        [names.images[idx]],
+        uploadWaitMs,
+        signal
+      );
+      if (upErr) return outcomeOf(upErr);
+      if (
+        idx < imageTargets.length - 1 &&
+        (await rest("tải ảnh chủ thể tiếp theo"))
+      ) {
+        return cancelledOut();
+      }
+    }
+
+    const selErr = await selectRows(
+      win,
+      [names.videoRow, ...names.images],
+      signal
+    );
+    if (selErr) return outcomeOf(selErr);
+
+    const addPt = await at(win, ADD_AT);
+    if (!addPt) return failed("Không thấy nút thêm vào lệnh của Flow", meta);
+    await clickPoint(win, addPt);
+
+    const expectedCount = images.length + 1;
+    const chipsReady = await until(
+      async () => ((await at(win, CHIP_COUNT)) === expectedCount ? true : null),
+      CHIPS_WAIT_MS,
+      signal,
+      400
+    );
+    if (signal?.aborted) return cancelledOut();
+    if (!chipsReady) {
+      return failed(
+        "Ô lệnh của Flow có " +
+          (await at(win, CHIP_COUNT)) +
+          " mục thay vì " +
+          expectedCount +
+          " (1 video + " +
+          images.length +
+          " ảnh)",
+        meta
+      );
+    }
+
+    const videoChips = await at(win, VIDEO_CHIPS);
+    if (videoChips !== 1) {
+      return failed(
+        "Ô lệnh của Flow có " + videoChips + " video thay vì 1",
+        meta
+      );
+    }
+
+    if (await at(win, PANEL_OPEN)) {
+      const closePlusPt = await at(win, PLUS_AT);
+      if (closePlusPt) await clickPoint(win, closePlusPt);
+    }
+
+    if (await rest("xem giá trong cài đặt")) return cancelledOut();
+
+    return {
+      ok: true,
+      count: expectedCount,
+      names,
+      agreeClicks: meta.agreeClicks,
+    };
+  } catch (err) {
+    return failed(
+      "Lỗi khi đính kèm video tham chiếu: " +
+        String(err?.message || err).slice(0, 120),
+      meta
+    );
+  } finally {
+    stopDebugger(win);
+    reencoded?.cleanup?.();
+    if (existsSync(workDir)) {
+      rmSync(workDir, { recursive: true, force: true });
+    }
+  }
+}

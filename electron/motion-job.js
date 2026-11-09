@@ -445,6 +445,32 @@ export function createMotionJob({
       });
 
       if (
+        !job.ac.signal.aborted &&
+        taskResult.status === "failed" &&
+        ["veo_images_failed", "veo_page_not_ready", "veo_settings_failed"].includes(
+          taskResult.error?.reason
+        )
+      ) {
+        log(
+          `Motion control: đoạn ${segment.i + 1} gặp lỗi thao tác trang Flow (${taskResult.error?.reason}) — tự động thử lại ngay...`
+        );
+        updateClip({
+          state: "queued",
+          note: "Đang tự động thử lại đoạn này trên Google Flow (chưa tốn credit)...",
+          reason: "",
+        });
+        const retryAdded = await queue.add([taskPayload]);
+        if (retryAdded?.ok && retryAdded.ids?.length) {
+          updateClip({ state: "queued", taskId: retryAdded.ids[0] });
+          taskResult = await waitForTask(job, retryAdded.ids[0], (nextState) => {
+            if (clipState.state !== nextState) {
+              updateClip({ state: nextState });
+            }
+          });
+        }
+      }
+
+      if (
         job.engine === "veo-ref" &&
         !job.ac.signal.aborted &&
         taskResult.status === "failed" &&

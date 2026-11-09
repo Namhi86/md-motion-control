@@ -971,6 +971,11 @@
   display: none !important;
 }
 
+/* Khi đã có video kết quả hoàn tất trong .cm-panel--result, ẩn khung Video gốc để hiển thị ngay Video kết quả tại ô xem trước */
+#view-motion .cm-players:has(> .cm-panel--result .cm-video:not([hidden])) > .cm-panel--source {
+  display: none !important;
+}
+
 #view-motion .cm-center-stage .cm-panel {
   background: transparent !important;
   border: 0 !important;

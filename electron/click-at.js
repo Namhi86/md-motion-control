@@ -28,8 +28,8 @@ let lastCursorY = 360;
  */
 export async function clickPoint(win, pt, modifiers = [], delayMs = 45) {
   const wc = win.webContents;
-  const targetX = Math.round(pt.x + (Math.random() - 0.5) * 4);
-  const targetY = Math.round(pt.y + (Math.random() - 0.5) * 4);
+  const targetX = Math.round(pt.x);
+  const targetY = Math.round(pt.y);
   const startX = lastCursorX;
   const startY = lastCursorY;
   const steps = 6;

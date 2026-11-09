@@ -274,6 +274,8 @@ export function setupMotion({
           }
         : null;
 
+    const prevImages = Array.isArray(current?.images) ? current.images : [];
+    const prevChoices = current?.choices || null;
     clearPrepareState();
     session.clear();
 
@@ -318,8 +320,8 @@ export function setupMotion({
         snaps: prep.snaps || { pauses: [], scenes: [] },
         videoMeta,
         envelope: Array.isArray(prep.envelope) ? prep.envelope : [],
-        images: [],
-        choices: null,
+        images: prevImages,
+        choices: prevChoices,
         selected: null,
       };
 
