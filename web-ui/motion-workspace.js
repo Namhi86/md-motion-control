@@ -52,17 +52,24 @@ export function buildWorkspace() {
     <span id="cm-select-all-label">Chọn cả 5 luồng (5/5)</span>
   `;
 
+  // Nút chọn nhanh Model AI ngay trên thanh công cụ Motion Control (Omni 1.2 Flash / Omni 1.1 Flash)
+  const modelSwitch = el('div', 'cm-stream-count-switch cm-model-quick-switch');
+  modelSwitch.innerHTML = `
+    <button type="button" class="cm-sc-btn cm-model-qbtn cm-sc-btn--on" data-flow-model="omni-1-2-flash" title="Sử dụng model Omni 1.2 Flash mới nhất trên Google Flow">✨ Omni 1.2 Flash</button>
+    <button type="button" class="cm-sc-btn cm-model-qbtn" data-flow-model="omni-1-1-flash" title="Sử dụng model Omni 1.1 Flash trên Google Flow">⚡ Omni 1.1 Flash</button>
+  `;
+
   // Nút mở Cài đặt mặc định (Ảnh 2 & Ảnh 3)
   const defaultSettingsBtn = el('button', 'cm-default-cfg-btn');
   defaultSettingsBtn.type = 'button';
   defaultSettingsBtn.innerHTML = `
     <span class="cm-dcfg-ico">⚙️</span>
-    <span>Cài đặt mặc định: <b>4K · Giữ nhạc gốc · Motion AI (50/70/90%)</b></span>
+    <span>Cài đặt mặc định: <b id="cm-dcfg-summary">Omni 1.2 Flash · 4K · Giữ nhạc gốc</b></span>
   `;
 
   const priceChip = el('span', 'cm-top-price', '');
   priceChip.hidden = true;
-  topRight.append(streamCountSwitch, selectAllWrap, defaultSettingsBtn, priceChip);
+  topRight.append(streamCountSwitch, selectAllWrap, modelSwitch, defaultSettingsBtn, priceChip);
   top.append(pillBar, topRight);
 
   // ── 2. KHU VỰC GIỮA: 5 LUỒNG MOTION CONTROL (MỖI LUỒNG NHƯ ẢNH 4 THU NHỎ) ──
@@ -416,6 +423,7 @@ export function buildWorkspace() {
     side: stream1.side,
     players: stream1.players,
     streams: allStreams,
+    modelSwitch,
     defaultLeftPane,
     settingsModal,
     foot,

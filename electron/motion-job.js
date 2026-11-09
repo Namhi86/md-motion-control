@@ -11,7 +11,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { canWriteInto } from "../src/can-write-into.js";
-import { ENGINES, chainsOf, clipTask, jobCredits, startsHard } from "../src/motion-chains.js";
+import { ENGINES, FLOW_MODELS, chainsOf, clipTask, jobCredits, startsHard } from "../src/motion-chains.js";
 import { planJoin, sizeOf } from "../src/motion-join.js";
 import { refTrimArgs, refSafeTrimArgs, lastFrameArgs } from "../src/clip-frame.js";
 import { normalizeFlowCharacterImage } from "../src/char-sheet-crop.js";
@@ -62,6 +62,7 @@ export function createMotionJob({
     resolution = "720p",
     ratio = "9:16",
     engine = "veo-ref",
+    flowModel = "omni-1-2-flash",
     keepMusic = true,
     name = "copy-motion",
   } = {}) {
@@ -138,6 +139,7 @@ export function createMotionJob({
       resolution,
       ratio,
       engine,
+      flowModel: FLOW_MODELS.includes(flowModel) ? flowModel : "omni-1-2-flash",
       keepMusic: Boolean(keepMusic),
       name,
       video,
@@ -424,6 +426,7 @@ export function createMotionJob({
         ratio: job.ratio,
         style: job.style,
         engine: job.engine,
+        flowModel: job.flowModel,
       });
 
       const added = await queue.add([taskPayload]);
@@ -523,6 +526,7 @@ export function createMotionJob({
               "moves naturally in a matching environment, lighting and camera angle",
           },
           engine: job.engine,
+          flowModel: job.flowModel,
         });
 
         const safeAdded = await queue.add([safeTaskPayload]);
@@ -939,6 +943,10 @@ export function createMotionJob({
           engine: job.engine,
         });
       } catch {}
+    }
+
+    if (patch?.flowModel && FLOW_MODELS.includes(patch.flowModel)) {
+      job.flowModel = patch.flowModel;
     }
 
     if (typeof patch?.keepMusic === "boolean") {

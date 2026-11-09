@@ -3314,3 +3314,124 @@
 .qs-toggle {
   display: none !important;
 }
+
+/* ── MENU NỔI CHỌN MODEL AI (OMNI 1.2 FLASH / OMNI 1.1 FLASH / VEO 3.1) ── */
+.md-cs-model-pop {
+  position: fixed;
+  z-index: 3500;
+  width: 310px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #141e32 0%, #0b111e 100%);
+  border: 1px solid rgba(255, 159, 28, 0.55);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.78), 0 0 24px rgba(255, 136, 0, 0.22);
+  overflow: hidden;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.md-cs-model-pop-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+  font-weight: 800;
+  color: #fde68a;
+}
+
+.md-cs-model-pop-head small {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.md-cs-model-pop-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.md-cs-model-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: #e2e8f0;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.md-cs-model-opt:hover {
+  border-color: rgba(255, 159, 28, 0.5);
+  background: rgba(255, 159, 28, 0.12);
+}
+
+.md-cs-model-opt--on {
+  border-color: #ff9f1c !important;
+  background: linear-gradient(90deg, rgba(255, 145, 0, 0.28), rgba(234, 88, 12, 0.16)) !important;
+  box-shadow: 0 0 14px rgba(255, 136, 0, 0.25);
+}
+
+.md-cs-model-opt-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+}
+
+.md-cs-model-opt-top b {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.md-cs-model-opt--on .md-cs-model-opt-top b {
+  color: #fde047;
+}
+
+.md-cs-model-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1.5px 6px;
+  border-radius: 999px;
+  background: rgba(255, 159, 28, 0.2);
+  border: 1px solid rgba(255, 159, 28, 0.45);
+  color: #fde68a;
+}
+
+.md-cs-model-opt small {
+  font-size: 10.5px;
+  color: #94a3b8;
+  line-height: 1.3;
+}
+
+.md-cs-model-pop-foot {
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.md-cs-model-apply-all {
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 9px;
+  border: 1px solid #fde047;
+  background: linear-gradient(180deg, #ffb703 0%, #ea580c 100%);
+  color: #ffffff;
+  font-size: 11.5px;
+  font-weight: 800;
+  cursor: pointer;
+}
+

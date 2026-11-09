@@ -1,1 +1,114 @@
-const _0x26509f=_0x9423;(function(_0x410824,_0x1e79f5){const _0x3d4e53=_0x9423,_0xd17b8f=_0x410824();while(!![]){try{const _0x1b55f0=parseInt(_0x3d4e53(0x1cb))/0x1+parseInt(_0x3d4e53(0x1e8))/0x2*(parseInt(_0x3d4e53(0x1d1))/0x3)+parseInt(_0x3d4e53(0x1c1))/0x4*(parseInt(_0x3d4e53(0x1e5))/0x5)+-parseInt(_0x3d4e53(0x1d0))/0x6*(-parseInt(_0x3d4e53(0x1d5))/0x7)+-parseInt(_0x3d4e53(0x1d3))/0x8*(-parseInt(_0x3d4e53(0x1c6))/0x9)+-parseInt(_0x3d4e53(0x1c4))/0xa*(parseInt(_0x3d4e53(0x1d6))/0xb)+parseInt(_0x3d4e53(0x1cf))/0xc*(-parseInt(_0x3d4e53(0x1d8))/0xd);if(_0x1b55f0===_0x1e79f5)break;else _0xd17b8f['push'](_0xd17b8f['shift']());}catch(_0x5707af){_0xd17b8f['push'](_0xd17b8f['shift']());}}}(_0x5705,0x69a1b));import _0x540a5b from'node:path';import{REF_CONSENT,REF_MAX_BYTES,REF_MAX_IMAGES,REF_MIN_IMAGES,REF_MODEL,REF_RESOLUTIONS,refSecondsOf}from'./veo-ref.js';function _0x9423(_0x25e7e4,_0x35f730){_0x25e7e4=_0x25e7e4-0x1bf;const _0x5705a8=_0x5705();let _0x942386=_0x5705a8[_0x25e7e4];return _0x942386;}const VIDEO_EXT=/\.(mp4|mov)$/i,plain=_0xc967c3=>_0xc967c3&&typeof _0xc967c3===_0x26509f(0x1c0)&&!Array[_0x26509f(0x1e3)](_0xc967c3),okPath=_0x242e3f=>typeof _0x242e3f===_0x26509f(0x1ea)&&_0x242e3f!==''&&!_0x242e3f[_0x26509f(0x1e1)]('\x00')&&_0x540a5b[_0x26509f(0x1df)](_0x242e3f),refuse=(_0x37ba8d,_0xbead4)=>({'ok':![],'note':_0x37ba8d+':\x20'+_0xbead4});export function checkRefVideo(_0x5ee099,{at:_0x56fd62,mode:_0x35aeef,kind:_0x1e3dc2,model:_0x5e33bd,imageCount:_0xb599d1,resolve:_0x55e52c,inspect:_0x31842e,now:now=Date['now']}){const _0x1bc79f=_0x26509f;if(_0x35aeef!==_0x1bc79f(0x1ee)||_0x1e3dc2!=='video')return refuse(_0x56fd62,_0x1bc79f(0x1c7));if(_0x5e33bd!==REF_MODEL)return refuse(_0x56fd62,_0x1bc79f(0x1de));if(_0x5ee099[_0x1bc79f(0x1dc)]!==REF_CONSENT)return refuse(_0x56fd62,_0x1bc79f(0x1e9));if(!REF_RESOLUTIONS[_0x1bc79f(0x1e1)](_0x5ee099[_0x1bc79f(0x1ce)]))return refuse(_0x56fd62,_0x1bc79f(0x1dd)+REF_RESOLUTIONS[_0x1bc79f(0x1d4)](_0x1bc79f(0x1e4))+'.');if(_0x5ee099[_0x1bc79f(0x1e7)]!==undefined&&_0x5ee099[_0x1bc79f(0x1e7)]!==0x0)return refuse(_0x56fd62,_0x1bc79f(0x1ca));if(_0xb599d1<REF_MIN_IMAGES)return refuse(_0x56fd62,_0x1bc79f(0x1e0));if(_0xb599d1>REF_MAX_IMAGES)return refuse(_0x56fd62,_0x1bc79f(0x1c8)+REF_MAX_IMAGES+'\x20ảnh\x20chủ\x20thể\x20(lệnh\x20này\x20có\x20'+_0xb599d1+').');if(typeof _0x5ee099[_0x1bc79f(0x1da)]!==_0x1bc79f(0x1ea)||!_0x5ee099[_0x1bc79f(0x1da)])return refuse(_0x56fd62,_0x1bc79f(0x1e6));const _0x1b9abb=_0x55e52c(_0x5ee099['refVideo']);if(!_0x1b9abb)return refuse(_0x56fd62,_0x1bc79f(0x1db));if(!okPath(_0x1b9abb))return refuse(_0x56fd62,'video\x20tham\x20chiếu\x20phải\x20là\x20đường\x20dẫn\x20đầy\x20đủ.');if(!VIDEO_EXT[_0x1bc79f(0x1d2)](_0x1b9abb))return refuse(_0x56fd62,_0x1bc79f(0x1ed));if(typeof _0x31842e!==_0x1bc79f(0x1cc))return refuse(_0x56fd62,_0x1bc79f(0x1cd));const _0x39c31a=_0x31842e(_0x1b9abb);if(!_0x39c31a?.['ok'])return refuse(_0x56fd62,_0x39c31a?.[_0x1bc79f(0x1d9)]||'không\x20đọc\x20được\x20video\x20tham\x20chiếu.');if(!(_0x39c31a['bytes']<=REF_MAX_BYTES))return refuse(_0x56fd62,_0x1bc79f(0x1c5)+REF_MAX_BYTES/0x400/0x400+_0x1bc79f(0x1ec));const _0x54b53d=refSecondsOf(_0x39c31a['meta']?.['seconds']);if(_0x54b53d===null)return refuse(_0x56fd62,_0x1bc79f(0x1c2));return{'ok':!![],'fields':{'refVideo':_0x1b9abb,'refSeconds':_0x54b53d,'resolution':_0x5ee099['resolution'],'consent':REF_CONSENT,'consentAt':new Date(now())[_0x1bc79f(0x1c3)]()}};}function _0x5705(){const _0x36b629=['refVideo','video\x20tham\x20chiếu\x20không\x20còn\x20trong\x20phiên\x20này,\x20hãy\x20chọn\x20lại\x20video.','consent','độ\x20phân\x20giải\x20phải\x20là\x20','video\x20tham\x20chiếu\x20chỉ\x20làm\x20được\x20bằng\x20model\x20Omni\x201.1\x20Flash.','isAbsolute','video\x20tham\x20chiếu\x20cần\x20ít\x20nhất\x20một\x20ảnh\x20chủ\x20thể.','includes','length','isArray','\x20hoặc\x20','400kajmBC','không\x20đọc\x20được\x20video\x20tham\x20chiếu,\x20hãy\x20chọn\x20lại\x20video.','duration','2AydWiE','thiếu\x20xác\x20nhận\x20bạn\x20có\x20quyền\x20dùng\x20video\x20tham\x20chiếu\x20này.','string','number','\x20MB.','video\x20tham\x20chiếu\x20chỉ\x20nhận\x20tệp\x20.mp4\x20hoặc\x20.mov.','veo','isFinite','object','37196rZDcij','video\x20tham\x20chiếu\x20ngắn\x20quá\x20hoặc\x20không\x20đọc\x20được\x20độ\x20dài\x20(cần\x20ít\x20nhất\x20nửa\x20giây).','toISOString','10270QVwLck','video\x20tham\x20chiếu\x20nặng\x20quá\x20','63RxgBAe','video\x20tham\x20chiếu\x20chỉ\x20dùng\x20cho\x20lệnh\x20tạo\x20video\x20bằng\x20Veo.','video\x20tham\x20chiếu\x20đi\x20kèm\x20tối\x20đa\x20','parse','video\x20tham\x20chiếu\x20quyết\x20định\x20độ\x20dài\x20clip,\x20không\x20gửi\x20số\x20giây.','482517rdrslL','function','app\x20chưa\x20đọc\x20được\x20video\x20tham\x20chiếu\x20lúc\x20này,\x20hãy\x20thử\x20lại\x20sau.','resolution','516lDGhyJ','2956572JOimeY','1798335wIGVxZ','test','414760iDCOtJ','join','7zNafyu','869CEFoCW','consentAt','655369GgSimN','note'];_0x5705=function(){return _0x36b629;};return _0x5705();}export function refFieldsOf(_0x722eb0){const _0x39b73f=_0x26509f;if(!plain(_0x722eb0)||_0x722eb0['refVideo']===undefined||_0x722eb0[_0x39b73f(0x1da)]===null)return{};const _0x41b502=_0x722eb0['refSeconds'],_0x5c9157=typeof _0x722eb0[_0x39b73f(0x1d7)]===_0x39b73f(0x1ea)&&_0x722eb0[_0x39b73f(0x1d7)][_0x39b73f(0x1e2)]<=0x28?Date[_0x39b73f(0x1c9)](_0x722eb0[_0x39b73f(0x1d7)]):NaN,_0x3d0a39=okPath(_0x722eb0[_0x39b73f(0x1da)])&&VIDEO_EXT[_0x39b73f(0x1d2)](_0x722eb0[_0x39b73f(0x1da)])&&typeof _0x41b502===_0x39b73f(0x1eb)&&refSecondsOf(_0x41b502)===_0x41b502&&REF_RESOLUTIONS[_0x39b73f(0x1e1)](_0x722eb0['resolution'])&&_0x722eb0[_0x39b73f(0x1dc)]===REF_CONSENT&&Number[_0x39b73f(0x1bf)](_0x5c9157);return _0x3d0a39?{'refVideo':_0x722eb0[_0x39b73f(0x1da)],'refSeconds':_0x41b502,'resolution':_0x722eb0[_0x39b73f(0x1ce)],'consent':REF_CONSENT,'consentAt':_0x722eb0[_0x39b73f(0x1d7)]}:null;}
+import path from 'node:path';
+import {
+  REF_CONSENT,
+  REF_MAX_BYTES,
+  REF_MAX_IMAGES,
+  REF_MIN_IMAGES,
+  REF_RESOLUTIONS,
+  isRefModel,
+  refSecondsOf,
+} from './veo-ref.js';
+
+const VIDEO_EXT = /\.(mp4|mov)$/i;
+const plain = (v) => v && typeof v === 'object' && !Array.isArray(v);
+const okPath = (p) =>
+  typeof p === 'string' && p !== '' && !p.includes('\0') && path.isAbsolute(p);
+const refuse = (at, why) => ({ ok: false, note: `${at}: ${why}` });
+
+export function checkRefVideo(
+  task,
+  { at, mode, kind, model, imageCount, resolve, inspect, now = Date.now }
+) {
+  if (mode !== 'veo' || kind !== 'video') {
+    return refuse(at, 'video tham chiếu chỉ dùng cho lệnh tạo video bằng Veo.');
+  }
+  if (!isRefModel(model)) {
+    return refuse(at, 'video tham chiếu chỉ làm được bằng model Omni 1.2 Flash hoặc Omni 1.1 Flash.');
+  }
+  if (task.consent !== REF_CONSENT) {
+    return refuse(at, 'thiếu xác nhận bạn có quyền dùng video tham chiếu này.');
+  }
+  if (!REF_RESOLUTIONS.includes(task.resolution)) {
+    return refuse(at, `độ phân giải phải là ${REF_RESOLUTIONS.join(' hoặc ')}.`);
+  }
+  if (task.duration !== undefined && task.duration !== 0) {
+    return refuse(at, 'video tham chiếu quyết định độ dài clip, không gửi số giây.');
+  }
+  if (imageCount < REF_MIN_IMAGES) {
+    return refuse(at, 'video tham chiếu cần ít nhất một ảnh chủ thể.');
+  }
+  if (imageCount > REF_MAX_IMAGES) {
+    return refuse(
+      at,
+      `video tham chiếu đi kèm tối đa ${REF_MAX_IMAGES} ảnh chủ thể (lệnh này có ${imageCount}).`
+    );
+  }
+  if (typeof task.refVideo !== 'string' || !task.refVideo) {
+    return refuse(at, 'không đọc được video tham chiếu, hãy chọn lại video.');
+  }
+  const fullPath = resolve(task.refVideo);
+  if (!fullPath) {
+    return refuse(at, 'video tham chiếu không còn trong phiên này, hãy chọn lại video.');
+  }
+  if (!okPath(fullPath)) {
+    return refuse(at, 'video tham chiếu phải là đường dẫn đầy đủ.');
+  }
+  if (!VIDEO_EXT.test(fullPath)) {
+    return refuse(at, 'video tham chiếu chỉ nhận tệp .mp4 hoặc .mov.');
+  }
+  if (typeof inspect !== 'function') {
+    return refuse(at, 'app chưa đọc được video tham chiếu lúc này, hãy thử lại sau.');
+  }
+  const info = inspect(fullPath);
+  if (!info?.ok) {
+    return refuse(at, info?.note || 'không đọc được video tham chiếu.');
+  }
+  if (!(info.bytes <= REF_MAX_BYTES)) {
+    return refuse(at, `video tham chiếu nặng quá ${REF_MAX_BYTES / 1024 / 1024} MB.`);
+  }
+  const refSeconds = refSecondsOf(info.meta?.seconds);
+  if (refSeconds === null) {
+    return refuse(
+      at,
+      'video tham chiếu ngắn quá hoặc không đọc được độ dài (cần ít nhất nửa giây).'
+    );
+  }
+  return {
+    ok: true,
+    fields: {
+      refVideo: fullPath,
+      refSeconds,
+      resolution: task.resolution,
+      consent: REF_CONSENT,
+      consentAt: new Date(now()).toISOString(),
+    },
+  };
+}
+
+export function refFieldsOf(task) {
+  if (!plain(task) || task.refVideo === undefined || task.refVideo === null) {
+    return {};
+  }
+  const refSeconds = task.refSeconds;
+  const parsedAt =
+    typeof task.consentAt === 'string' && task.consentAt.length <= 40
+      ? Date.parse(task.consentAt)
+      : NaN;
+  const valid =
+    okPath(task.refVideo) &&
+    VIDEO_EXT.test(task.refVideo) &&
+    typeof refSeconds === 'number' &&
+    refSecondsOf(refSeconds) === refSeconds &&
+    REF_RESOLUTIONS.includes(task.resolution) &&
+    task.consent === REF_CONSENT &&
+    Number.isFinite(parsedAt);
+  return valid
+    ? {
+        refVideo: task.refVideo,
+        refSeconds,
+        resolution: task.resolution,
+        consent: REF_CONSENT,
+        consentAt: task.consentAt,
+      }
+    : null;
+}

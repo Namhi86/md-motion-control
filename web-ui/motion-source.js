@@ -6,7 +6,12 @@ import { mountSaveDir } from './motion-source-dir.js';
 import { RESOLUTIONS } from './motion-form.js';
 import { t } from './i18n.js';
 
-// Everything that is "Nguồn" in the sidebar of the "Motion control" workspace: the video card, the person's pictures and the choices (quality, frame, audio mode, spoken language, voice). Handles only: nothing here sees a path.
+export const MOTION_FLOW_MODELS = [
+  { id: 'omni-1-2-flash', label: '✨ Omni 1.2 Flash', shortLabel: 'Omni 1.2 Flash' },
+  { id: 'omni-1-1-flash', label: '⚡ Omni 1.1 Flash', shortLabel: 'Omni 1.1 Flash' },
+];
+
+// Everything that is "Nguồn" in the sidebar of the "Motion control" workspace: the video card, the person's pictures and the choices (model, quality, frame, audio mode, spoken language, voice). Handles only: nothing here sees a path.
 function slide(seg, n, index) {
   seg.node.classList.add('an-seg--fill');
   seg.node.append(el('i', 'cm-seg-slider'));
@@ -20,6 +25,7 @@ export function mountSource({ dola, onChange, pickImages }) {
   const state = {
     video: null,
     engine: 'veo-ref',
+    flowModel: 'omni-1-2-flash',
     audioMode: 'keep',
     resolution: '4k',
     ratio: 'auto',
@@ -32,8 +38,17 @@ export function mountSource({ dola, onChange, pickImages }) {
   const saveDir = mountSaveDir({ dola });
   const pictures = mountImages({ dola, pickImages, onChange, isLocked: () => locked });
 
-  const ENGINES = [{ id: 'veo-ref', label: t('Google Flow (Veo)') }];
-  const engine = segmented(ENGINES, () => 'veo-ref', () => {});
+  const flowModelSeg = segmented(
+    MOTION_FLOW_MODELS.map((m) => ({ id: m.id, label: m.label })),
+    () => state.flowModel,
+    (id) => {
+      if (locked) return;
+      state.flowModel = id;
+      flowModelSeg.paint();
+      window.dispatchEvent(new CustomEvent('md:motion-model-changed', { detail: { flowModel: id } }));
+      onChange();
+    }
+  );
 
   const AUDIO_MODES = [
     { id: 'keep', label: t('Giữ nhạc gốc (Chỉ thay nhân vật)') },
@@ -51,7 +66,7 @@ export function mountSource({ dola, onChange, pickImages }) {
   const RATIOS = [{ id: 'auto', label: t('Giống gốc') }, { id: '9:16', label: t('Dọc 9:16') }, { id: '16:9', label: t('Ngang 16:9') }];
   const shape = segmented(RATIOS, () => state.ratio, (id) => { if (locked) return; state.ratio = id; shape.paint(); onChange(); });
 
-  slide(engine, ENGINES.length, () => ENGINES.findIndex((e) => e.id === state.engine));
+  slide(flowModelSeg, MOTION_FLOW_MODELS.length, () => MOTION_FLOW_MODELS.findIndex((m) => m.id === state.flowModel));
   slide(audioSeg, AUDIO_MODES.length, () => AUDIO_MODES.findIndex((a) => a.id === state.audioMode));
   slide(quality, RESOLUTIONS.length, () => RESOLUTIONS.findIndex((r) => r.id === state.resolution));
   slide(shape, RATIOS.length, () => RATIOS.findIndex((r) => r.id === state.ratio));
@@ -80,10 +95,10 @@ export function mountSource({ dola, onChange, pickImages }) {
     pictures.node,
   );
 
-  // Phần Cài đặt mặc định (Ảnh 2: Nền tảng tạo, Chế độ âm thanh, Chất lượng 4K, Khung hình Giống gốc, Thư mục lưu phim)
+  // Phần Cài đặt mặc định (Model AI Google Flow, Chế độ âm thanh, Chất lượng 4K, Khung hình Giống gốc, Thư mục lưu phim)
   const settingsNode = el('div', 'cm-source-settings');
   settingsNode.append(
-    field(t('Nền tảng tạo'), engine.node),
+    field(t('Model AI (Google Flow)'), flowModelSeg.node),
     field(t('Chế độ âm thanh'), audioSeg.node),
     field(t('Chất lượng'), quality.node),
     field(t('Khung hình'), shape.node),
@@ -97,6 +112,7 @@ export function mountSource({ dola, onChange, pickImages }) {
     get: () => ({
       video: state.video,
       engine: state.engine,
+      flowModel: state.flowModel,
       audioMode: state.audioMode,
       keepMusic: state.audioMode === 'keep',
       images: pictures.get(),
@@ -105,25 +121,34 @@ export function mountSource({ dola, onChange, pickImages }) {
       translateTo: state.audioMode === 'keep' ? '' : state.translateTo,
       voiceText: state.audioMode === 'keep' ? '' : state.voiceText.trim(),
     }),
+    setFlowModel: (id) => {
+      if (locked || !MOTION_FLOW_MODELS.some((m) => m.id === id)) return;
+      state.flowModel = id;
+      flowModelSeg.paint();
+      window.dispatchEvent(new CustomEvent('md:motion-model-changed', { detail: { flowModel: id } }));
+      onChange();
+    },
     ready: () => !!state.video && pictures.get().length >= 1,
     restore: ({ video: v, images, choices: c = {} }) => {
       if (v) state.video = video.set(v);
       if (Array.isArray(images)) pictures.set(images);
       state.engine = 'veo-ref';
+      if (MOTION_FLOW_MODELS.some((m) => m.id === c.flowModel)) state.flowModel = c.flowModel;
       if (AUDIO_MODES.some((a) => a.id === c.audioMode)) state.audioMode = c.audioMode;
       if (RESOLUTIONS.some((r) => r.id === c.resolution)) state.resolution = c.resolution;
       state.resolution = '4k'; // Mặc định 4K (20cr) theo cài đặt mặc định Ảnh 2
       if (RATIOS.some((r) => r.id === c.ratio)) state.ratio = c.ratio;
       if (LANGS.some(([v2]) => v2 === c.language)) state.translateTo = lang.value = c.language;
       state.voiceText = voice.value = String(c.voiceText || '').slice(0, 160);
-      engine.paint(); audioSeg.paint(); quality.paint(); shape.paint();
+      flowModelSeg.paint(); audioSeg.paint(); quality.paint(); shape.paint();
       syncAudioFields();
+      window.dispatchEvent(new CustomEvent('md:motion-model-changed', { detail: { flowModel: state.flowModel } }));
     },
     drop: (files) => video.drop(files),
     watch: (target) => video.watch(target),
     setLocked: (on) => {
       locked = on; video.setLocked(on); lang.disabled = on; voice.disabled = on; pictures.refresh(); saveDir.setLocked(on);
-      for (const g of [engine, audioSeg, quality, shape]) g.node.querySelectorAll?.('button').forEach((b) => { b.disabled = on; });
+      for (const g of [flowModelSeg, audioSeg, quality, shape]) g.node.querySelectorAll?.('button').forEach((b) => { b.disabled = on; });
     },
   };
 }

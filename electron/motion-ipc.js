@@ -4,7 +4,7 @@
  * `"veo-ref"` (Google Flow, mặc định) và `"muse"` (Muse AI).
  */
 
-import { ENGINES, MOTION_RESOLUTIONS } from "../src/motion-chains.js";
+import { ENGINES, FLOW_MODELS, MOTION_RESOLUTIONS } from "../src/motion-chains.js";
 import { planFromCuts, priceOf } from "../src/motion-plan.js";
 import { sliceBySegments } from "../src/motion-transcript.js";
 import { plainSegment } from "./motion-session.js";
@@ -70,6 +70,10 @@ function checkChoices(raw) {
   if (raw.engine !== undefined) {
     if (!ENGINES.includes(raw.engine)) return undefined;
     out.engine = raw.engine;
+  }
+  if (raw.flowModel !== undefined) {
+    if (!FLOW_MODELS.includes(raw.flowModel)) return undefined;
+    out.flowModel = raw.flowModel;
   }
   if (raw.audioMode !== undefined) {
     if (raw.audioMode !== "keep" && raw.audioMode !== "speech") return undefined;
@@ -721,6 +725,13 @@ export function setupMotion({
       return fail("bad_args", "Engine phải là " + ENGINES.join(" hoặc ") + ".");
     }
 
+    const flowModel =
+      typeof payload.flowModel === "string" && FLOW_MODELS.includes(payload.flowModel)
+        ? payload.flowModel
+        : current.choices?.flowModel && FLOW_MODELS.includes(current.choices.flowModel)
+          ? current.choices.flowModel
+          : "omni-1-2-flash";
+
     const keepMusic =
       payload.keepMusic !== undefined
         ? Boolean(payload.keepMusic)
@@ -785,6 +796,7 @@ export function setupMotion({
       resolution,
       ratio,
       engine,
+      flowModel,
       keepMusic,
       name: safeName,
     });
@@ -867,9 +879,17 @@ export function setupMotion({
             ? current.choices.audioMode !== "speech"
             : undefined;
 
+      const retryFlowModel =
+        typeof payload?.flowModel === "string" && FLOW_MODELS.includes(payload.flowModel)
+          ? payload.flowModel
+          : current?.choices?.flowModel && FLOW_MODELS.includes(current.choices.flowModel)
+            ? current.choices.flowModel
+            : undefined;
+
       const res = await activeJob.retrySegment(payload.jobId, segIdx, {
         images: retryImages,
         engine: retryEngine,
+        flowModel: retryFlowModel,
         keepMusic: retryKeepMusic,
         lines: Array.isArray(payload?.lines) ? payload.lines : undefined,
       });

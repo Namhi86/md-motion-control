@@ -47,7 +47,7 @@ export function createDraftSaver({ dola, build, delay = 600 }) {
 
 // What motion.saveDraft keeps: the lines of ALL clips (not while a replan runs: those are provisional), the sidebar choices, the pictures and the selected clip.
 export function draftOf({ prepareId, s, editorUi }) {
-  const d = { prepareId, choices: { engine: s.engine, audioMode: s.audioMode, resolution: s.resolution, ratio: s.ratio, language: s.translateTo, voiceText: s.voiceText }, imageHandles: s.images.map((i) => i.handle) };
+  const d = { prepareId, choices: { engine: s.engine, flowModel: s.flowModel, audioMode: s.audioMode, resolution: s.resolution, ratio: s.ratio, language: s.translateTo, voiceText: s.voiceText }, imageHandles: s.images.map((i) => i.handle) };
   if (!editorUi.busy()) d.lines = editorUi.draftLines();
   const at = editorUi.timeline.selected();
   if (at >= 0) d.selected = at;

@@ -127,9 +127,54 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
   }
 
   // 2.5. Khởi tạo Thanh Điều Khiển Trên Cùng + Hệ thống 10 Luồng Tạo Video Hàng Ngang (#md-create-streams-wrap) trong #view-create
+  const CREATE_MODELS = [
+    {
+      id: 'omni-1-2-flash',
+      label: 'Omni 1.2 Flash',
+      badge: '✨ MỚI',
+      desc: 'Bản nâng cấp mới nhất · Tối đa 7 ảnh · Thời lượng 4s/6s/8s/10s (12cr)',
+      maxImages: 7,
+      durations: [4, 6, 8, 10],
+    },
+    {
+      id: 'omni-1-1-flash',
+      label: 'Omni 1.1 Flash',
+      badge: '⚡ OMNI',
+      desc: 'Model thay thế Veo 3.1 · Tối đa 7 ảnh · Thời lượng 4s/6s/8s/10s (12cr)',
+      maxImages: 7,
+      durations: [4, 6, 8, 10],
+    },
+    {
+      id: 'veo-3-1-lite',
+      label: 'Veo 3.1 Lite',
+      badge: '10 CR',
+      desc: 'Tiết kiệm credit nhất · Tối đa 3 ảnh · Thời lượng 8s',
+      maxImages: 3,
+      durations: [8],
+    },
+    {
+      id: 'veo-3-1-fast',
+      label: 'Veo 3.1 Fast',
+      badge: '20 CR',
+      desc: 'Tốc độ kết xuất nhanh · Tối đa 3 ảnh · Thời lượng 8s',
+      maxImages: 3,
+      durations: [8],
+    },
+    {
+      id: 'veo-3-1-quality',
+      label: 'Veo 3.1 Quality',
+      badge: '100 CR',
+      desc: 'Chất lượng cao nhất · Tối đa 3 ảnh · Thời lượng 8s',
+      maxImages: 3,
+      durations: [8],
+    },
+  ];
+  const getCreateModelSpec = (id) =>
+    CREATE_MODELS.find((m) => m.id === id) || CREATE_MODELS[0];
+
   const viewCreate = document.getElementById('view-create');
   const origCol = viewCreate?.querySelector('.cv-col');
-  let defaultVeoModelId = 'veo-3.1-lite';
+  let defaultVeoModelId = 'omni-1-2-flash';
   window.dola?.options?.().then((o) => {
     if (o?.veo?.defaults?.model) defaultVeoModelId = o.veo.defaults.model;
     else if (o?.veo?.models?.[0]?.id) defaultVeoModelId = o.veo.models[0].id;
@@ -165,6 +210,10 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
             <input type="checkbox" class="stp-chk" id="md-cs-select-all-chk" checked />
             <span id="md-cs-select-all-label">Chọn cả 10 luồng (10/10)</span>
           </label>
+          <button type="button" class="cm-default-cfg-btn md-cs-top-model-btn" id="md-cs-top-model-btn" title="Chọn Model AI cho toàn bộ 10 luồng Tạo video">
+            <span>🤖 Model:</span>
+            <b id="md-cs-top-model-label">Omni 1.2 Flash ▾</b>
+          </button>
           <button type="button" class="cm-default-cfg-btn" id="md-stage-open-cfg" title="Cài đặt số luồng chạy, chia tài khoản & thư mục lưu video">
             <span>⚙️ Cài đặt mặc định:</span>
             <b>Google Flow Veo · Lưu file</b>
@@ -222,6 +271,7 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
         streamStates.forEach((st) => {
           payload[st.idx] = {
             prompt: st.prompt,
+            model: st.model,
             ratio: st.ratio,
             duration: st.duration,
           };
@@ -249,16 +299,114 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
 
     const streamStates = [];
 
+    // Menu nổi chọn nhanh Model AI cho từng luồng hoặc cả 10 luồng
+    let activeModelPop = null;
+    const closeModelPop = () => {
+      if (activeModelPop) {
+        activeModelPop.remove();
+        activeModelPop = null;
+      }
+    };
+    document.addEventListener('pointerdown', (ev) => {
+      if (activeModelPop && !activeModelPop.contains(ev.target) && !ev.target.closest('.md-cs-model-pill, #md-cs-top-model-btn')) {
+        closeModelPop();
+      }
+    });
+
+    const applyModelToAllStreams = (modelId) => {
+      const spec = getCreateModelSpec(modelId);
+      streamStates.forEach((s) => s.setModel?.(spec.id));
+      const topLbl = document.getElementById('md-cs-top-model-label');
+      if (topLbl) topLbl.textContent = `${spec.label} ▾`;
+      try {
+        const prefsObj = JSON.parse(localStorage.getItem('prefs') || '{}') || {};
+        prefsObj.mode = 'veo';
+        prefsObj.veoModel = spec.id;
+        localStorage.setItem('prefs', JSON.stringify(prefsObj));
+        const mainModelVal = document.getElementById('model-val');
+        if (mainModelVal) mainModelVal.textContent = spec.label;
+      } catch {}
+      saveStreamsState();
+    };
+
+    const openStreamModelMenu = (anchorBtn, targetStream = null) => {
+      closeModelPop();
+      const currentId = targetStream ? targetStream.model : (streamStates[0]?.model || 'omni-1-2-flash');
+      const pop = document.createElement('div');
+      pop.className = 'md-cs-model-pop';
+      pop.innerHTML = `
+        <div class="md-cs-model-pop-head">
+          <span>🤖 Chọn Model Google Flow</span>
+          <small>${targetStream ? `Luồng ${targetStream.code}` : 'Tất cả 10 luồng'}</small>
+        </div>
+        <div class="md-cs-model-pop-list">
+          ${CREATE_MODELS.map((m) => `
+            <button type="button" class="md-cs-model-opt${m.id === currentId ? ' md-cs-model-opt--on' : ''}" data-model-id="${m.id}">
+              <div class="md-cs-model-opt-top">
+                <b>${m.label}</b>
+                <span class="md-cs-model-badge">${m.badge}</span>
+              </div>
+              <small>${m.desc}</small>
+            </button>
+          `).join('')}
+        </div>
+        ${targetStream ? `
+          <div class="md-cs-model-pop-foot">
+            <button type="button" class="md-cs-model-apply-all" id="md-cs-pop-apply-all">
+              ⚡ Áp dụng model đang chọn cho cả 10 luồng
+            </button>
+          </div>
+        ` : ''}
+      `;
+      document.body.appendChild(pop);
+      activeModelPop = pop;
+
+      const rect = anchorBtn.getBoundingClientRect();
+      const popW = 310;
+      const left = Math.max(12, Math.min(window.innerWidth - popW - 12, rect.right - popW));
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const top = spaceBelow < 320 ? Math.max(12, rect.top - pop.offsetHeight - 6) : rect.bottom + 6;
+      pop.style.left = `${left}px`;
+      pop.style.top = `${top}px`;
+
+      pop.querySelectorAll('.md-cs-model-opt').forEach((optBtn) => {
+        optBtn.addEventListener('click', () => {
+          const pickedId = optBtn.dataset.modelId;
+          if (!pickedId) return;
+          if (targetStream) {
+            targetStream.setModel(pickedId);
+            saveStreamsState();
+          } else {
+            applyModelToAllStreams(pickedId);
+          }
+          closeModelPop();
+        });
+      });
+
+      pop.querySelector('#md-cs-pop-apply-all')?.addEventListener('click', () => {
+        if (targetStream) {
+          applyModelToAllStreams(targetStream.model);
+        }
+        closeModelPop();
+      });
+    };
+
+    document.getElementById('md-cs-top-model-btn')?.addEventListener('click', (ev) => {
+      openStreamModelMenu(ev.currentTarget, null);
+    });
+
     for (let i = 1; i <= TOTAL_CREATE_STREAMS; i++) {
       const code = String(i).padStart(2, '0');
       const saved = savedStreams[i] || {};
+      const initModelSpec = getCreateModelSpec(saved.model || 'omni-1-2-flash');
       const st = {
         idx: i,
         code,
         checked: true,
         prompt: saved.prompt !== undefined ? saved.prompt : (i === 1 ? defaultPrompt1 : ''),
+        model: initModelSpec.id,
         ratio: saved.ratio || '9:16',
-        duration: saved.duration || 8,
+        duration: initModelSpec.durations.includes(Number(saved.duration)) ? Number(saved.duration) : 8,
         files: [], // [{ handle, name }]
         busy: false,
       };
@@ -280,9 +428,9 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
 
         <div class="md-cs-body">
           <div class="md-cs-ref-box" id="md-cs-ref-${i}">
-            <button type="button" class="md-cs-ref-add" id="md-cs-ref-btn-${i}" title="Thêm tối đa 3 ảnh tham chiếu nhân vật, bối cảnh, đạo cụ cho Luồng ${code}">
+            <button type="button" class="md-cs-ref-add" id="md-cs-ref-btn-${i}" title="Thêm tối đa ${initModelSpec.maxImages} ảnh tham chiếu nhân vật, bối cảnh, đạo cụ cho Luồng ${code}">
               <span class="md-cs-ref-ico">🖼️</span>
-              <span class="md-cs-ref-txt" id="md-cs-ref-txt-${i}">+ Thêm phần tử / Ảnh (0/3)</span>
+              <span class="md-cs-ref-txt" id="md-cs-ref-txt-${i}">+ Thêm phần tử / Ảnh (0/${initModelSpec.maxImages})</span>
             </button>
             <div class="md-cs-ref-list" id="md-cs-ref-list-${i}" hidden></div>
           </div>
@@ -301,8 +449,8 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
           </div>
 
           <div class="md-cs-specs-row">
-            <button type="button" class="md-cs-spec-pill md-cs-model-pill" id="md-cs-model-${i}" title="Bấm để chọn Model AI">
-              <span class="md-cs-model-val">Veo 3.1 Lite</span>
+            <button type="button" class="md-cs-spec-pill md-cs-model-pill" id="md-cs-model-${i}" title="Bấm để chọn Model AI (Omni 1.2 Flash / Omni 1.1 Flash / Veo 3.1)">
+              <span class="md-cs-model-val" id="md-cs-model-val-${i}">${initModelSpec.label}</span>
             </button>
             <button type="button" class="md-cs-spec-pill" id="md-cs-dur-${i}" title="Đổi thời lượng video">
               ⏱ <b id="md-cs-dur-val-${i}">${st.duration}s</b>
@@ -334,10 +482,55 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
       const fileInp = card.querySelector(`#md-cs-file-${i}`);
       const clearBtn = card.querySelector(`#md-cs-clear-${i}`);
       const modelBtn = card.querySelector(`#md-cs-model-${i}`);
+      const modelVal = card.querySelector(`#md-cs-model-val-${i}`);
       const durBtn = card.querySelector(`#md-cs-dur-${i}`);
       const durVal = card.querySelector(`#md-cs-dur-val-${i}`);
       const ratioBtn = card.querySelector(`#md-cs-ratio-${i}`);
       const ratioVal = card.querySelector(`#md-cs-ratio-val-${i}`);
+
+      const maxImagesOfStream = () => getCreateModelSpec(st.model).maxImages;
+
+      // Chọn ảnh tham chiếu riêng cho từng luồng
+      const paintStreamRefs = () => {
+        const maxImgs = maxImagesOfStream();
+        if (st.files.length > maxImgs) {
+          st.files = st.files.slice(0, maxImgs);
+        }
+        refTxt.textContent = st.files.length
+          ? `+ Ảnh tham chiếu (${st.files.length}/${maxImgs})`
+          : `+ Thêm phần tử / Ảnh (0/${maxImgs})`;
+        refList.replaceChildren();
+        refList.hidden = st.files.length === 0;
+        st.files.forEach((f, fIdx) => {
+          const item = document.createElement('div');
+          item.className = 'md-cs-ref-thumb';
+          const img = document.createElement('img');
+          img.src = mediaUrl.pick(f.handle);
+          img.alt = f.name || 'ref';
+          const del = document.createElement('button');
+          del.type = 'button';
+          del.className = 'md-cs-ref-del';
+          del.textContent = '✕';
+          del.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            st.files = st.files.filter((_, k) => k !== fIdx);
+            paintStreamRefs();
+          });
+          item.append(img, del);
+          refList.appendChild(item);
+        });
+      };
+
+      st.setModel = (newModelId) => {
+        const spec = getCreateModelSpec(newModelId);
+        st.model = spec.id;
+        if (modelVal) modelVal.textContent = spec.label;
+        if (!spec.durations.includes(st.duration)) {
+          st.duration = spec.durations.includes(8) ? 8 : spec.durations[0];
+          if (durVal) durVal.textContent = `${st.duration}s`;
+        }
+        paintStreamRefs();
+      };
 
       const updateCount = () => {
         const { prompts } = splitPrompts(taEl.value || '');
@@ -389,55 +582,31 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
         fileInp.value = '';
       });
 
-      // Chọn ảnh tham chiếu riêng cho từng luồng
-      const paintStreamRefs = () => {
-        refTxt.textContent = st.files.length
-          ? `+ Ảnh tham chiếu (${st.files.length}/3)`
-          : '+ Thêm phần tử / Ảnh (0/3)';
-        refList.replaceChildren();
-        refList.hidden = st.files.length === 0;
-        st.files.forEach((f, fIdx) => {
-          const item = document.createElement('div');
-          item.className = 'md-cs-ref-thumb';
-          const img = document.createElement('img');
-          img.src = mediaUrl.pick(f.handle);
-          img.alt = f.name || 'ref';
-          const del = document.createElement('button');
-          del.type = 'button';
-          del.className = 'md-cs-ref-del';
-          del.textContent = '✕';
-          del.addEventListener('click', (ev) => {
-            ev.stopPropagation();
-            st.files = st.files.filter((_, k) => k !== fIdx);
-            paintStreamRefs();
-          });
-          item.append(img, del);
-          refList.appendChild(item);
-        });
-      };
-
       refBtn?.addEventListener('click', async () => {
         try {
+          const maxImgs = maxImagesOfStream();
           const picked = await window.dola?.pickImages?.();
           if (!picked?.length) return;
           const merged = [...st.files];
           for (const p of picked) {
-            if (merged.length >= 3) break;
+            if (merged.length >= maxImgs) break;
             if (!merged.some((m) => m.handle === p.handle)) merged.push(p);
           }
-          st.files = merged.slice(0, 3);
+          st.files = merged.slice(0, maxImgs);
           paintStreamRefs();
         } catch {}
       });
 
       // Chọn Model / Thời lượng / Tỷ lệ
-      modelBtn?.addEventListener('click', () => {
-        if (origCol) origCol.hidden = false;
-        setTimeout(() => document.getElementById('model-btn')?.click(), 40);
+      modelBtn?.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        openStreamModelMenu(modelBtn, st);
       });
 
       durBtn?.addEventListener('click', () => {
-        st.duration = st.duration === 8 ? 5 : 8;
+        const durs = getCreateModelSpec(st.model).durations;
+        const curIdx = durs.indexOf(st.duration);
+        st.duration = durs[(curIdx + 1) % durs.length] || 8;
         durVal.textContent = `${st.duration}s`;
         saveStreamsState();
       });
@@ -471,10 +640,8 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
         try {
           let prefsObj = {};
           try { prefsObj = JSON.parse(localStorage.getItem('prefs') || '{}') || {}; } catch {}
-          const mode = prefsObj.mode || 'veo';
-          const model = mode === 'veo'
-            ? (prefsObj.veoModel || defaultVeoModelId)
-            : (prefsObj.model || defaultVeoModelId);
+          const mode = 'veo';
+          const model = st.model || prefsObj.veoModel || defaultVeoModelId;
 
           const res = await enqueueFromForm({
             promptText,

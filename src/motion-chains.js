@@ -4,13 +4,14 @@
  * hỗ trợ song song Google Flow (`veo-ref`) và Muse AI (`muse`).
  */
 
-import { REF_CEILING, REF_CONSENT, REF_MODEL } from "./veo-ref.js";
+import { REF_CEILING, REF_CONSENT, REF_MODEL, REF_MODELS, isRefModel } from "./veo-ref.js";
 import { buildClipPrompt, voiceSentence } from "./motion-prompt.js";
 
 /**
  * Danh sách các engine tạo video được hỗ trợ trong Motion Control.
  */
 export const ENGINES = Object.freeze(["veo-ref", "muse"]);
+export const FLOW_MODELS = Object.freeze([...REF_MODELS]);
 
 /**
  * Danh sách các mức độ phân giải đầu ra được hỗ trợ trong Motion Control
@@ -119,6 +120,7 @@ export function clipTask({
   ratio = "9:16",
   style,
   engine = "veo-ref",
+  flowModel = REF_MODEL,
 }) {
   if (!ENGINES.includes(engine)) {
     throw new RangeError("unknown engine " + JSON.stringify(engine));
@@ -173,12 +175,13 @@ export function clipTask({
   }
 
   const flowResolution = resolution === "360p" ? "360p" : "720p";
+  const selectedModel = isRefModel(flowModel) ? flowModel : REF_MODEL;
 
   return {
     prompt,
     ratio,
     duration: 0,
-    model: REF_MODEL,
+    model: selectedModel,
     mode: "veo",
     handles: imageHandles,
     refVideo: refVideoHandle,

@@ -75,6 +75,29 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
   if (ws.defaultLeftPane && source.settingsNode) {
     ws.defaultLeftPane.append(source.settingsNode);
   }
+
+  // Đồng bộ nút chọn nhanh Model (Omni 1.2 Flash / Omni 1.1 Flash) trên thanh công cụ với Cài đặt mặc định
+  const syncTopModelSwitch = (flowModel) => {
+    const cur = flowModel || source.get().flowModel || 'omni-1-2-flash';
+    ws.modelSwitch?.querySelectorAll('.cm-model-qbtn').forEach((btn) => {
+      btn.classList.toggle('cm-sc-btn--on', btn.dataset.flowModel === cur);
+    });
+    const sumEl = ws.node.querySelector('#cm-dcfg-summary');
+    if (sumEl) {
+      const mLabel = cur === 'omni-1-1-flash' ? 'Omni 1.1 Flash' : 'Omni 1.2 Flash';
+      sumEl.textContent = `${mLabel} · 4K · Giữ nhạc gốc`;
+    }
+  };
+  ws.modelSwitch?.addEventListener('click', (e) => {
+    const btn = e.target.closest('.cm-model-qbtn');
+    if (!btn || !btn.dataset.flowModel) return;
+    source.setFlowModel(btn.dataset.flowModel);
+    syncTopModelSwitch(btn.dataset.flowModel);
+  });
+  window.addEventListener('md:motion-model-changed', (e) => {
+    syncTopModelSwitch(e.detail?.flowModel);
+  });
+  syncTopModelSwitch(source.get().flowModel);
   const resultPanel = createResultPanel();
   const emptyZone = createEmptyZone();
   const showPlayers = (restored) => {
@@ -172,6 +195,7 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
         images: cur.images,
         choices: {
           engine: base.engine,
+          flowModel: base.flowModel,
           audioMode: base.audioMode,
           resolution: base.resolution,
           ratio: base.ratio,
@@ -454,7 +478,7 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
     try {
       await draft.flush(); // the last words typed are kept even if the film's first call never comes back
       const r = await dola.motion.start({
-        prepareId: plan.prepareId, engine: s.engine, keepMusic: s.keepMusic, imageHandles: s.images.map((i) => i.handle), lines: s.keepMusic ? [] : editorUi.lines(), resolution: s.resolution, ratio: s.ratio, voiceText: s.voiceText,
+        prepareId: plan.prepareId, engine: s.engine, flowModel: s.flowModel, keepMusic: s.keepMusic, imageHandles: s.images.map((i) => i.handle), lines: s.keepMusic ? [] : editorUi.lines(), resolution: s.resolution, ratio: s.ratio, voiceText: s.voiceText,
         language: s.translateTo || spokenLanguage(editorUi.segments()),
       });
       if (!r?.ok) { if (!source.dir.refuse(r)) msg.set(ct(r?.note) || t('Không bắt đầu được.')); editorUi.setLocked(false); source.setLocked(false); return; } // a folder that cannot be written is told in the sidebar box; the plan stays
@@ -479,6 +503,7 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
       jobId: job.jobId,
       i,
       engine: s.engine,
+      flowModel: s.flowModel,
       keepMusic: s.keepMusic,
       imageHandles: Array.isArray(s.images) ? s.images.map((img) => img.handle).filter(Boolean) : undefined,
       lines: s.keepMusic ? [] : (editorUi ? editorUi.lines() : undefined),
