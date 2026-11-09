@@ -76,28 +76,19 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
     ws.defaultLeftPane.append(source.settingsNode);
   }
 
-  // Đồng bộ nút chọn nhanh Model (Omni 1.2 Flash / Omni 1.1 Flash) trên thanh công cụ với Cài đặt mặc định
-  const syncTopModelSwitch = (flowModel) => {
+  // Đồng bộ dòng tóm tắt trên nút Cài đặt mặc định khi đổi Model trong hộp Cài đặt mặc định
+  const syncDefaultSummary = (flowModel) => {
     const cur = flowModel || source.get().flowModel || 'omni-1-2-flash';
-    ws.modelSwitch?.querySelectorAll('.cm-model-qbtn').forEach((btn) => {
-      btn.classList.toggle('cm-sc-btn--on', btn.dataset.flowModel === cur);
-    });
     const sumEl = ws.node.querySelector('#cm-dcfg-summary');
     if (sumEl) {
       const mLabel = cur === 'omni-1-1-flash' ? 'Omni 1.1 Flash' : 'Omni 1.2 Flash';
-      sumEl.textContent = `${mLabel} · 4K · Giữ nhạc gốc`;
+      sumEl.textContent = `${mLabel} · 4K · Giữ nhạc gốc · Motion AI (50/70/90%)`;
     }
   };
-  ws.modelSwitch?.addEventListener('click', (e) => {
-    const btn = e.target.closest('.cm-model-qbtn');
-    if (!btn || !btn.dataset.flowModel) return;
-    source.setFlowModel(btn.dataset.flowModel);
-    syncTopModelSwitch(btn.dataset.flowModel);
-  });
   window.addEventListener('md:motion-model-changed', (e) => {
-    syncTopModelSwitch(e.detail?.flowModel);
+    syncDefaultSummary(e.detail?.flowModel);
   });
-  syncTopModelSwitch(source.get().flowModel);
+  syncDefaultSummary(source.get().flowModel);
   const resultPanel = createResultPanel();
   const emptyZone = createEmptyZone();
   const showPlayers = (restored) => {

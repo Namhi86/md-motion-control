@@ -210,13 +210,9 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
             <input type="checkbox" class="stp-chk" id="md-cs-select-all-chk" checked />
             <span id="md-cs-select-all-label">Chọn cả 10 luồng (10/10)</span>
           </label>
-          <button type="button" class="cm-default-cfg-btn md-cs-top-model-btn" id="md-cs-top-model-btn" title="Chọn Model AI cho toàn bộ 10 luồng Tạo video">
-            <span>🤖 Model:</span>
-            <b id="md-cs-top-model-label">Omni 1.2 Flash ▾</b>
-          </button>
-          <button type="button" class="cm-default-cfg-btn" id="md-stage-open-cfg" title="Cài đặt số luồng chạy, chia tài khoản & thư mục lưu video">
+          <button type="button" class="cm-default-cfg-btn" id="md-stage-open-cfg" title="Cài đặt mặc định Model AI, số luồng chạy, chia tài khoản & thư mục lưu video">
             <span>⚙️ Cài đặt mặc định:</span>
-            <b>Google Flow Veo · Lưu file</b>
+            <b id="md-cs-top-cfg-summary">Omni 1.2 Flash · Lưu file</b>
           </button>
           <button type="button" class="cm-default-cfg-btn" id="md-stage-open-folder" title="Mở thư mục lưu video trên máy tính">
             <span>📂 Mở thư mục</span>
@@ -316,8 +312,8 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
     const applyModelToAllStreams = (modelId) => {
       const spec = getCreateModelSpec(modelId);
       streamStates.forEach((s) => s.setModel?.(spec.id));
-      const topLbl = document.getElementById('md-cs-top-model-label');
-      if (topLbl) topLbl.textContent = `${spec.label} ▾`;
+      const topSummary = document.getElementById('md-cs-top-cfg-summary');
+      if (topSummary) topSummary.textContent = `${spec.label} · Lưu file`;
       try {
         const prefsObj = JSON.parse(localStorage.getItem('prefs') || '{}') || {};
         prefsObj.mode = 'veo';
@@ -391,9 +387,21 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
       });
     };
 
-    document.getElementById('md-cs-top-model-btn')?.addEventListener('click', (ev) => {
-      openStreamModelMenu(ev.currentTarget, null);
-    });
+    // Khi người dùng đổi Model trong hộp "⚙️ Cài đặt mặc định" (#model-val thay đổi), tự động đồng bộ sang tất cả 10 luồng
+    const mainModelValEl = document.getElementById('model-val');
+    if (mainModelValEl) {
+      const obs = new MutationObserver(() => {
+        const labelTxt = (mainModelValEl.textContent || '').trim();
+        const found = CREATE_MODELS.find((m) => m.label === labelTxt);
+        if (found) {
+          streamStates.forEach((s) => s.setModel?.(found.id));
+          const topSummary = document.getElementById('md-cs-top-cfg-summary');
+          if (topSummary) topSummary.textContent = `${found.label} · Lưu file`;
+          saveStreamsState();
+        }
+      });
+      obs.observe(mainModelValEl, { childList: true, characterData: true, subtree: true });
+    }
 
     for (let i = 1; i <= TOTAL_CREATE_STREAMS; i++) {
       const code = String(i).padStart(2, '0');
