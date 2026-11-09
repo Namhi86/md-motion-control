@@ -6,7 +6,7 @@
  * - Co giãn thời lượng khớp mili-giây với từng đoạn gốc và ghép mượt thành 1 tệp .mp4 bằng planJoin.
  */
 
-import { existsSync, mkdirSync, mkdtempSync, renameSync, rmSync, statSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, renameSync, rmSync, statSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -573,6 +573,14 @@ export function createMotionJob({
         taskResult.result?.file &&
         existsSync(taskResult.result.file)
       ) {
+        const rawClipPath = path.join(
+          job.dir,
+          `raw-${String(segment.i).padStart(3, "0")}.mp4`
+        );
+        try {
+          copyFileSync(taskResult.result.file, rawClipPath);
+        } catch {}
+
         const outLastFrame = path.join(
           job.dir,
           `last-${String(segment.i).padStart(3, "0")}.png`
@@ -639,7 +647,11 @@ export function createMotionJob({
           } catch {}
         }
 
-        updateClip({ state: "done", file: taskResult.result.file });
+        updateClip({
+          state: "done",
+          file: taskResult.result.file,
+          rawFile: existsSync(rawClipPath) ? rawClipPath : taskResult.result.file,
+        });
         return {
           ok: true,
           lastFrame: frameRes.code === 0 && existsSync(outLastFrame) ? outLastFrame : "",
@@ -737,14 +749,23 @@ export function createMotionJob({
     }
 
     const probed = await Promise.all(
-      job.clips.map((clip) => probe(ffmpegPath, clip.file, {}))
+      job.clips.map((clip) =>
+        probe(
+          ffmpegPath,
+          clip.rawFile && existsSync(clip.rawFile) ? clip.rawFile : clip.file,
+          {}
+        )
+      )
     );
     if (probed.some((info) => !info.ok || !info.hasVideo)) {
       return fail("not_video", "Một đoạn Flow trả về không đọc được.");
     }
 
     const joinInputs = job.plan.segments.map((seg, idx) => ({
-      file: job.clips[idx].file,
+      file:
+        job.clips[idx].rawFile && existsSync(job.clips[idx].rawFile)
+          ? job.clips[idx].rawFile
+          : job.clips[idx].file,
       seconds: probed[idx].seconds,
       target: seg.seconds,
       hasAudio: probed[idx].hasAudio,
@@ -813,6 +834,8 @@ export function createMotionJob({
               "-y",
               "-i",
               outPath + ".part",
+              "-t",
+              String(joinPlan.totalSeconds),
               "-i",
               job.video,
               "-map",
@@ -829,7 +852,6 @@ export function createMotionJob({
               "44100",
               "-ac",
               "2",
-              "-shortest",
               "-movflags",
               "+faststart",
               muxedPart,
@@ -854,6 +876,17 @@ export function createMotionJob({
     }
 
     renameSync(outPath + ".part", outPath);
+
+    // Đồng bộ tệp video hoàn chỉnh (đủ 100% thời lượng) sang các tệp trong Thư viện (queue)
+    // để khi người dùng mở tab Thư viện hoặc thư mục lưu chính, video luôn đầy đủ toàn bộ các đoạn đã ghép.
+    for (const clip of job.clips) {
+      if (clip?.file && clip.file !== outPath && existsSync(clip.file)) {
+        try {
+          copyFileSync(outPath, clip.file);
+        } catch {}
+      }
+    }
+
     return {
       ok: true,
       file: outPath,

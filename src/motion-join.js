@@ -84,23 +84,25 @@ export function planJoin({
         throw new RangeError(`clip ${idx}: ${key} must be at least ${MIN_CLIP} s`);
       }
     }
-    const stretch = clip.target / clip.seconds;
-    if (stretch > 1.5 || stretch < 0.7) {
+    const fadePad = idx > 0 ? FADE : 0;
+    const targetDur = Number(two(clip.target + fadePad));
+    const stretch = targetDur / clip.seconds;
+    if (stretch > 1.65 || stretch < 0.65) {
       throw new RangeError(
-        `clip ${idx}: stretch ${stretch.toFixed(2)}x is outside 0.7..1.5`
+        `clip ${idx}: stretch ${stretch.toFixed(2)}x is outside 0.65..1.65`
       );
     }
-    const targetDur = Number(two(clip.target));
     durations.push(targetDur);
     args.push("-i", clip.file);
 
     filterParts.push(
-      `[${idx}:v:0]setpts=${two(stretch)}*(PTS-STARTPTS),scale=${width}:${height}:force_original_aspect_ratio=decrease:flags=lanczos+accurate_rnd+full_chroma_int,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=black${sharpenChain},setsar=1,fps=${FPS},format=yuv420p,trim=duration=${two(targetDur)},setpts=PTS-STARTPTS[v${idx}]`
+      `[${idx}:v:0]setpts=${two(stretch)}*(PTS-STARTPTS),scale=${width}:${height}:force_original_aspect_ratio=decrease:flags=lanczos+accurate_rnd+full_chroma_int,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2:color=black${sharpenChain},setsar=1,fps=${FPS},format=yuv420p,tpad=stop_mode=clone:stop_duration=0.400,trim=duration=${two(targetDur)},setpts=PTS-STARTPTS[v${idx}]`
     );
 
+    const safeAtempo = Math.min(2.0, Math.max(0.5, 1 / stretch));
     filterParts.push(
       clip.hasAudio
-        ? `[${idx}:a:0]atempo=${two(1 / stretch)},aresample=44100,aformat=sample_fmts=fltp:channel_layouts=stereo,apad=whole_dur=${two(targetDur)},atrim=duration=${two(targetDur)},asetpts=PTS-STARTPTS[a${idx}]`
+        ? `[${idx}:a:0]atempo=${two(safeAtempo)},aresample=44100,aformat=sample_fmts=fltp:channel_layouts=stereo,apad=whole_dur=${two(targetDur)},atrim=duration=${two(targetDur)},asetpts=PTS-STARTPTS[a${idx}]`
         : `anullsrc=r=44100:cl=stereo,atrim=duration=${two(targetDur)},asetpts=PTS-STARTPTS[a${idx}]`
     );
   });
