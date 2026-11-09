@@ -1,1 +1,46 @@
-const _0x382dbf=_0xf227;(function(_0x404604,_0xbde00b){const _0x345bc=_0xf227,_0x1021df=_0x404604();while(!![]){try{const _0x4b7b2b=parseInt(_0x345bc(0x10b))/0x1*(-parseInt(_0x345bc(0x105))/0x2)+-parseInt(_0x345bc(0x10c))/0x3+parseInt(_0x345bc(0x109))/0x4*(parseInt(_0x345bc(0x10d))/0x5)+-parseInt(_0x345bc(0x107))/0x6+-parseInt(_0x345bc(0x112))/0x7*(parseInt(_0x345bc(0x110))/0x8)+-parseInt(_0x345bc(0x104))/0x9+parseInt(_0x345bc(0x103))/0xa*(parseInt(_0x345bc(0x108))/0xb);if(_0x4b7b2b===_0xbde00b)break;else _0x1021df['push'](_0x1021df['shift']());}catch(_0x2ba172){_0x1021df['push'](_0x1021df['shift']());}}}(_0x170e,0xd29f5));export const PACE_MS=[0x3e8,0x1388];function _0xf227(_0x2ee103,_0x4c28a7){_0x2ee103=_0x2ee103-0x101;const _0x170ee5=_0x170e();let _0xf2277d=_0x170ee5[_0x2ee103];return _0xf2277d;}export const PAGE_RETRY_REST_MS=[0x1388,0x3a98];export const isUnusualActivity=_0x553a05=>/unusual activity/i[_0x382dbf(0x101)](String(_0x553a05??''));export function randomMs(_0x40b098,_0x4d0c68,_0x32ae9f=Math[_0x382dbf(0x113)]){const _0x3917b2=_0x382dbf,_0x260afc=Math['max'](0x0,Number(_0x40b098)||0x0),_0x16ceb1=Math[_0x3917b2(0x106)](_0x260afc,Number(_0x4d0c68)||0x0);return Math[_0x3917b2(0x10a)](_0x260afc+_0x32ae9f()*(_0x16ceb1-_0x260afc));}export function waitMs(_0x1633ef,_0x4b7c2e){return new Promise(_0x507901=>{const _0x5c099a=_0xf227;if(_0x4b7c2e?.[_0x5c099a(0x10f)]||!(_0x1633ef>0x0)){_0x507901();return;}const _0x48caec=()=>{const _0x4f45ff=_0x5c099a;clearTimeout(_0x1fff7b),_0x4b7c2e?.[_0x4f45ff(0x10e)](_0x4f45ff(0x102),_0x48caec),_0x507901();},_0x1fff7b=setTimeout(_0x48caec,_0x1633ef);_0x4b7c2e?.['addEventListener'](_0x5c099a(0x102),_0x48caec,{'once':!![]});});}export function makePacer({paceMs:_0x6b1e9d,signal:_0x5800c1,rnd:rnd=Math[_0x382dbf(0x113)],sleep:sleep=waitMs}={}){const _0x3ae0b5=_0x382dbf,[_0x3fda21,_0x54133d]=Array[_0x3ae0b5(0x111)](_0x6b1e9d)?_0x6b1e9d:PACE_MS;return async()=>{const _0x3286f7=_0x3ae0b5;if(_0x5800c1?.[_0x3286f7(0x10f)])return!![];return await sleep(randomMs(_0x3fda21,_0x54133d,rnd),_0x5800c1),Boolean(_0x5800c1?.[_0x3286f7(0x10f)]);};}function _0x170e(){const _0x4a37b6=['766460ZVfFfZ','round','55662JxFaQd','382911NxVuUo','25DRJAsE','removeEventListener','aborted','2772216JhzYjQ','isArray','14gggnsw','random','test','abort','35045860ZrtvFO','6955551zNzjwI','40uOPnfp','max','5359092uUAseA','11CisPni'];_0x170e=function(){return _0x4a37b6;};return _0x170e();}
+/**
+ * Điều nhịp thao tác trên trang Google Flow (tối ưu tốc độ phản hồi nhanh,
+ * không làm nghẽn hàng đợi giữa các bước thao tác DOM).
+ */
+
+export const PACE_MS = [180, 420];
+export const PAGE_RETRY_REST_MS = [2000, 4500];
+
+export const isUnusualActivity = (text) =>
+  /unusual activity/i.test(String(text ?? ''));
+
+export function randomMs(minMs, maxMs, rnd = Math.random) {
+  const low = Math.max(0, Number(minMs) || 0);
+  const high = Math.max(low, Number(maxMs) || 0);
+  return Math.round(low + rnd() * (high - low));
+}
+
+export function waitMs(ms, signal) {
+  return new Promise((resolve) => {
+    if (signal?.aborted || !(ms > 0)) {
+      resolve();
+      return;
+    }
+    const done = () => {
+      clearTimeout(timer);
+      signal?.removeEventListener('abort', done);
+      resolve();
+    };
+    const timer = setTimeout(done, ms);
+    signal?.addEventListener('abort', done, { once: true });
+  });
+}
+
+export function makePacer({
+  paceMs,
+  signal,
+  rnd = Math.random,
+  sleep = waitMs,
+} = {}) {
+  const [low, high] = Array.isArray(paceMs) ? paceMs : PACE_MS;
+  return async () => {
+    if (signal?.aborted) return true;
+    await sleep(randomMs(low, high, rnd), signal);
+    return Boolean(signal?.aborted);
+  };
+}

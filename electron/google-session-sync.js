@@ -211,6 +211,26 @@ export async function syncGoogleSession(
     );
   }
   const { log = () => {}, signal } = opts;
+  if (!forceRotate && !opts.host && !opts.makeContext) {
+    try {
+      const curSec = nowSec(opts.now ?? Date.now);
+      const existingRaw = await electronSession.cookies.get({});
+      const existingPicked = pickGoogleCookies(existingRaw, curSec);
+      if (
+        hasSignInSet(existingPicked) &&
+        staleTokenNames(existingRaw, curSec).length === 0
+      ) {
+        return {
+          ok: true,
+          copied: existingPicked.length,
+          failed: 0,
+          cached: true,
+        };
+      }
+    } catch {
+      // Nếu không kiểm tra nhanh được thì tiếp tục đồng bộ từ Chrome thật
+    }
+  }
   const jarRes = await withChromeJar(
     account,
     async (cookieJar, ctx) => ({

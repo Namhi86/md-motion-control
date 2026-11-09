@@ -5,7 +5,7 @@ import { mountEditor } from './motion-editor.js';
 import { mountSource } from './motion-source.js';
 import { buildWorkspace } from './motion-workspace.js';
 import { createEmptyZone } from './motion-empty-zone.js';
-import { motionOffered, spokenLanguage } from './motion-form.js';
+import { motionOffered, spokenLanguage, succeeded } from './motion-form.js';
 import { createDraftSaver, draftOf } from './motion-session.js';
 import { readRestorable } from './motion-restore.js';
 import { mediaUrl } from './shared/media-handles.js';
@@ -120,7 +120,7 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
     if (job && ended) {
       const sCur = source.get();
       const failedClips = latestClips.filter((c) => c.state === 'failed');
-      if (latestResult && !latestResult.ok && failedClips.length > 0 && keyOf(sCur) === planKey) {
+      if (latestResult && !succeeded(latestResult) && failedClips.length > 0 && keyOf(sCur) === planKey) {
         for (const c of failedClips) {
           await retry(c.i);
         }
@@ -308,7 +308,7 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
           await waitCurrentJobEnd();
         }
       }
-      if (latestResult && !latestResult.ok) {
+      if (latestResult && !succeeded(latestResult)) {
         break;
       }
       if (lbl && !batchCancelled) {
@@ -360,7 +360,7 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
     const multiChecked = checkedCnt > 1;
     const batchSub = multiChecked ? `Chạy ${checkedCnt}/${totalVis} luồng đã tích` : '';
     const isWorkingNow = (job && !ended) || batchRunning || phase === 'prepare' || phase === 'start';
-    const hasFailedClip = job && ended && latestResult && !latestResult.ok && latestClips.some((c) => c.state === 'failed');
+    const hasFailedClip = job && ended && latestResult && !succeeded(latestResult) && latestClips.some((c) => c.state === 'failed');
 
     act = isWorkingNow
       ? { label: t('Huỷ'), run: cancel }
@@ -502,10 +502,10 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
       latestResult = e.result || null;
       latestStageText = String(e.stage || '');
       resultUi?.update({ clips: e.clips, result: e.result || null, stage: e.stage }); editorUi?.setFlow(e.clips || []);
-      if (e.result && !e.result.ok) {
+      if (e.result && !succeeded(e.result)) {
         const failedClip = latestClips.find((c) => c.state === 'failed' && c.note);
         msg.set(ct(failedClip?.note || e.result.note) || t('Tạo video không thành công. Bấm Thử lại đoạn lỗi để chạy tiếp.'));
-      } else if (e.result && e.result.ok) {
+      } else if (succeeded(e.result)) {
         msg.set('');
       }
       if (!!e.result !== ended) { ended = !!e.result; if (editorUi) source.setLocked(!ended); paint(); } else emitMotionState();

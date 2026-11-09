@@ -1,1 +1,87 @@
-const _0x43924b=_0x38a8;(function(_0x38851e,_0x2d8acc){const _0x29e05e=_0x38a8,_0xd275de=_0x38851e();while(!![]){try{const _0x2c029e=-parseInt(_0x29e05e(0x1c9))/0x1+-parseInt(_0x29e05e(0x1d4))/0x2*(-parseInt(_0x29e05e(0x1c8))/0x3)+parseInt(_0x29e05e(0x1dd))/0x4*(parseInt(_0x29e05e(0x1df))/0x5)+-parseInt(_0x29e05e(0x1cc))/0x6*(-parseInt(_0x29e05e(0x1d2))/0x7)+-parseInt(_0x29e05e(0x1e0))/0x8+-parseInt(_0x29e05e(0x1d9))/0x9*(-parseInt(_0x29e05e(0x1ca))/0xa)+parseInt(_0x29e05e(0x1d0))/0xb*(-parseInt(_0x29e05e(0x1d6))/0xc);if(_0x2c029e===_0x2d8acc)break;else _0xd275de['push'](_0xd275de['shift']());}catch(_0x1dc78e){_0xd275de['push'](_0xd275de['shift']());}}}(_0x58ac,0x5ee54));import{PACE_MS,randomMs,waitMs}from'./flow-pacing.js';export const HUMAN_TYPING=Object[_0x43924b(0x1e1)]({'focusMs':[0x190,0x3e8],'charMs':[0x3c,0xdc],'spaceExtraMs':[0x50,0x104],'punctExtraMs':[0xb4,0x1c2],'hesitateOneIn':0x3c,'hesitateMs':[0x190,0x384],'typoEvery':[0x28,0x3c],'noticeMs':[0x96,0x1f4],'holdMs':[0x19,0x46],'capMs':0xea60});export const HUMAN_PACE=Object[_0x43924b(0x1e1)]({'pauseMs':[0xfa0,0x32c8],'readMs':[0xbb8,0x1f40],'stepMs':PACE_MS,'typing':HUMAN_TYPING,'rnd':Math[_0x43924b(0x1d7)],'typingRnd':undefined,'sleep':waitMs});function _0x38a8(_0x1d06e7,_0x36034a){_0x1d06e7=_0x1d06e7-0x1c8;const _0x58ac35=_0x58ac();let _0x38a811=_0x58ac35[_0x1d06e7];return _0x38a811;}const defined=_0x2017e6=>Object[_0x43924b(0x1ce)](Object[_0x43924b(0x1cd)](_0x2017e6??{})[_0x43924b(0x1da)](([,_0x2bf6c0])=>_0x2bf6c0!==undefined));export const resolvePace=_0x250001=>({...HUMAN_PACE,...defined(_0x250001),'typing':{...HUMAN_TYPING,...defined(_0x250001?.[_0x43924b(0x1d3)])}});export function makeRest({pace:_0x4ba3f5,signal:_0x3ea1ff,log:log=()=>{}}={}){const _0x2bd840=resolvePace(_0x4ba3f5);return async(_0x592630,_0x29bea3='pause')=>{const _0x58ed5b=_0x38a8;if(_0x3ea1ff?.[_0x58ed5b(0x1cb)])return!![];const [_0x23abd5,_0x23b739]=_0x29bea3===_0x58ed5b(0x1d1)?_0x2bd840['readMs']:_0x2bd840[_0x58ed5b(0x1d8)],_0x89f90d=randomMs(_0x23abd5,_0x23b739,_0x2bd840[_0x58ed5b(0x1d5)]);if(_0x89f90d>=0x3e8)log(_0x58ed5b(0x1dc)+Math[_0x58ed5b(0x1cf)](_0x89f90d/0x3e8)+'\x20giây\x20trước\x20'+_0x592630);return await _0x2bd840[_0x58ed5b(0x1de)](_0x89f90d,_0x3ea1ff),Boolean(_0x3ea1ff?.[_0x58ed5b(0x1cb)]);};}export function seededRng(_0x3f98f2){let _0x2b3bf3=Number(_0x3f98f2)>>>0x0;return()=>{const _0x31b296=_0x38a8;_0x2b3bf3=_0x2b3bf3+0x6d2b79f5>>>0x0;let _0x256b12=_0x2b3bf3;return _0x256b12=Math[_0x31b296(0x1db)](_0x256b12^_0x256b12>>>0xf,_0x256b12|0x1),_0x256b12^=_0x256b12+Math[_0x31b296(0x1db)](_0x256b12^_0x256b12>>>0x7,_0x256b12|0x3d),((_0x256b12^_0x256b12>>>0xe)>>>0x0)/0x100000000;};}function _0x58ac(){const _0x3a6118=['7mRnDrF','typing','2FHuwEb','rnd','24qtIDwo','random','pauseMs','1729350jPfOLb','filter','imul','Veo:\x20nghỉ\x20','8GVqWhV','sleep','1435495YvrwuW','2688760KmaNaL','freeze','306330kGkcsf','127130RFBMon','10pHFpew','aborted','691818AJPPxC','entries','fromEntries','round','725142HqNePO','read'];_0x58ac=function(){return _0x3a6118;};return _0x58ac();}export const instantPace=(_0x28aec0=0x1)=>({'pauseMs':[0x0,0x0],'readMs':[0x0,0x0],'stepMs':[0x0,0x0],'rnd':seededRng(_0x28aec0),'typingRnd':seededRng(_0x28aec0+0x3e8),'typing':{'focusMs':[0x0,0x0],'charMs':[0x0,0x0],'spaceExtraMs':[0x0,0x0],'punctExtraMs':[0x0,0x0],'hesitateMs':[0x0,0x0],'noticeMs':[0x0,0x0],'holdMs':[0x0,0x0],'capMs':0x0}});
+/**
+ * Cấu hình nhịp nghỉ và tốc độ gõ phím tự nhiên nhưng tối ưu tốc độ cao
+ * để không gây nghẽn hàng đợi khi tạo nhiều đoạn video liên tiếp.
+ */
+
+import { PACE_MS, randomMs, waitMs } from './flow-pacing.js';
+
+export const HUMAN_TYPING = Object.freeze({
+  focusMs: [80, 180],
+  charMs: [3, 9],
+  spaceExtraMs: [4, 12],
+  punctExtraMs: [8, 20],
+  hesitateOneIn: 300,
+  hesitateMs: [20, 50],
+  typoEvery: [800, 1200],
+  noticeMs: [20, 50],
+  holdMs: [1, 4],
+  capMs: 3000,
+});
+
+export const HUMAN_PACE = Object.freeze({
+  pauseMs: [220, 520],
+  readMs: [180, 400],
+  stepMs: PACE_MS,
+  typing: HUMAN_TYPING,
+  rnd: Math.random,
+  typingRnd: undefined,
+  sleep: waitMs,
+});
+
+const defined = (obj) =>
+  Object.fromEntries(
+    Object.entries(obj ?? {}).filter(([, val]) => val !== undefined)
+  );
+
+export const resolvePace = (custom) => ({
+  ...HUMAN_PACE,
+  ...defined(custom),
+  typing: {
+    ...HUMAN_TYPING,
+    ...defined(custom?.typing),
+  },
+});
+
+export function makeRest({ pace, signal, log = () => {} } = {}) {
+  const resolved = resolvePace(pace);
+  return async (label, kind = 'pause') => {
+    if (signal?.aborted) return true;
+    const [low, high] =
+      kind === 'read' ? resolved.readMs : resolved.pauseMs;
+    const delayMs = randomMs(low, high, resolved.rnd);
+    if (delayMs >= 1000) {
+      log(`Veo: nghỉ ${Math.round(delayMs / 1000)} giây trước ${label}`);
+    }
+    await resolved.sleep(delayMs, signal);
+    return Boolean(signal?.aborted);
+  };
+}
+
+export function seededRng(seed) {
+  let state = Number(seed) >>> 0;
+  return () => {
+    state = (state + 0x6d2b79f5) >>> 0;
+    let t = state;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 0x100000000;
+  };
+}
+
+export const instantPace = (seed = 1) => ({
+  pauseMs: [0, 0],
+  readMs: [0, 0],
+  stepMs: [0, 0],
+  rnd: seededRng(seed),
+  typingRnd: seededRng(seed + 1000),
+  typing: {
+    focusMs: [0, 0],
+    charMs: [0, 0],
+    spaceExtraMs: [0, 0],
+    punctExtraMs: [0, 0],
+    hesitateMs: [0, 0],
+    noticeMs: [0, 0],
+    holdMs: [0, 0],
+    capMs: 0,
+  },
+});

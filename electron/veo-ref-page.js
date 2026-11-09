@@ -1,1 +1,119 @@
-const _0x32f00c=_0x1f4c;(function(_0x49436c,_0x3d1927){const _0x1bc08f=_0x1f4c,_0xd67ea8=_0x49436c();while(!![]){try{const _0x6d7706=parseInt(_0x1bc08f(0x90))/0x1*(parseInt(_0x1bc08f(0x88))/0x2)+-parseInt(_0x1bc08f(0x79))/0x3+parseInt(_0x1bc08f(0x76))/0x4*(parseInt(_0x1bc08f(0x95))/0x5)+-parseInt(_0x1bc08f(0x89))/0x6*(-parseInt(_0x1bc08f(0x8d))/0x7)+parseInt(_0x1bc08f(0x78))/0x8+-parseInt(_0x1bc08f(0x7c))/0x9+-parseInt(_0x1bc08f(0x81))/0xa;if(_0x6d7706===_0x3d1927)break;else _0xd67ea8['push'](_0xd67ea8['shift']());}catch(_0x5a0122){_0xd67ea8['push'](_0xd67ea8['shift']());}}}(_0x47b4,0xa83c0));import{findExpr}from'./click-at.js';import{radio}from'./nano-page.js';import{REF_RESOLUTIONS}from'../src/veo-ref.js';const WALK=_0x32f00c(0x86),VIS='const\x20vis\x20=\x20(e)\x20=>\x20{\x20const\x20r\x20=\x20e.getBoundingClientRect();\x20return\x20r.width\x20>\x204\x20&&\x20r.height\x20>\x204;\x20};',SQUASH='const\x20squash\x20=\x20(s)\x20=>\x20String(s\x20||\x20\x27\x27).replace(/\x5cs+/g,\x20\x27\x20\x27).trim();',DIALOG='\x27[role=dialog],[role=alertdialog]\x27';export const RIGHTS_BOX=_0x32f00c(0x93)+WALK+'\x20'+VIS+'\x20'+SQUASH+_0x32f00c(0x7b);export const ANY_DIALOG=_0x32f00c(0x93)+WALK+'\x20'+VIS+'\x20'+SQUASH+'\x0a\x20\x20const\x20d\x20=\x20walk(document).find((e)\x20=>\x20vis(e)\x20&&\x20/^(dialog|alertdialog)$/.test(e.getAttribute(\x27role\x27)\x20||\x20\x27\x27));\x0a\x20\x20return\x20d\x20?\x20squash(d.innerText).slice(0,\x20160)\x20:\x20\x27\x27;\x20})()';export const AGREE_AT=findExpr(_0x32f00c(0x82)+DIALOG+');\x20return\x20!!d\x20&&\x20/rights\x20to\x20use\x20this\x20video/i.test(d.innerText\x20||\x20\x27\x27);\x20})()');export const NO_SHOW_AT=findExpr(_0x32f00c(0x77));export const buttonTopAt=(_0x330c0a,_0x1b0af5)=>'(()\x20=>\x20{\x20'+SQUASH+_0x32f00c(0x7a)+Number(_0x330c0a)+',\x20'+Number(_0x1b0af5)+_0x32f00c(0x87)+Number(_0x330c0a)+',\x20'+Number(_0x1b0af5)+_0x32f00c(0x83);export const VIDEO_CHIPS='[...document.querySelectorAll(\x27button[aria-label=\x22Ingredient\x22]\x27)].filter((e)\x20=>\x20{\x20const\x20r\x20=\x20e.getBoundingClientRect();\x20return\x20r.width\x20>\x204\x20&&\x20r.height\x20>\x204\x20&&\x20/videocam/.test(e.innerText\x20||\x20\x27\x27);\x20}).length';export const RES_RADIO=_0x5ba550=>{const _0x20e4e9=_0x32f00c;if(!REF_RESOLUTIONS[_0x20e4e9(0x8b)](_0x5ba550))throw new RangeError('the\x20resolution\x20is\x20'+REF_RESOLUTIONS['join'](_0x20e4e9(0x7f)));return radio('/^'+_0x5ba550+_0x20e4e9(0x92));};export const LENGTH_LOCKED='(document.body.innerText.match(/Length\x20based\x20on[^\x5cn]*/i)\x20||\x20[\x27\x27])[0]';function _0x1f4c(_0x3d3ce2,_0x5b3b0f){_0x3d3ce2=_0x3d3ce2-0x74;const _0x47b49b=_0x47b4();let _0x1f4cf4=_0x47b49b[_0x3d3ce2];return _0x1f4cf4;}export const TILE_COUNT='document.querySelectorAll(\x27flow-video-tile\x27).length';function _0x47b4(){const _0x3bfc73=[';\x0a\x20\x20for\x20(const\x20e\x20of\x20fresh\x20>\x200\x20?\x20all.slice(0,\x20fresh)\x20:\x20all)\x20{\x0a\x20\x20\x20\x20const\x20r\x20=\x20e.getBoundingClientRect();\x20const\x20text\x20=\x20squash(e.innerText);\x20const\x20pending\x20=\x20!!e.querySelector(\x27flow-pending-tile\x27);\x0a\x20\x20\x20\x20const\x20failed\x20=\x20/^(warning\x5cs+)?Failed\x5cb/.test(text);\x20const\x20working\x20=\x20/^play_circle\x5cs+\x5cd+%/.test(text)\x20||\x20(head\x20!==\x20\x27\x27\x20&&\x20text.toLowerCase().includes(head));\x0a\x20\x20\x20\x20const\x20badge\x20=\x20/^play_circle\x5cs+\x5cd{3,4}p\x5cb/.test(text);\x0a\x20\x20\x20\x20//\x20Measured\x20live\x202026-11-05:\x20Flow\x20now\x20names\x20a\x20finished\x20clip\x20after\x20its\x20content\x20and\x20shows\x20\x22play_circle\x20play_circle\x20Woman\x20speaking\x20to\x20camera\x22\x20(the\x20upload\x20reads\x20\x22play_circle\x20play_circle\x20<file\x20name>\x22\x20the\x20same\x20way),\x20so\x20a\x0a\x20\x20\x20\x20//\x20tile\x20with\x20words\x20after\x20\x22play_circle\x22\x20and\x20a\x20picture/video\x20to\x20play\x20is\x20done\x20too;\x20only\x20a\x20tile\x20among\x20the\x20NEWEST\x20fresh\x20ones\x20can\x20be\x20ours,\x20which\x20is\x20what\x20keeps\x20the\x20upload\x20out.\x0a\x20\x20\x20\x20const\x20named\x20=\x20fresh\x20>\x200\x20&&\x20!badge\x20&&\x20!failed\x20&&\x20!working\x20&&\x20/^play_circle\x5cs+play_circle\x5cs+\x5cS/.test(text);\x0a\x20\x20\x20\x20const\x20bare\x20=\x20!badge\x20&&\x20!pending\x20&&\x20(/^play_circle$/.test(text)\x20||\x20named)\x20&&\x20holds(e);\x20const\x20done\x20=\x20badge\x20||\x20bare;\x0a\x20\x20\x20\x20if\x20(r.width\x20<=\x204\x20||\x20r.height\x20<=\x204\x20||\x20!(pending\x20||\x20failed\x20||\x20working\x20||\x20done))\x20continue;\x0a\x20\x20\x20\x20const\x20state\x20=\x20pending\x20||\x20(working\x20&&\x20!done\x20&&\x20!failed)\x20?\x20\x27working\x27\x20:\x20failed\x20?\x20\x27failed\x27\x20:\x20done\x20?\x20\x27done\x27\x20:\x20\x27working\x27;\x0a\x20\x20\x20\x20e.scrollIntoView({\x20block:\x20\x27center\x27\x20});\x0a\x20\x20\x20\x20const\x20b\x20=\x20e.getBoundingClientRect();\x0a\x20\x20\x20\x20return\x20{\x20x:\x20Math.round(b.left\x20+\x20b.width\x20/\x202),\x20y:\x20Math.round(b.top\x20+\x20b.height\x20/\x202),\x20text:\x20text.slice(0,\x20300),\x20state,\x20bare:\x20bare\x20&&\x20state\x20===\x20\x27done\x27\x20};\x0a\x20\x20}\x0a\x20\x20return\x20null;\x20})()','(\x5cs|$)/i','(()\x20=>\x20{\x20',';\x0a\x20\x20\x20\x20const\x20typed\x20=\x20[...document.querySelectorAll(\x27textarea,\x20[contenteditable=true],\x20[role=textbox]\x27)].some((b)\x20=>\x20lower(b.value\x20||\x20b.innerText).includes(head));\x0a\x20\x20\x20\x20return\x20reuse\x20||\x20(head\x20!==\x20\x27\x27\x20&&\x20(lower(document.body.innerText).includes(head)\x20||\x20typed));\x20})()','5MBNgLi','floor','replace','slice','));\x20return\x20r\x20?\x20(r.innerText\x20||\x20\x27\x27).replace(/\x5cs+/g,\x20\x27\x20\x27).trim()\x20:\x20\x27\x27;\x20})()','2080788JMuRwx','e.tagName\x20===\x20\x27BUTTON\x27\x20&&\x20/do\x20not\x20show\x20again/i.test(t)','8620376NQrpsd','509061AMJNTS','\x0a\x20\x20let\x20el\x20=\x20document.elementFromPoint(','\x0a\x20\x20const\x20box\x20=\x20walk(document).filter((e)\x20=>\x20vis(e)\x20&&\x20/^(dialog|alertdialog)$/.test(e.getAttribute(\x27role\x27)\x20||\x20\x27\x27)).find((d)\x20=>\x20/rights\x20to\x20use\x20this\x20video/i.test(d.innerText\x20||\x20\x27\x27));\x0a\x20\x20return\x20box\x20?\x20{\x20text:\x20squash(box.innerText).slice(0,\x20300),\x20buttons:\x20[...box.querySelectorAll(\x27button\x27)].map((b)\x20=>\x20squash(b.innerText))\x20}\x20:\x20null;\x20})()','8588763YmKMDy','(()\x20=>\x20{\x20const\x20r\x20=\x20[...document.querySelectorAll(\x27button[role=option].asset-item\x27)].find((x)\x20=>\x20(x.innerText\x20||\x20\x27\x27).includes(','trim','\x20or\x20','\x0a\x20\x20\x20\x20const\x20lower\x20=\x20(s)\x20=>\x20squash(s).toLowerCase();\x0a\x20\x20\x20\x20const\x20reuse\x20=\x20[...document.querySelectorAll(\x27button\x27)].some((b)\x20=>\x20{\x20const\x20r\x20=\x20b.getBoundingClientRect();\x20return\x20r.width\x20>\x204\x20&&\x20r.height\x20>\x204\x20&&\x20/reuse\x20prompt/i.test((b.getAttribute(\x27aria-label\x27)\x20||\x20\x27\x27)\x20+\x20\x27\x20\x27\x20+\x20(b.innerText\x20||\x20\x27\x27));\x20});\x0a\x20\x20\x20\x20const\x20head\x20=\x20','21804330XbAPrb','e.tagName\x20===\x20\x27BUTTON\x27\x20&&\x20/^i\x20agree$/i.test(t)\x20&&\x20(()\x20=>\x20{\x20const\x20d\x20=\x20e.closest(',');\x20if\x20(!inner\x20||\x20inner\x20===\x20el)\x20break;\x20el\x20=\x20inner;\x20}\x0a\x20\x20const\x20b\x20=\x20el\x20&&\x20el.closest\x20?\x20el.closest(\x27button\x27)\x20:\x20null;\x0a\x20\x20return\x20b\x20?\x20squash(b.innerText)\x20:\x20null;\x20})()','state','toLowerCase','const\x20walk\x20=\x20(root,\x20acc\x20=\x20[])\x20=>\x20{\x20for\x20(const\x20el\x20of\x20root.querySelectorAll(\x27*\x27))\x20{\x20acc.push(el);\x20if\x20(el.shadowRoot)\x20walk(el.shadowRoot,\x20acc);\x20}\x20return\x20acc;\x20};',');\x0a\x20\x20for\x20(let\x20i\x20=\x200;\x20i\x20<\x208\x20&&\x20el\x20&&\x20el.shadowRoot;\x20i\x20+=\x201)\x20{\x20const\x20inner\x20=\x20el.shadowRoot.elementFromPoint(','2426108VpSJfy','788478SEjLPY','e.getAttribute(\x27role\x27)\x20===\x20\x27menuitem\x27\x20&&\x20(/original\x20size/i.test(t)\x20||\x20(/^720p/i.test(t)\x20&&\x20!/upscal|gif/i.test(t)\x20&&\x20![...document.querySelectorAll(\x27[role=menuitem]\x27)].some((m)\x20=>\x20/original\x20size/i.test(m.innerText\x20||\x20\x27\x27))))','includes','done','63lXrDDd','bare','stringify','1tXdLzd'];_0x47b4=function(){return _0x3bfc73;};return _0x47b4();}export const resultTile=(_0x1d64a0='',_0x32e335=0x0)=>'(()\x20=>\x20{\x20'+SQUASH+'\x0a\x20\x20const\x20head\x20=\x20'+JSON[_0x32f00c(0x8f)](String(_0x1d64a0??'')[_0x32f00c(0x97)](/\s+/g,'\x20')[_0x32f00c(0x7e)]()[_0x32f00c(0x74)](0x0,0x18)[_0x32f00c(0x85)]())+';\x0a\x20\x20const\x20src\x20=\x20(m)\x20=>\x20!!(m.getAttribute(\x27src\x27)\x20||\x20m.currentSrc);\x0a\x20\x20const\x20loaded\x20=\x20(v)\x20=>\x20typeof\x20v.readyState\x20!==\x20\x27number\x27\x20||\x20v.readyState\x20>=\x201\x20||\x20(Number.isFinite(v.duration)\x20&&\x20v.duration\x20>\x200);\x0a\x20\x20const\x20holds\x20=\x20(e)\x20=>\x20[...e.querySelectorAll(\x27video,\x20img,\x20source\x27)].some((m)\x20=>\x20{\x0a\x20\x20\x20\x20if\x20(m.tagName\x20===\x20\x27VIDEO\x27)\x20return\x20(src(m)\x20||\x20[...m.querySelectorAll(\x27source\x27)].some(src))\x20&&\x20loaded(m);\x0a\x20\x20\x20\x20if\x20(m.tagName\x20===\x20\x27SOURCE\x27)\x20{\x20const\x20v\x20=\x20m.closest(\x27video\x27);\x20return\x20src(m)\x20&&\x20(!v\x20||\x20loaded(v));\x20}\x0a\x20\x20\x20\x20return\x20m.tagName\x20===\x20\x27IMG\x27\x20&&\x20src(m);\x0a\x20\x20});\x0a\x20\x20const\x20all\x20=\x20[...document.querySelectorAll(\x27flow-video-tile\x27)];\x20const\x20fresh\x20=\x20'+Math['max'](0x0,Math[_0x32f00c(0x96)](Number(_0x32e335))||0x0)+_0x32f00c(0x91);export const RESULT_TILE=resultTile();export const tileConfirmed=(_0xe45cb8,_0x375e3d)=>_0x375e3d?.[_0x32f00c(0x84)]===_0x32f00c(0x8c)&&(!_0x375e3d[_0x32f00c(0x8e)]||_0xe45cb8?.[_0x32f00c(0x84)]==='done'&&_0xe45cb8['bare']===!![]&&_0xe45cb8['x']===_0x375e3d['x']&&_0xe45cb8['y']===_0x375e3d['y']);export const rowText=_0x4e8a5d=>_0x32f00c(0x7d)+JSON[_0x32f00c(0x8f)](String(_0x4e8a5d))+_0x32f00c(0x75);export const ORIGINAL_ITEM=findExpr(_0x32f00c(0x8a));export const clipHasPrompt=_0x3be212=>{const _0x757c50=_0x32f00c,_0x3cf1ab=String(_0x3be212??'')[_0x757c50(0x97)](/\s+/g,'\x20')['trim']()[_0x757c50(0x74)](0x0,0x18)['toLowerCase']();return _0x757c50(0x93)+SQUASH+_0x757c50(0x80)+JSON[_0x757c50(0x8f)](_0x3cf1ab)+_0x757c50(0x94);};
+/**
+ * Các biểu thức truy vấn DOM trên trang dự án Google Flow (Omni Reference)
+ * phục vụ kiểm tra hộp thoại quyền sử dụng video, độ phân giải và trạng thái ô kết quả.
+ */
+
+import { findExpr } from './click-at.js';
+import { radio } from './nano-page.js';
+import { REF_RESOLUTIONS } from '../src/veo-ref.js';
+
+const WALK =
+  "const walk = (root, acc = []) => { for (const el of root.querySelectorAll('*')) { acc.push(el); if (el.shadowRoot) walk(el.shadowRoot, acc); } return acc; };";
+const VIS =
+  'const vis = (e) => { const r = e.getBoundingClientRect(); return r.width > 4 && r.height > 4; };';
+const SQUASH =
+  "const squash = (s) => String(s || '').replace(/\\s+/g, ' ').trim();";
+const DIALOG = "'[role=dialog],[role=alertdialog]'";
+
+export const RIGHTS_BOX = `(() => { ${WALK} ${VIS} ${SQUASH}
+  const box = walk(document).filter((e) => vis(e) && /^(dialog|alertdialog)$/.test(e.getAttribute('role') || '')).find((d) => /rights to use this video/i.test(d.innerText || ''));
+  return box ? { text: squash(box.innerText).slice(0, 300), buttons: [...box.querySelectorAll('button')].map((b) => squash(b.innerText)) } : null; })()`;
+
+export const ANY_DIALOG = `(() => { ${WALK} ${VIS} ${SQUASH}
+  const d = walk(document).find((e) => vis(e) && /^(dialog|alertdialog)$/.test(e.getAttribute('role') || ''));
+  return d ? squash(d.innerText).slice(0, 160) : ''; })()`;
+
+export const AGREE_AT = findExpr(
+  `e.tagName === 'BUTTON' && /^i agree$/i.test(t) && (() => { const d = e.closest(${DIALOG}); return !!d && /rights to use this video/i.test(d.innerText || ''); })()`
+);
+
+export const NO_SHOW_AT = findExpr(
+  "e.tagName === 'BUTTON' && /do not show again/i.test(t)"
+);
+
+export const buttonTopAt = (x, y) =>
+  `(() => { ${SQUASH}
+  let el = document.elementFromPoint(${Number(x)}, ${Number(y)});
+  for (let i = 0; i < 8 && el && el.shadowRoot; i += 1) { const inner = el.shadowRoot.elementFromPoint(${Number(x)}, ${Number(y)}); if (!inner || inner === el) break; el = inner; }
+  const b = el && el.closest ? el.closest('button') : null;
+  return b ? squash(b.innerText) : null; })()`;
+
+export const VIDEO_CHIPS =
+  "[...document.querySelectorAll('button[aria-label=\"Ingredient\"]')].filter((e) => { const r = e.getBoundingClientRect(); return r.width > 4 && r.height > 4 && /videocam/.test(e.innerText || ''); }).length";
+
+export const RES_RADIO = (res) => {
+  if (!REF_RESOLUTIONS.includes(res)) {
+    throw new RangeError('the resolution is ' + REF_RESOLUTIONS.join(' or '));
+  }
+  return radio('/^' + res + '(\\s|$)/i');
+};
+
+export const LENGTH_LOCKED =
+  "(document.body.innerText.match(/Length based on[^\\n]*/i) || [''])[0]";
+
+export const TILE_COUNT = "document.querySelectorAll('flow-video-tile').length";
+
+export const resultTile = (prompt = '', freshCount = 0) => {
+  const head = JSON.stringify(
+    String(prompt ?? '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .slice(0, 24)
+      .toLowerCase()
+  );
+  const fresh = Math.max(0, Math.floor(Number(freshCount)) || 0);
+  return `(() => { ${SQUASH}
+  const head = ${head};
+  const src = (m) => !!(m.getAttribute('src') || m.currentSrc);
+  const loaded = (v) => typeof v.readyState !== 'number' || v.readyState >= 1 || (Number.isFinite(v.duration) && v.duration > 0) || src(v);
+  const holds = (e) => [...e.querySelectorAll('video, img, source')].some((m) => {
+    if (m.tagName === 'VIDEO') return (src(m) || [...m.querySelectorAll('source')].some(src)) && loaded(m);
+    if (m.tagName === 'SOURCE') { const v = m.closest('video'); return src(m) && (!v || loaded(v)); }
+    return m.tagName === 'IMG' && src(m);
+  });
+  const all = [...document.querySelectorAll('flow-video-tile')]; const fresh = ${fresh};
+  for (const e of fresh > 0 ? all.slice(0, fresh) : all) {
+    const r = e.getBoundingClientRect(); const text = squash(e.innerText); const pending = !!e.querySelector('flow-pending-tile');
+    const failed = /^(warning\\s+)?Failed\\b/.test(text); const working = /^play_circle\\s+\\d+%/.test(text) || (head !== '' && text.toLowerCase().includes(head));
+    const badge = /^play_circle\\s+\\d{3,4}p\\b/.test(text);
+    const named = fresh > 0 && !badge && !failed && !working && /^play_circle\\s+play_circle\\s+\\S/.test(text);
+    const bare = !badge && !pending && (/^play_circle$/.test(text) || named) && holds(e); const done = badge || bare;
+    if (r.width <= 4 || r.height <= 4 || !(pending || failed || working || done)) continue;
+    const state = pending || (working && !done && !failed) ? 'working' : failed ? 'failed' : done ? 'done' : 'working';
+    e.scrollIntoView({ block: 'center' });
+    const b = e.getBoundingClientRect();
+    return { x: Math.round(b.left + b.width / 2), y: Math.round(b.top + b.height / 2), text: text.slice(0, 300), state, bare: bare && state === 'done' };
+  }
+  return null; })()`;
+};
+
+export const RESULT_TILE = resultTile();
+
+export const tileConfirmed = (prev, cur) =>
+  cur?.state === 'done' &&
+  (!cur.bare ||
+    (prev?.state === 'done' &&
+      prev.bare === true &&
+      prev.x === cur.x &&
+      prev.y === cur.y));
+
+export const rowText = (name) =>
+  `(() => { const r = [...document.querySelectorAll('button[role=option].asset-item')].find((x) => (x.innerText || '').includes(${JSON.stringify(String(name))})); return r ? (r.innerText || '').replace(/\\s+/g, ' ').trim() : ''; })()`;
+
+export const ORIGINAL_ITEM = findExpr(
+  "e.getAttribute('role') === 'menuitem' && (/original size/i.test(t) || (/^720p/i.test(t) && !/upscal|gif/i.test(t) && ![...document.querySelectorAll('[role=menuitem]')].some((m) => /original size/i.test(m.innerText || ''))))"
+);
+
+export const clipHasPrompt = (prompt) => {
+  const head = String(prompt ?? '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 24)
+    .toLowerCase();
+  return `(() => { ${SQUASH}
+    const lower = (s) => squash(s).toLowerCase();
+    const reuse = [...document.querySelectorAll('button')].some((b) => { const r = b.getBoundingClientRect(); return r.width > 4 && r.height > 4 && /reuse prompt/i.test((b.getAttribute('aria-label') || '') + ' ' + (b.innerText || '')); });
+    const head = ${JSON.stringify(head)};
+    const typed = [...document.querySelectorAll('textarea, [contenteditable=true], [role=textbox]')].some((b) => lower(b.value || b.innerText).includes(head));
+    return reuse || (head !== '' && (lower(document.body.innerText).includes(head) || typed)); })()`;
+};
