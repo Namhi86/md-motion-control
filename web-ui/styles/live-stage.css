@@ -3123,25 +3123,29 @@
   line-height: 1;
 }
 
-/* ── 8. Hộp Thoại Cập Nhật Phiên Bản MD MEDIA (#md-update-modal) ── */
-.md-up-backdrop {
+/* ── 8. Hộp Thoại Cập Nhật Phiên Bản & Bản Quyền MD MEDIA (#md-update-modal, #md-license-modal) ── */
+.md-up-backdrop,
+.md-up-overlay {
   position: fixed;
   inset: 0;
-  z-index: 2000;
+  z-index: 4000;
   display: grid;
   place-items: center;
   padding: 20px;
-  background: rgba(5, 8, 14, 0.78);
+  background: rgba(5, 8, 14, 0.8);
   backdrop-filter: blur(8px);
 }
 
-.md-up-dialog {
-  width: min(560px, 100%);
+.md-up-dialog,
+.md-up-card {
+  width: min(560px, 94vw);
+  max-height: 90vh;
+  overflow-y: auto;
   padding: 22px 24px;
   border-radius: 20px;
   background: linear-gradient(180deg, #131c2b 0%, #0d131f 100%);
-  border: 1px solid rgba(255, 159, 28, 0.4);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 32px rgba(255, 136, 0, 0.14);
+  border: 1px solid rgba(255, 159, 28, 0.45);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.72), 0 0 32px rgba(255, 136, 0, 0.16);
   color: #f8fafc;
 }
 

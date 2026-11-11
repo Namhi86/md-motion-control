@@ -939,40 +939,40 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
 
     const modal = document.createElement('div');
     modal.id = 'md-license-modal';
-    modal.className = 'md-up-overlay';
+    modal.className = 'md-up-backdrop';
     modal.innerHTML = `
-      <div class="md-up-card" role="dialog" aria-modal="true" style="max-width:520px;">
+      <div class="md-up-dialog" role="dialog" aria-modal="true" style="width:min(540px, 94vw);">
         <div class="md-up-head">
           <div class="md-up-brand">
-            <span class="md-up-icon">🔑</span>
+            <span class="md-brand-icon" style="font-size:18px;">🔑</span>
             <div>
-              <h3>Bản Quyền &amp; Mã Máy — MD Motion Control</h3>
-              <p>Hệ thống quản lý bản quyền tập trung MD License Center (Ed25519 V2)</p>
+              <h3 class="md-up-title">Bản Quyền &amp; Mã Máy — MD Motion Control</h3>
+              <p class="md-up-sub">Hệ thống quản lý bản quyền tập trung MD License Center (Ed25519 V2)</p>
             </div>
           </div>
-          <button type="button" class="md-up-close" id="md-lic-close">✕</button>
+          <button type="button" class="md-up-close" id="md-lic-close" aria-label="Đóng">✕</button>
         </div>
-        <div class="md-up-body" style="display:flex;flex-direction:column;gap:12px;">
-          <div style="padding:12px 14px;border-radius:12px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.35);display:flex;align-items:center;justify-content:space-between;gap:10px;">
+        <div class="md-up-body" style="display:flex;flex-direction:column;gap:14px;">
+          <div style="padding:13px 16px;border-radius:13px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.38);display:flex;align-items:center;justify-content:space-between;gap:12px;">
             <div>
-              <div style="font-size:11px;color:#94a3b8;text-transform:uppercase;font-weight:700;">Mã máy (HWID) của thiết bị này:</div>
-              <code id="md-lic-hwid-val" style="font-size:16px;font-weight:800;color:#34d399;font-family:monospace;">${hwid}</code>
+              <div style="font-size:11px;color:#94a3b8;text-transform:uppercase;font-weight:700;margin-bottom:3px;">Mã máy (HWID) của thiết bị này:</div>
+              <code id="md-lic-hwid-val" style="font-size:16.5px;font-weight:800;color:#34d399;font-family:monospace;letter-spacing:0.03em;">${hwid}</code>
             </div>
-            <button type="button" class="md-up-btn md-up-btn--ghost" id="md-lic-copy-hwid" style="padding:7px 12px;font-size:12px;">📋 Sao chép Mã máy</button>
+            <button type="button" class="md-up-btn" id="md-lic-copy-hwid" style="height:34px;padding:0 13px;font-size:12px;border-color:rgba(16,185,129,0.45);background:rgba(16,185,129,0.16);color:#ecfdf5;">📋 Sao chép Mã máy</button>
           </div>
 
-          <div style="padding:12px 14px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);font-size:12.5px;line-height:1.7;color:#e2e8f0;">
+          <div style="padding:12px 16px;border-radius:13px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);font-size:13px;line-height:1.75;color:#e2e8f0;">
             <div><strong>Trạng thái:</strong> <span id="md-lic-status-val">${statusText}</span></div>
             <div><strong>Thời hạn sử dụng:</strong> <span id="md-lic-exp-val">${expStr}</span></div>
           </div>
 
           <div style="display:flex;flex-direction:column;gap:8px;">
-            <label style="font-size:12px;font-weight:700;color:#cbd5e1;">Nhập / Đổi Mã Kích Hoạt Bản Quyền (MDMC2....):</label>
-            <div style="display:flex;gap:8px;">
-              <input type="text" id="md-lic-key-input" placeholder="Dán mã MDMC2.... vào đây" style="flex:1;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.16);background:rgba(9,13,22,0.9);color:#f8fafc;font-family:monospace;font-size:12.5px;" />
-              <button type="button" class="md-up-btn md-up-btn--primary" id="md-lic-activate-btn" style="white-space:nowrap;">🔑 Kích hoạt Key</button>
+            <label style="font-size:12.5px;font-weight:700;color:#cbd5e1;">Nhập / Đổi Mã Kích Hoạt Bản Quyền (MDMC2....):</label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input type="text" id="md-lic-key-input" placeholder="Dán mã MDMC2.... vào đây" style="flex:1;height:40px;padding:0 13px;border-radius:10px;border:1px solid rgba(255,255,255,0.16);background:rgba(9,13,22,0.92);color:#f8fafc;font-family:monospace;font-size:12.5px;outline:none;" />
+              <button type="button" class="md-up-btn md-up-btn--primary" id="md-lic-activate-btn" style="height:40px;padding:0 16px;white-space:nowrap;">🔑 Kích hoạt Key</button>
             </div>
-            <div id="md-lic-msg" style="font-size:12px;min-height:18px;color:#94a3b8;">
+            <div id="md-lic-msg" style="font-size:12px;min-height:18px;color:#94a3b8;line-height:1.45;">
               💡 Gửi Mã máy <strong>${hwid}</strong> cho Admin hoặc nhập trên <strong>mdtool.io.vn</strong> để nhận Key tự động.
             </div>
           </div>
