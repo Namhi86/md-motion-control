@@ -21,6 +21,8 @@ export const GATE_OPEN_CHANNELS = Object.freeze([
   'app:ready',
   'app:relaunch',
   'app:openMdStudio',
+  'updater:check',
+  'updater:install',
   'offline:retry',
   'offline:stats',
   'offline:pauseQueue',

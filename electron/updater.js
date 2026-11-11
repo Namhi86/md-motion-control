@@ -1,1 +1,411 @@
-const _0x767a8f=_0x5bef;(function(_0x3a4242,_0x594e16){const _0x5f43c3=_0x5bef,_0x5b404b=_0x3a4242();while(!![]){try{const _0x210f72=parseInt(_0x5f43c3(0x10f))/0x1*(parseInt(_0x5f43c3(0x11b))/0x2)+parseInt(_0x5f43c3(0x121))/0x3*(parseInt(_0x5f43c3(0x12f))/0x4)+parseInt(_0x5f43c3(0x123))/0x5*(parseInt(_0x5f43c3(0x131))/0x6)+parseInt(_0x5f43c3(0x119))/0x7+parseInt(_0x5f43c3(0x11a))/0x8+-parseInt(_0x5f43c3(0x12a))/0x9+-parseInt(_0x5f43c3(0x124))/0xa*(parseInt(_0x5f43c3(0x12c))/0xb);if(_0x210f72===_0x594e16)break;else _0x5b404b['push'](_0x5b404b['shift']());}catch(_0x903947){_0x5b404b['push'](_0x5b404b['shift']());}}}(_0x4983,0xacbea));import{app,dialog}from'electron';import{applyUpdateChoice,choiceOf,updateDialog}from'../src/update-policy.js';export const FEED_URL=_0x767a8f(0x10e);function _0x5bef(_0x447be5,_0x977fc2){_0x447be5=_0x447be5-0x10d;const _0x4983d8=_0x4983();let _0x5bef72=_0x4983d8[_0x447be5];return _0x5bef72;}const EVERY_MS=0xf*0xea60,sleep=_0x2bcb5d=>new Promise(_0x3cbea6=>setTimeout(_0x3cbea6,_0x2bcb5d));export async function startUpdater({enabled:_0x39cf7f,log:_0xf0b206,win:_0x54f5f2,queue:_0x3541fc,prepareQuit:_0x1a9bc7}){const _0x808cd1=_0x767a8f;if(!_0x39cf7f)return null;let _0x5f1d1f;try{const _0x1f7bf0=await import(_0x808cd1(0x113));_0x5f1d1f=_0x1f7bf0[_0x808cd1(0x11f)]??_0x1f7bf0[_0x808cd1(0x117)]?.[_0x808cd1(0x11f)];}catch(_0x363094){return _0xf0b206(_0x808cd1(0x11c)+_0x363094['message']),null;}_0x5f1d1f['autoDownload']=![],_0x5f1d1f[_0x808cd1(0x122)]=!![],_0x5f1d1f[_0x808cd1(0x12b)]=null;const _0x510b3f=(_0x2971f8,_0x37e27f='')=>_0xf0b206(_0x808cd1(0x138)+_0x2971f8+(_0x37e27f?'\x20'+_0x37e27f:''));let _0x2012cb=null,_0x3e09e9=![],_0x15f96b=![],_0x49d857=![],_0x2fe994=-0x1;async function _0x2825f7(_0x4e7d6e){const _0xf76d9c=_0x808cd1,_0x5172b7=_0x54f5f2(),_0x1b49f=updateDialog({'version':_0x4e7d6e,'running':_0x3541fc[_0xf76d9c(0x125)]()[_0xf76d9c(0x10d)]}),_0x57d72c=await(_0x5172b7&&!_0x5172b7[_0xf76d9c(0x133)]()?dialog[_0xf76d9c(0x136)](_0x5172b7,_0x1b49f):dialog[_0xf76d9c(0x136)](_0x1b49f)),_0x4018fc=choiceOf(_0x57d72c[_0xf76d9c(0x110)]);_0x510b3f(_0xf76d9c(0x130)+(_0x1b49f['buttons'][_0x57d72c[_0xf76d9c(0x110)]]??'Để\x20sau')+'\x22');if(_0x4018fc===_0xf76d9c(0x127)&&_0x3541fc['stats']()['running'])_0xf0b206(_0xf76d9c(0x111));const _0x4571e8=async()=>{await _0x1a9bc7(),_0x49d857=!![];};await applyUpdateChoice(_0x4018fc,{'running':()=>_0x3541fc[_0xf76d9c(0x125)]()['running'],'hold':_0x3541fc[_0xf76d9c(0x120)],'stop':_0x4571e8,'install':()=>_0x5f1d1f[_0xf76d9c(0x114)](),'quit':()=>app[_0xf76d9c(0x118)](),'sleep':sleep,'log':_0xf0b206});}_0x5f1d1f['on'](_0x808cd1(0x134),()=>_0x510b3f(_0x808cd1(0x135))),_0x5f1d1f['on'](_0x808cd1(0x128),_0x1e3743=>{const _0x3ff04e=_0x808cd1;_0x510b3f(_0x3ff04e(0x126),_0x1e3743?.[_0x3ff04e(0x12d)]);if(_0x15f96b)return;_0x15f96b=!![],_0x510b3f(_0x3ff04e(0x112)),_0x5f1d1f['downloadUpdate']()[_0x3ff04e(0x132)](_0x338f54=>{const _0x59297b=_0x3ff04e;_0x15f96b=![],_0x510b3f(_0x59297b(0x116),_0x338f54[_0x59297b(0x115)]);});}),_0x5f1d1f['on'](_0x808cd1(0x11e),_0x2163ca=>{const _0x132a5a=_0x808cd1,_0x47aab5=Math[_0x132a5a(0x11d)]((Number(_0x2163ca?.[_0x132a5a(0x137)])||0x0)/0x19)*0x19;if(_0x47aab5!==_0x2fe994)_0x510b3f(_0x132a5a(0x112),(_0x2fe994=_0x47aab5)+'%');}),_0x5f1d1f['on'](_0x808cd1(0x12e),_0x43448f=>{const _0x44195b=_0x808cd1;_0x510b3f(_0x44195b(0x129),_0x43448f?.[_0x44195b(0x12d)]),clearInterval(_0x2012cb);if(_0x3e09e9)return;_0x3e09e9=!![],_0x2825f7(_0x43448f?.[_0x44195b(0x12d)])['catch'](_0x2b967e=>_0x510b3f('error',_0x2b967e[_0x44195b(0x115)]));}),_0x5f1d1f['on'](_0x808cd1(0x116),_0x2eca1f=>{const _0x18e759=_0x808cd1;_0x510b3f(_0x18e759(0x116),_0x2eca1f?.[_0x18e759(0x115)]||String(_0x2eca1f));if(_0x49d857)app['quit']();});const _0x4f58f6=()=>_0x5f1d1f['checkForUpdates']()[_0x808cd1(0x132)](_0x2d5d30=>_0x510b3f(_0x808cd1(0x116),_0x2d5d30[_0x808cd1(0x115)]));return _0x4f58f6(),_0x2012cb=setInterval(_0x4f58f6,EVERY_MS),{'check':_0x4f58f6};}function _0x4983(){const _0x2b7ccc=['3873309UGolCF','version','update-downloaded','12296sZkjgQ','chọn\x20\x22','13104WOkljU','catch','isDestroyed','checking-for-update','checking','showMessageBox','percent','Cập\x20nhật:\x20','running','https://download.mdmotion.local/free-seedance/mac','1323751LTkJRQ','response','Hàng\x20đợi\x20tạm\x20dừng\x20nhận\x20việc\x20mới;\x20app\x20cài\x20bản\x20mới\x20khi\x20các\x20việc\x20đang\x20chạy\x20xong.','downloading','electron-updater','quitAndInstall','message','error','default','quit','9163343uVYZZe','5803928HHRefN','2oJqvga','Không\x20nạp\x20được\x20bộ\x20tự\x20cập\x20nhật:\x20','floor','download-progress','autoUpdater','holdForUpdate','639HiPosk','autoInstallOnAppQuit','855arTKEi','90ByalFR','stats','available','after','update-available','downloaded','4588956WkTVLY','logger'];_0x4983=function(){return _0x2b7ccc;};return _0x4983();}
+// Hệ thống Kiểm tra & Cập nhật Online trực tiếp từ GitHub (Namhi86/md-motion-control)
+import { app, ipcMain } from 'electron';
+import crypto from 'node:crypto';
+import { execFile } from 'node:child_process';
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  unlinkSync,
+  writeFileSync,
+} from 'node:fs';
+import https from 'node:https';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+const APP_ROOT = path.resolve(here, '..');
+
+export const GITHUB_REPO = 'Namhi86/md-motion-control';
+export const GITHUB_BRANCH = 'main';
+export const FEED_URL = `https://github.com/${GITHUB_REPO}`;
+
+/**
+ * Thực hiện HTTP GET trả về Buffer hoặc JSON (tự động theo dõi redirect)
+ */
+function fetchBuffer(url, headers = {}, redirects = 4) {
+  return new Promise((resolve, reject) => {
+    const req = https.get(
+      url,
+      {
+        headers: {
+          'User-Agent': 'MD-Motion-Control-Updater/2.5.0',
+          Accept: 'application/vnd.github.v3+json, */*',
+          'Cache-Control': 'no-cache',
+          ...headers,
+        },
+        timeout: 20000,
+      },
+      (res) => {
+        if (
+          res.statusCode &&
+          res.statusCode >= 300 &&
+          res.statusCode < 400 &&
+          res.headers.location &&
+          redirects > 0
+        ) {
+          res.resume();
+          const nextUrl = new URL(res.headers.location, url).toString();
+          fetchBuffer(nextUrl, headers, redirects - 1).then(resolve, reject);
+          return;
+        }
+        if (res.statusCode !== 200) {
+          const chunks = [];
+          res.on('data', (c) => chunks.push(c));
+          res.on('end', () => {
+            const body = Buffer.concat(chunks).toString('utf8').slice(0, 300);
+            reject(
+              new Error(`HTTP ${res.statusCode} từ ${url}: ${body || 'Lỗi mạng'}`)
+            );
+          });
+          return;
+        }
+        const chunks = [];
+        res.on('data', (c) => chunks.push(c));
+        res.on('end', () => resolve(Buffer.concat(chunks)));
+      }
+    );
+    req.on('timeout', () => {
+      req.destroy(new Error(`Quá thời gian kết nối tới ${url}`));
+    });
+    req.on('error', reject);
+  });
+}
+
+async function fetchJson(url) {
+  const buf = await fetchBuffer(url);
+  return JSON.parse(buf.toString('utf8'));
+}
+
+/**
+ * Tính mã băm Git Blob SHA-1 của một file trên máy để đối chiếu trực tiếp với GitHub Tree
+ */
+function computeGitBlobSha(filePath) {
+  try {
+    if (!existsSync(filePath)) return '';
+    const content = readFileSync(filePath);
+    const header = Buffer.from(`blob ${content.length}\0`, 'utf8');
+    return crypto
+      .createHash('sha1')
+      .update(header)
+      .update(content)
+      .digest('hex');
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * Đọc phiên bản và commit SHA hiện tại đang chạy trên máy
+ */
+function getLocalMeta(userDataDir) {
+  let localVersion = '2.5.0';
+  try {
+    const pkg = JSON.parse(
+      readFileSync(path.join(APP_ROOT, 'package.json'), 'utf8')
+    );
+    if (pkg?.version) localVersion = String(pkg.version);
+  } catch {}
+
+  let localSha = '';
+  try {
+    const metaPath = path.join(userDataDir, 'update-meta.json');
+    if (existsSync(metaPath)) {
+      const m = JSON.parse(readFileSync(metaPath, 'utf8'));
+      if (m?.sha) localSha = String(m.sha).trim();
+    }
+  } catch {}
+
+  try {
+    const gitRefPath = path.join(
+      APP_ROOT,
+      '.git',
+      'refs',
+      'heads',
+      GITHUB_BRANCH
+    );
+    if (existsSync(gitRefPath)) {
+      const refSha = readFileSync(gitRefPath, 'utf8').trim();
+      if (refSha && refSha.length >= 7) {
+        localSha = refSha;
+      }
+    }
+  } catch {}
+
+  return { localVersion, localSha };
+}
+
+function saveLocalMeta(userDataDir, { sha, version }) {
+  try {
+    mkdirSync(userDataDir, { recursive: true });
+    writeFileSync(
+      path.join(userDataDir, 'update-meta.json'),
+      JSON.stringify(
+        {
+          sha: sha || '',
+          version: version || '',
+          updatedAt: Date.now(),
+        },
+        null,
+        2
+      ),
+      'utf8'
+    );
+  } catch {}
+}
+
+/**
+ * Kiểm tra xem một đường dẫn file trong repo có thuộc diện cập nhật Online không
+ */
+function isUpdatableRepoPath(relPath) {
+  if (!relPath || relPath.includes('..')) return false;
+  if (
+    relPath === 'package.json' ||
+    relPath === 'CHAY-MD-MOTION-CONTROL.bat'
+  ) {
+    return true;
+  }
+  return (
+    relPath.startsWith('electron/') ||
+    relPath.startsWith('src/') ||
+    relPath.startsWith('web-ui/')
+  );
+}
+
+/**
+ * Kiểm tra phiên bản mới nhất trên GitHub
+ */
+export async function checkGithubUpdate(userDataDir) {
+  const { localVersion, localSha } = getLocalMeta(userDataDir);
+  const ts = Date.now();
+
+  const [commits, remotePkg] = await Promise.all([
+    fetchJson(
+      `https://api.github.com/repos/${GITHUB_REPO}/commits?sha=${GITHUB_BRANCH}&per_page=6&_t=${ts}`
+    ),
+    fetchJson(
+      `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/package.json?_t=${ts}`
+    ).catch(() => ({ version: localVersion })),
+  ]);
+
+  const latest = Array.isArray(commits) && commits[0] ? commits[0] : null;
+  const remoteSha = latest?.sha || '';
+  const remoteVersion = String(remotePkg?.version || localVersion);
+
+  // Kiểm tra thêm xem có file nào trên máy khác với trên GitHub Tree không
+  let changedFilesCount = 0;
+  try {
+    const treeData = await fetchJson(
+      `https://api.github.com/repos/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1&_t=${ts}`
+    );
+    if (Array.isArray(treeData?.tree)) {
+      for (const item of treeData.tree) {
+        if (item.type !== 'blob' || !isUpdatableRepoPath(item.path)) continue;
+        const localFile = path.join(APP_ROOT, ...item.path.split('/'));
+        const blobSha = computeGitBlobSha(localFile);
+        if (blobSha !== item.sha) {
+          changedFilesCount++;
+        }
+      }
+    }
+  } catch {}
+
+  const shaDiff = Boolean(
+    localSha && remoteSha && localSha.slice(0, 7) !== remoteSha.slice(0, 7)
+  );
+  const verDiff = remoteVersion !== localVersion;
+  const hasUpdate = verDiff || shaDiff || changedFilesCount > 0;
+
+  const recentCommits = (Array.isArray(commits) ? commits.slice(0, 5) : []).map(
+    (c) => ({
+      sha: String(c?.sha || '').slice(0, 7),
+      message: String(c?.commit?.message || '').split('\n')[0],
+      date: c?.commit?.committer?.date || c?.commit?.author?.date || '',
+    })
+  );
+
+  if (!hasUpdate && remoteSha) {
+    saveLocalMeta(userDataDir, { sha: remoteSha, version: remoteVersion });
+  }
+
+  return {
+    ok: true,
+    hasUpdate,
+    changedFilesCount,
+    localVersion,
+    remoteVersion,
+    localSha: localSha ? localSha.slice(0, 7) : remoteSha.slice(0, 7),
+    remoteSha: remoteSha ? remoteSha.slice(0, 7) : '',
+    fullRemoteSha: remoteSha,
+    latestMessage:
+      latest?.commit?.message?.split('\n')[0] ||
+      'Đồng bộ bản mới nhất từ GitHub',
+    latestDate:
+      latest?.commit?.committer?.date || latest?.commit?.author?.date || '',
+    recentCommits,
+    repoUrl: FEED_URL,
+  };
+}
+
+/**
+ * Tải và cập nhật trực tiếp các tệp mã nguồn mới nhất từ GitHub về máy
+ */
+export async function performGithubOnlineUpdate({ userDataDir, onProgress }) {
+  const emit = (pct, stage, extra = {}) => {
+    try {
+      onProgress?.({ pct, stage, ...extra });
+    } catch {}
+  };
+
+  emit(10, 'Đang kết nối máy chủ GitHub & lấy danh sách tệp mới nhất...');
+  const ts = Date.now();
+  const treeData = await fetchJson(
+    `https://api.github.com/repos/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1&_t=${ts}`
+  );
+
+  if (!Array.isArray(treeData?.tree)) {
+    throw new Error('Không đọc được cấu trúc cây thư mục từ GitHub.');
+  }
+
+  const remoteSha = String(treeData.sha || '');
+  const blobs = treeData.tree.filter(
+    (item) => item.type === 'blob' && isUpdatableRepoPath(item.path)
+  );
+
+  emit(22, `Đang kiểm tra ${blobs.length} tệp hệ thống...`);
+  const toDownload = [];
+  for (const item of blobs) {
+    const destPath = path.join(APP_ROOT, ...item.path.split('/'));
+    const localBlobSha = computeGitBlobSha(destPath);
+    if (localBlobSha !== item.sha) {
+      toDownload.push({ ...item, destPath });
+    }
+  }
+
+  let updatedCount = 0;
+  if (toDownload.length === 0) {
+    emit(85, 'Tất cả các tệp mã nguồn đã khớp 100% với bản mới nhất trên GitHub.');
+  } else {
+    for (let i = 0; i < toDownload.length; i++) {
+      const fileItem = toDownload[i];
+      const pct = Math.min(
+        92,
+        Math.round(25 + ((i + 1) / toDownload.length) * 67)
+      );
+      emit(
+        pct,
+        `Đang tải (${i + 1}/${toDownload.length}): ${fileItem.path}...`,
+        { currentFile: fileItem.path }
+      );
+      const rawUrl = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/${encodeURI(fileItem.path)}?_t=${Date.now()}`;
+      const buf = await fetchBuffer(rawUrl);
+      mkdirSync(path.dirname(fileItem.destPath), { recursive: true });
+      writeFileSync(fileItem.destPath, buf);
+      updatedCount++;
+    }
+  }
+
+  // Nếu máy có thư mục .git thì đồng bộ luôn git ref local
+  if (existsSync(path.join(APP_ROOT, '.git'))) {
+    await new Promise((resolve) => {
+      execFile(
+        'git',
+        ['fetch', 'origin', GITHUB_BRANCH],
+        { cwd: APP_ROOT, timeout: 10000 },
+        () => {
+          execFile(
+            'git',
+            ['reset', '--soft', `origin/${GITHUB_BRANCH}`],
+            { cwd: APP_ROOT, timeout: 5000 },
+            () => resolve()
+          );
+        }
+      );
+    });
+  }
+
+  let remoteVersion = '2.5.0';
+  try {
+    const pkg = JSON.parse(
+      readFileSync(path.join(APP_ROOT, 'package.json'), 'utf8')
+    );
+    if (pkg?.version) remoteVersion = String(pkg.version);
+  } catch {}
+
+  saveLocalMeta(userDataDir, { sha: remoteSha, version: remoteVersion });
+  emit(
+    100,
+    updatedCount > 0
+      ? `Đã cập nhật thành công ${updatedCount} tệp mới nhất từ GitHub!`
+      : 'Hệ thống đã được đồng bộ với bản mới nhất trên GitHub!'
+  );
+
+  return {
+    ok: true,
+    updatedCount,
+    remoteVersion,
+    remoteSha: remoteSha.slice(0, 7),
+  };
+}
+
+/**
+ * Khởi tạo các kênh IPC cho Trung tâm Cập nhật Online
+ */
+export function startUpdater({ log, win }) {
+  const userDataDir = app.getPath('userData');
+  const sendProgress = (payload) => {
+    try {
+      const w = typeof win === 'function' ? win() : win;
+      if (w && !w.isDestroyed()) {
+        w.webContents.send('updater:progress', payload);
+      }
+    } catch {}
+  };
+
+  try {
+    ipcMain.removeHandler('updater:check');
+    ipcMain.removeHandler('updater:install');
+  } catch {}
+
+  ipcMain.handle('updater:check', async () => {
+    try {
+      const res = await checkGithubUpdate(userDataDir);
+      log?.(
+        `Kiểm tra cập nhật Online: local=${res.localVersion} (${res.localSha}) · remote=${res.remoteVersion} (${res.remoteSha}) · changed=${res.changedFilesCount}`
+      );
+      return res;
+    } catch (err) {
+      log?.('Lỗi khi kiểm tra cập nhật GitHub: ' + err.message);
+      const { localVersion, localSha } = getLocalMeta(userDataDir);
+      return {
+        ok: false,
+        error: err.message || 'Không kết nối được tới máy chủ GitHub.',
+        localVersion,
+        localSha: localSha.slice(0, 7),
+      };
+    }
+  });
+
+  ipcMain.handle('updater:install', async () => {
+    try {
+      const res = await performGithubOnlineUpdate({
+        userDataDir,
+        onProgress: sendProgress,
+      });
+      log?.(
+        `Đã cập nhật Online từ GitHub: ${res.updatedCount} tệp (${res.remoteSha})`
+      );
+      return res;
+    } catch (err) {
+      log?.('Lỗi khi tải bản cập nhật từ GitHub: ' + err.message);
+      return {
+        ok: false,
+        error: err.message || 'Không tải được bản cập nhật từ GitHub.',
+      };
+    }
+  });
+
+  return {
+    check: () => checkGithubUpdate(userDataDir),
+  };
+}

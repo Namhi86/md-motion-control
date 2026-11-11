@@ -318,9 +318,6 @@ function start() {
     .then(async () => {
       if (await offerMoveToApplications(logUi)) return;
       const userData = app.getPath('userData');
-      if (app.isPackaged) {
-        await offerDevDataImport({ userData, log: logUi });
-      }
 
       const tlsOpts = testRelayTls({
         testMode: TEST_MODE,

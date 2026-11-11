@@ -45,6 +45,11 @@ contextBridge.exposeInMainWorld('dola', {
   meta: call('app:meta'), // -> { coreVersion, bridgeVersion: 1 }
   ready: call('app:ready'), // the web is up (without it, the fallback page comes after 15 s)
   relaunch: call('app:relaunch'),
+  updater: {
+    check: call('updater:check'),
+    install: call('updater:install'),
+    onProgress: on('updater:progress'),
+  },
   auth: {
     state: call('auth:state'), // -> { status: 'signed-in' | 'signed-out' | 'pending', email?, name? }
     login: call('auth:login'),

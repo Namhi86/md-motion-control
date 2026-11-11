@@ -814,7 +814,7 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
     }
   }
 
-  // 4. Hộp thoại Kiểm tra & Cập nhật Phiên bản MD MEDIA v2.5.0 PRO
+  // 4. Hộp thoại Kiểm tra & Cập nhật Online từ GitHub (Namhi86/md-motion-control)
   function openUpdateModal() {
     let modal = document.getElementById('md-update-modal');
     if (modal) modal.remove();
@@ -827,8 +827,8 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
           <div class="md-up-brand">
             <span class="md-brand-icon">MD</span>
             <div>
-              <h3 id="md-up-title" class="md-up-title">MD MEDIA — Trung Tâm Phiên Bản & Cập Nhật</h3>
-              <p class="md-up-sub">Phiên bản hiện tại: <b>v2.5.0 PRO</b> (Build 2026.11.08 · Google Flow Veo Engine)</p>
+              <h3 id="md-up-title" class="md-up-title">MD MEDIA — Trung Tâm Phiên Bản &amp; Cập Nhật Online</h3>
+              <p class="md-up-sub" id="md-up-sub-line">Phiên bản hiện tại: <b>v2.5.0 PRO</b> (Đồng bộ trực tuyến GitHub Cloud)</p>
             </div>
           </div>
           <button type="button" class="md-up-close" id="md-up-close" aria-label="Đóng">✕</button>
@@ -837,70 +837,195 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
         <div class="md-up-status-box" id="md-up-status-box">
           <div class="md-up-spinner" id="md-up-spin"></div>
           <div class="md-up-status-text">
-            <b id="md-up-state-title">Đang kiểm tra bản cập nhật mới nhất từ máy chủ MD MEDIA...</b>
-            <span id="md-up-state-desc">Đang đồng bộ cấu trúc mô hình Google Flow (Veo 3.1) & giao diện Motion Studio...</span>
+            <b id="md-up-state-title">Đang kết nối máy chủ GitHub để kiểm tra bản cập nhật mới nhất...</b>
+            <span id="md-up-state-desc">Đang đối chiếu mã nguồn &amp; phiên bản MD Motion Control...</span>
           </div>
         </div>
 
-        <div class="md-up-bar"><i id="md-up-bar-fill" style="width: 18%"></i></div>
+        <div class="md-up-bar"><i id="md-up-bar-fill" style="width: 20%"></i></div>
 
         <div class="md-up-changelog">
-          <h4>✨ Các nâng cấp mới trong phiên bản MD MEDIA v2.5.0 PRO:</h4>
-          <ul>
-            <li><b>Nhận diện thương hiệu MD MEDIA mới:</b> Giao diện Cyber Studio sắc nét, tốc độ phản hồi cao.</li>
-            <li><b>Làm mới toàn diện Motion Control Studio:</b> Bố cục 3 giai đoạn trực quan, bảng điều khiển phân tách rõ ràng, dễ nhìn.</li>
-            <li><b>Tách biệt Tạo Video & Thư Viện:</b> Không gian Tạo video riêng biệt và Thư viện quản lý video toàn màn hình.</li>
-            <li><b>Mô phỏng tiến độ thực tế (Real-time Progress Sync):</b> Hiệu ứng Sân khấu AI chỉ chạy khi bắt đầu làm video và bám sát đúng phần trăm tiến độ kết xuất thật của từng đoạn.</li>
+          <h4 id="md-up-log-head">✨ Lịch sử cập nhật mới nhất trên GitHub (Namhi86/md-motion-control):</h4>
+          <ul id="md-up-log-list">
+            <li><b>Omni 1.2 Flash &amp; Veo 3.1:</b> Tích hợp chọn Model AI trực tiếp trong Cài đặt mặc định &amp; từng luồng.</li>
+            <li><b>Khóa Bản Quyền Từ Xa 2 Chiều:</b> Đồng bộ kích hoạt, thu hồi và gỡ Key thời gian thực với MD License Center.</li>
+            <li><b>Tối ưu giao diện Đa Luồng:</b> Tự động căn chỉnh bố cục và khóa kích thước cửa sổ tối thiểu (1200×720) chống tràn chữ.</li>
           </ul>
         </div>
 
         <div class="md-up-foot">
           <button type="button" class="md-up-btn" id="md-up-recheck">🔍 Kiểm tra lại</button>
-          <button type="button" class="md-up-btn md-up-btn--primary" id="md-up-apply">⚡ Áp dụng & Làm mới ngay</button>
+          <button type="button" class="md-up-btn md-up-btn--primary" id="md-up-apply">⚡ Tải &amp; Cập nhật Online ngay</button>
         </div>
       </div>
     `;
     document.body.appendChild(modal);
 
-    const runCheckAnimation = () => {
+    let unsubProgress = null;
+    if (typeof window.dola?.updater?.onProgress === 'function') {
+      unsubProgress = window.dola.updater.onProgress((p) => {
+        const fill = document.getElementById('md-up-bar-fill');
+        const stDesc = document.getElementById('md-up-state-desc');
+        if (fill && typeof p?.pct === 'number') {
+          fill.style.width = `${Math.min(100, Math.max(5, p.pct))}%`;
+        }
+        if (stDesc && p?.stage) {
+          stDesc.textContent = p.stage;
+        }
+      });
+    }
+
+    const cleanupAndClose = () => {
+      try {
+        unsubProgress?.();
+      } catch {}
+      modal.remove();
+    };
+
+    const runOnlineCheck = async () => {
       const fill = document.getElementById('md-up-bar-fill');
       const spin = document.getElementById('md-up-spin');
       const stTitle = document.getElementById('md-up-state-title');
       const stDesc = document.getElementById('md-up-state-desc');
+      const subLine = document.getElementById('md-up-sub-line');
+      const logList = document.getElementById('md-up-log-list');
+      const applyBtn = document.getElementById('md-up-apply');
+      const recheckBtn = document.getElementById('md-up-recheck');
       if (!fill) return;
-      fill.style.width = '25%';
-      if (spin) spin.hidden = false;
-      if (stTitle) stTitle.textContent = 'Đang kiểm tra gói cập nhật MD MEDIA...';
-      if (stDesc) stDesc.textContent = 'Đang xác thực phiên bản lõi & kết nối Google Flow (Veo)...';
 
-      setTimeout(() => { if (fill) fill.style.width = '68%'; }, 350);
-      setTimeout(async () => {
-        let coreVer = '2.5.0';
-        try {
-          const meta = await window.dola?.meta?.();
-          if (meta?.version) coreVer = meta.version;
-        } catch {}
+      fill.style.width = '30%';
+      if (spin) spin.hidden = false;
+      if (recheckBtn) recheckBtn.disabled = true;
+      if (stTitle) stTitle.textContent = 'Đang kiểm tra gói cập nhật trực tuyến từ GitHub...';
+      if (stDesc) stDesc.textContent = 'Đang so sánh mã băm (SHA-1) của các tệp hệ thống với nhánh main...';
+
+      try {
+        const res = await window.dola?.updater?.check?.();
         if (fill) fill.style.width = '100%';
         if (spin) spin.hidden = true;
-        if (stTitle) stTitle.textContent = '✓ Bạn đang sử dụng phiên bản mới nhất: MD MEDIA v2.5.0 PRO';
-        if (stDesc) stDesc.textContent = `Core Engine v${coreVer} · Đã kích hoạt đầy đủ tính năng Motion Control & Tạo Video Google Flow.`;
-      }, 850);
-    };
+        if (recheckBtn) recheckBtn.disabled = false;
 
-    runCheckAnimation();
-
-    document.getElementById('md-up-close')?.addEventListener('click', () => modal.remove());
-    document.getElementById('md-up-recheck')?.addEventListener('click', runCheckAnimation);
-    document.getElementById('md-up-apply')?.addEventListener('click', async () => {
-      try {
-        if (typeof window.dola?.relaunch === 'function') {
-          await window.dola.relaunch();
+        if (!res || !res.ok) {
+          if (stTitle) stTitle.textContent = '⚠️ Không thể kết nối máy chủ cập nhật GitHub';
+          if (stDesc) stDesc.textContent = res?.error || 'Vui lòng kiểm tra kết nối mạng rồi bấm Kiểm tra lại.';
           return;
         }
-      } catch {}
-      location.reload();
+
+        if (subLine) {
+          subLine.innerHTML = `Phiên bản máy: <b>v${res.localVersion} PRO</b> (${res.localSha || 'local'}) · Bản GitHub: <b>v${res.remoteVersion} PRO</b> (${res.remoteSha || 'main'})`;
+        }
+
+        if (Array.isArray(res.recentCommits) && res.recentCommits.length > 0 && logList) {
+          logList.innerHTML = res.recentCommits
+            .map((c) => {
+              const dt = c.date ? new Date(c.date).toLocaleString('vi-VN') : '';
+              return `<li><b>[${c.sha}]</b> ${c.message} <span style="color:#64748b;font-size:11.5px;">(${dt})</span></li>`;
+            })
+            .join('');
+        }
+
+        if (res.hasUpdate) {
+          if (stTitle) {
+            stTitle.style.color = '#fde047';
+            stTitle.textContent = `🚀 Phát hiện bản cập nhật mới trên GitHub (${res.changedFilesCount || 1} tệp thay đổi)!`;
+          }
+          if (stDesc) {
+            stDesc.textContent = `Bản mới nhất [${res.remoteSha}]: "${res.latestMessage}" — Bấm nút bên dưới để tải và áp dụng ngay.`;
+          }
+          if (applyBtn) {
+            applyBtn.textContent = '⚡ Tải & Cập nhật Online ngay';
+          }
+        } else {
+          if (stTitle) {
+            stTitle.style.color = '#6ee7b7';
+            stTitle.textContent = `✓ Bạn đang sử dụng bản mới nhất: MD MEDIA v${res.localVersion} PRO (${res.remoteSha})`;
+          }
+          if (stDesc) {
+            stDesc.textContent = `Tất cả tệp hệ thống đã đồng bộ 100% với GitHub (${res.latestMessage}).`;
+          }
+          if (applyBtn) {
+            applyBtn.textContent = '⚡ Đồng bộ lại & Làm mới ứng dụng';
+          }
+        }
+      } catch (err) {
+        if (fill) fill.style.width = '100%';
+        if (spin) spin.hidden = true;
+        if (recheckBtn) recheckBtn.disabled = false;
+        if (stTitle) stTitle.textContent = '⚠️ Lỗi khi kiểm tra bản cập nhật Online';
+        if (stDesc) stDesc.textContent = err?.message || 'Vui lòng thử lại sau.';
+      }
+    };
+
+    runOnlineCheck();
+
+    document.getElementById('md-up-close')?.addEventListener('click', cleanupAndClose);
+    document.getElementById('md-up-recheck')?.addEventListener('click', runOnlineCheck);
+    document.getElementById('md-up-apply')?.addEventListener('click', async () => {
+      const fill = document.getElementById('md-up-bar-fill');
+      const spin = document.getElementById('md-up-spin');
+      const stTitle = document.getElementById('md-up-state-title');
+      const stDesc = document.getElementById('md-up-state-desc');
+      const applyBtn = document.getElementById('md-up-apply');
+      const recheckBtn = document.getElementById('md-up-recheck');
+
+      if (applyBtn) applyBtn.disabled = true;
+      if (recheckBtn) recheckBtn.disabled = true;
+      if (spin) spin.hidden = false;
+      if (fill) fill.style.width = '15%';
+      if (stTitle) {
+        stTitle.style.color = '#ffbe3d';
+        stTitle.textContent = '⏳ Đang tải và cập nhật trực tuyến từ GitHub...';
+      }
+      if (stDesc) {
+        stDesc.textContent = 'Vui lòng giữ nguyên cửa sổ trong giây lát...';
+      }
+
+      try {
+        const res = await window.dola?.updater?.install?.();
+        if (res && res.ok) {
+          if (fill) fill.style.width = '100%';
+          if (spin) spin.hidden = true;
+          if (stTitle) {
+            stTitle.style.color = '#6ee7b7';
+            stTitle.textContent = `🎉 Cập nhật hoàn tất (${res.updatedCount || 0} tệp mới · #${res.remoteSha || ''})! Đang khởi động lại...`;
+          }
+          setTimeout(async () => {
+            try {
+              if (typeof window.dola?.relaunch === 'function') {
+                await window.dola.relaunch();
+                return;
+              }
+            } catch {}
+            location.reload();
+          }, 900);
+          return;
+        }
+        if (spin) spin.hidden = true;
+        if (applyBtn) applyBtn.disabled = false;
+        if (recheckBtn) recheckBtn.disabled = false;
+        if (stTitle) {
+          stTitle.style.color = '#fca5a5';
+          stTitle.textContent = '❌ Không thể tải bản cập nhật Online';
+        }
+        if (stDesc) {
+          stDesc.textContent = res?.error || 'Vui lòng kiểm tra kết nối mạng rồi thử lại.';
+        }
+      } catch (err) {
+        if (spin) spin.hidden = true;
+        if (applyBtn) applyBtn.disabled = false;
+        if (recheckBtn) recheckBtn.disabled = false;
+        if (stTitle) {
+          stTitle.style.color = '#fca5a5';
+          stTitle.textContent = '❌ Lỗi cập nhật Online';
+        }
+        if (stDesc) {
+          stDesc.textContent = err?.message || 'Vui lòng thử lại.';
+        }
+      }
     });
-    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) cleanupAndClose();
+    });
   }
 
   async function refreshHeaderLicenseBadge() {
