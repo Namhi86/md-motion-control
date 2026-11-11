@@ -814,7 +814,7 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
     }
   }
 
-  // 4. Hộp thoại Kiểm tra & Cập nhật Online từ GitHub (Namhi86/md-motion-control)
+  // 4. Hộp thoại Kiểm tra & Cập nhật Online MD MEDIA
   function openUpdateModal() {
     let modal = document.getElementById('md-update-modal');
     if (modal) modal.remove();
@@ -828,7 +828,7 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
             <span class="md-brand-icon">MD</span>
             <div>
               <h3 id="md-up-title" class="md-up-title">MD MEDIA — Trung Tâm Phiên Bản &amp; Cập Nhật Online</h3>
-              <p class="md-up-sub" id="md-up-sub-line">Phiên bản hiện tại: <b>v2.5.0 PRO</b> (Đồng bộ trực tuyến GitHub Cloud)</p>
+              <p class="md-up-sub" id="md-up-sub-line">Phiên bản hiện tại: <b>v2.5.0 PRO</b> (Đồng bộ trực tuyến MD Cloud)</p>
             </div>
           </div>
           <button type="button" class="md-up-close" id="md-up-close" aria-label="Đóng">✕</button>
@@ -837,21 +837,12 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
         <div class="md-up-status-box" id="md-up-status-box">
           <div class="md-up-spinner" id="md-up-spin"></div>
           <div class="md-up-status-text">
-            <b id="md-up-state-title">Đang kết nối máy chủ GitHub để kiểm tra bản cập nhật mới nhất...</b>
-            <span id="md-up-state-desc">Đang đối chiếu mã nguồn &amp; phiên bản MD Motion Control...</span>
+            <b id="md-up-state-title">Đang kết nối máy chủ MD MEDIA để kiểm tra bản cập nhật mới nhất...</b>
+            <span id="md-up-state-desc">Đang kiểm tra dữ liệu phiên bản &amp; cấu hình hệ thống...</span>
           </div>
         </div>
 
         <div class="md-up-bar"><i id="md-up-bar-fill" style="width: 20%"></i></div>
-
-        <div class="md-up-changelog">
-          <h4 id="md-up-log-head">✨ Lịch sử cập nhật mới nhất trên GitHub (Namhi86/md-motion-control):</h4>
-          <ul id="md-up-log-list">
-            <li><b>Omni 1.2 Flash &amp; Veo 3.1:</b> Tích hợp chọn Model AI trực tiếp trong Cài đặt mặc định &amp; từng luồng.</li>
-            <li><b>Khóa Bản Quyền Từ Xa 2 Chiều:</b> Đồng bộ kích hoạt, thu hồi và gỡ Key thời gian thực với MD License Center.</li>
-            <li><b>Tối ưu giao diện Đa Luồng:</b> Tự động căn chỉnh bố cục và khóa kích thước cửa sổ tối thiểu (1200×720) chống tràn chữ.</li>
-          </ul>
-        </div>
 
         <div class="md-up-foot">
           <button type="button" class="md-up-btn" id="md-up-recheck">🔍 Kiểm tra lại</button>
@@ -888,7 +879,6 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
       const stTitle = document.getElementById('md-up-state-title');
       const stDesc = document.getElementById('md-up-state-desc');
       const subLine = document.getElementById('md-up-sub-line');
-      const logList = document.getElementById('md-up-log-list');
       const applyBtn = document.getElementById('md-up-apply');
       const recheckBtn = document.getElementById('md-up-recheck');
       if (!fill) return;
@@ -896,8 +886,8 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
       fill.style.width = '30%';
       if (spin) spin.hidden = false;
       if (recheckBtn) recheckBtn.disabled = true;
-      if (stTitle) stTitle.textContent = 'Đang kiểm tra gói cập nhật trực tuyến từ GitHub...';
-      if (stDesc) stDesc.textContent = 'Đang so sánh mã băm (SHA-1) của các tệp hệ thống với nhánh main...';
+      if (stTitle) stTitle.textContent = 'Đang kiểm tra gói cập nhật trực tuyến từ máy chủ MD MEDIA...';
+      if (stDesc) stDesc.textContent = 'Đang xác thực phiên bản hệ thống...';
 
       try {
         const res = await window.dola?.updater?.check?.();
@@ -906,31 +896,22 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
         if (recheckBtn) recheckBtn.disabled = false;
 
         if (!res || !res.ok) {
-          if (stTitle) stTitle.textContent = '⚠️ Không thể kết nối máy chủ cập nhật GitHub';
-          if (stDesc) stDesc.textContent = res?.error || 'Vui lòng kiểm tra kết nối mạng rồi bấm Kiểm tra lại.';
+          if (stTitle) stTitle.textContent = '⚠️ Không thể kết nối máy chủ cập nhật MD MEDIA';
+          if (stDesc) stDesc.textContent = 'Vui lòng kiểm tra kết nối mạng rồi bấm Kiểm tra lại.';
           return;
         }
 
         if (subLine) {
-          subLine.innerHTML = `Phiên bản máy: <b>v${res.localVersion} PRO</b> (${res.localSha || 'local'}) · Bản GitHub: <b>v${res.remoteVersion} PRO</b> (${res.remoteSha || 'main'})`;
-        }
-
-        if (Array.isArray(res.recentCommits) && res.recentCommits.length > 0 && logList) {
-          logList.innerHTML = res.recentCommits
-            .map((c) => {
-              const dt = c.date ? new Date(c.date).toLocaleString('vi-VN') : '';
-              return `<li><b>[${c.sha}]</b> ${c.message} <span style="color:#64748b;font-size:11.5px;">(${dt})</span></li>`;
-            })
-            .join('');
+          subLine.innerHTML = `Phiên bản hiện tại: <b>v${res.localVersion} PRO</b> · Bản mới nhất: <b>v${res.remoteVersion} PRO</b>`;
         }
 
         if (res.hasUpdate) {
           if (stTitle) {
             stTitle.style.color = '#fde047';
-            stTitle.textContent = `🚀 Phát hiện bản cập nhật mới trên GitHub (${res.changedFilesCount || 1} tệp thay đổi)!`;
+            stTitle.textContent = `🚀 Đã có bản cập nhật mới trên máy chủ MD MEDIA!`;
           }
           if (stDesc) {
-            stDesc.textContent = `Bản mới nhất [${res.remoteSha}]: "${res.latestMessage}" — Bấm nút bên dưới để tải và áp dụng ngay.`;
+            stDesc.textContent = 'Bấm nút "⚡ Tải & Cập nhật Online ngay" bên dưới để tự động nâng cấp.';
           }
           if (applyBtn) {
             applyBtn.textContent = '⚡ Tải & Cập nhật Online ngay';
@@ -938,21 +919,21 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
         } else {
           if (stTitle) {
             stTitle.style.color = '#6ee7b7';
-            stTitle.textContent = `✓ Bạn đang sử dụng bản mới nhất: MD MEDIA v${res.localVersion} PRO (${res.remoteSha})`;
+            stTitle.textContent = `✓ Bạn đang sử dụng bản mới nhất: MD MEDIA v${res.localVersion} PRO`;
           }
           if (stDesc) {
-            stDesc.textContent = `Tất cả tệp hệ thống đã đồng bộ 100% với GitHub (${res.latestMessage}).`;
+            stDesc.textContent = 'Tất cả tính năng và cấu hình hệ thống đã được đồng bộ 100% với máy chủ MD MEDIA.';
           }
           if (applyBtn) {
             applyBtn.textContent = '⚡ Đồng bộ lại & Làm mới ứng dụng';
           }
         }
-      } catch (err) {
+      } catch {
         if (fill) fill.style.width = '100%';
         if (spin) spin.hidden = true;
         if (recheckBtn) recheckBtn.disabled = false;
         if (stTitle) stTitle.textContent = '⚠️ Lỗi khi kiểm tra bản cập nhật Online';
-        if (stDesc) stDesc.textContent = err?.message || 'Vui lòng thử lại sau.';
+        if (stDesc) stDesc.textContent = 'Vui lòng thử lại sau.';
       }
     };
 
@@ -974,7 +955,7 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
       if (fill) fill.style.width = '15%';
       if (stTitle) {
         stTitle.style.color = '#ffbe3d';
-        stTitle.textContent = '⏳ Đang tải và cập nhật trực tuyến từ GitHub...';
+        stTitle.textContent = '⏳ Đang tải và cập nhật trực tuyến từ máy chủ MD MEDIA...';
       }
       if (stDesc) {
         stDesc.textContent = 'Vui lòng giữ nguyên cửa sổ trong giây lát...';
@@ -987,7 +968,7 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
           if (spin) spin.hidden = true;
           if (stTitle) {
             stTitle.style.color = '#6ee7b7';
-            stTitle.textContent = `🎉 Cập nhật hoàn tất (${res.updatedCount || 0} tệp mới · #${res.remoteSha || ''})! Đang khởi động lại...`;
+            stTitle.textContent = '🎉 Cập nhật hoàn tất! Đang khởi động lại ứng dụng...';
           }
           setTimeout(async () => {
             try {
@@ -1008,9 +989,9 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
           stTitle.textContent = '❌ Không thể tải bản cập nhật Online';
         }
         if (stDesc) {
-          stDesc.textContent = res?.error || 'Vui lòng kiểm tra kết nối mạng rồi thử lại.';
+          stDesc.textContent = 'Vui lòng kiểm tra kết nối mạng rồi thử lại.';
         }
-      } catch (err) {
+      } catch {
         if (spin) spin.hidden = true;
         if (applyBtn) applyBtn.disabled = false;
         if (recheckBtn) recheckBtn.disabled = false;
@@ -1019,7 +1000,7 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
           stTitle.textContent = '❌ Lỗi cập nhật Online';
         }
         if (stDesc) {
-          stDesc.textContent = err?.message || 'Vui lòng thử lại.';
+          stDesc.textContent = 'Vui lòng thử lại.';
         }
       }
     });

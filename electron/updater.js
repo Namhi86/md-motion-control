@@ -363,7 +363,7 @@ export async function performGithubOnlineUpdate({ userDataDir, onProgress }) {
     } catch {}
   };
 
-  emit(10, 'Đang kết nối máy chủ GitHub & lấy danh sách tệp mới nhất...');
+  emit(10, 'Đang kết nối máy chủ MD MEDIA & lấy danh sách tệp mới nhất...');
   const ts = Date.now();
 
   try {
@@ -372,7 +372,7 @@ export async function performGithubOnlineUpdate({ userDataDir, onProgress }) {
     );
 
     if (!Array.isArray(treeData?.tree)) {
-      throw new Error('Không đọc được cấu trúc cây thư mục từ GitHub.');
+      throw new Error('Không đọc được cấu trúc dữ liệu từ máy chủ cập nhật.');
     }
 
     const remoteSha = String(treeData.sha || '');
@@ -391,7 +391,7 @@ export async function performGithubOnlineUpdate({ userDataDir, onProgress }) {
 
     let updatedCount = 0;
     if (toDownload.length === 0) {
-      emit(85, 'Tất cả các tệp mã nguồn đã khớp 100% với bản mới nhất trên GitHub.');
+      emit(85, 'Tất cả các tệp hệ thống đã đồng bộ 100% với bản mới nhất.');
     } else {
       for (let i = 0; i < toDownload.length; i++) {
         const fileItem = toDownload[i];
@@ -401,7 +401,7 @@ export async function performGithubOnlineUpdate({ userDataDir, onProgress }) {
         );
         emit(
           pct,
-          `Đang tải (${i + 1}/${toDownload.length}): ${fileItem.path}...`,
+          `Đang tải gói cập nhật (${i + 1}/${toDownload.length})...`,
           { currentFile: fileItem.path }
         );
         const rawUrl = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/${encodeURI(fileItem.path)}?_t=${Date.now()}`;
@@ -431,8 +431,8 @@ export async function performGithubOnlineUpdate({ userDataDir, onProgress }) {
     emit(
       100,
       updatedCount > 0
-        ? `Đã cập nhật thành công ${updatedCount} tệp mới nhất từ GitHub!`
-        : 'Hệ thống đã được đồng bộ với bản mới nhất trên GitHub!'
+        ? `Đã cập nhật thành công ${updatedCount} tệp mới nhất!`
+        : 'Hệ thống đã được đồng bộ với bản mới nhất!'
     );
 
     return {
@@ -443,7 +443,7 @@ export async function performGithubOnlineUpdate({ userDataDir, onProgress }) {
     };
   } catch (apiErr) {
     if (existsSync(path.join(APP_ROOT, '.git'))) {
-      emit(35, 'Đang đồng bộ trực tiếp qua Git từ nhánh main...');
+      emit(35, 'Đang đồng bộ trực tiếp từ máy chủ MD MEDIA...');
       await runGit(['fetch', 'origin', GITHUB_BRANCH], 15000);
       const diffRaw = await runGit([
         'diff',
@@ -463,7 +463,7 @@ export async function performGithubOnlineUpdate({ userDataDir, onProgress }) {
         if (pkg?.version) remoteVersion = String(pkg.version);
       } catch {}
       saveLocalMeta(userDataDir, { sha: remoteHead, version: remoteVersion });
-      emit(100, 'Đã đồng bộ hoàn tất phiên bản mới nhất từ GitHub!');
+      emit(100, 'Đã đồng bộ hoàn tất phiên bản mới nhất!');
       return {
         ok: true,
         updatedCount: changedCount,
@@ -498,15 +498,15 @@ export function startUpdater({ log, win }) {
     try {
       const res = await checkGithubUpdate(userDataDir);
       log?.(
-        `Kiểm tra cập nhật Online: local=${res.localVersion} (${res.localSha}) · remote=${res.remoteVersion} (${res.remoteSha}) · changed=${res.changedFilesCount}`
+        `Kiểm tra cập nhật Online: local=${res.localVersion} · remote=${res.remoteVersion}`
       );
       return res;
     } catch (err) {
-      log?.('Lỗi khi kiểm tra cập nhật GitHub: ' + err.message);
+      log?.('Lỗi khi kiểm tra cập nhật: ' + err.message);
       const { localVersion, localSha } = getLocalMeta(userDataDir);
       return {
         ok: false,
-        error: err.message || 'Không kết nối được tới máy chủ GitHub.',
+        error: 'Không kết nối được tới máy chủ cập nhật MD MEDIA.',
         localVersion,
         localSha: localSha.slice(0, 7),
       };
@@ -519,15 +519,13 @@ export function startUpdater({ log, win }) {
         userDataDir,
         onProgress: sendProgress,
       });
-      log?.(
-        `Đã cập nhật Online từ GitHub: ${res.updatedCount} tệp (${res.remoteSha})`
-      );
+      log?.(`Đã cập nhật Online: ${res.updatedCount} tệp`);
       return res;
     } catch (err) {
-      log?.('Lỗi khi tải bản cập nhật từ GitHub: ' + err.message);
+      log?.('Lỗi khi tải bản cập nhật: ' + err.message);
       return {
         ok: false,
-        error: err.message || 'Không tải được bản cập nhật từ GitHub.',
+        error: 'Không tải được bản cập nhật từ máy chủ MD MEDIA.',
       };
     }
   });
