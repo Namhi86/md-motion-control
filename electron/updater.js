@@ -6,7 +6,6 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
-  unlinkSync,
   writeFileSync,
 } from 'node:fs';
 import https from 'node:https';
@@ -21,7 +20,27 @@ export const GITHUB_BRANCH = 'main';
 export const FEED_URL = `https://github.com/${GITHUB_REPO}`;
 
 /**
- * Thực hiện HTTP GET trả về Buffer hoặc JSON (tự động theo dõi redirect)
+ * Thực thi lệnh git trong thư mục ứng dụng (trả về stdout hoặc ném lỗi)
+ */
+function runGit(args, timeout = 15000) {
+  return new Promise((resolve, reject) => {
+    execFile(
+      'git',
+      args,
+      { cwd: APP_ROOT, timeout, windowsHide: true },
+      (err, stdout, stderr) => {
+        if (err) {
+          reject(new Error((stderr || err.message || '').trim()));
+          return;
+        }
+        resolve(String(stdout || '').trim());
+      }
+    );
+  });
+}
+
+/**
+ * Thực hiện HTTP GET trả về Buffer (tự động theo dõi redirect)
  */
 function fetchBuffer(url, headers = {}, redirects = 4) {
   return new Promise((resolve, reject) => {
@@ -173,78 +192,154 @@ function isUpdatableRepoPath(relPath) {
 }
 
 /**
- * Kiểm tra phiên bản mới nhất trên GitHub
+ * Kiểm tra cập nhật bằng Git CLI (nếu có .git và git trên máy)
  */
-export async function checkGithubUpdate(userDataDir) {
-  const { localVersion, localSha } = getLocalMeta(userDataDir);
-  const ts = Date.now();
+async function checkUpdateViaGitCli(userDataDir) {
+  const { localVersion, localSha: fallbackSha } = getLocalMeta(userDataDir);
+  await runGit(['fetch', 'origin', GITHUB_BRANCH], 15000);
+  const localHead = await runGit(['rev-parse', 'HEAD']).catch(() => fallbackSha);
+  const remoteHead = await runGit(['rev-parse', `origin/${GITHUB_BRANCH}`]);
+  const diffRaw = await runGit([
+    'diff',
+    '--name-only',
+    'HEAD',
+    `origin/${GITHUB_BRANCH}`,
+  ]).catch(() => '');
+  const changedFiles = diffRaw
+    .split(/\r?\n/)
+    .map((s) => s.trim())
+    .filter((s) => s && isUpdatableRepoPath(s));
 
-  const [commits, remotePkg] = await Promise.all([
-    fetchJson(
-      `https://api.github.com/repos/${GITHUB_REPO}/commits?sha=${GITHUB_BRANCH}&per_page=6&_t=${ts}`
-    ),
-    fetchJson(
-      `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/package.json?_t=${ts}`
-    ).catch(() => ({ version: localVersion })),
-  ]);
-
-  const latest = Array.isArray(commits) && commits[0] ? commits[0] : null;
-  const remoteSha = latest?.sha || '';
-  const remoteVersion = String(remotePkg?.version || localVersion);
-
-  // Kiểm tra thêm xem có file nào trên máy khác với trên GitHub Tree không
-  let changedFilesCount = 0;
+  let remoteVersion = localVersion;
   try {
-    const treeData = await fetchJson(
-      `https://api.github.com/repos/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1&_t=${ts}`
-    );
-    if (Array.isArray(treeData?.tree)) {
-      for (const item of treeData.tree) {
-        if (item.type !== 'blob' || !isUpdatableRepoPath(item.path)) continue;
-        const localFile = path.join(APP_ROOT, ...item.path.split('/'));
-        const blobSha = computeGitBlobSha(localFile);
-        if (blobSha !== item.sha) {
-          changedFilesCount++;
-        }
-      }
-    }
+    const remotePkgRaw = await runGit([
+      'show',
+      `origin/${GITHUB_BRANCH}:package.json`,
+    ]);
+    const remotePkg = JSON.parse(remotePkgRaw);
+    if (remotePkg?.version) remoteVersion = String(remotePkg.version);
   } catch {}
 
-  const shaDiff = Boolean(
-    localSha && remoteSha && localSha.slice(0, 7) !== remoteSha.slice(0, 7)
-  );
-  const verDiff = remoteVersion !== localVersion;
-  const hasUpdate = verDiff || shaDiff || changedFilesCount > 0;
+  const logRaw = await runGit([
+    'log',
+    `origin/${GITHUB_BRANCH}`,
+    '-n',
+    '5',
+    '--pretty=format:%h|%s|%cI',
+  ]).catch(() => '');
+  const recentCommits = logRaw
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map((line) => {
+      const [sha, message, date] = line.split('|');
+      return { sha: sha || '', message: message || '', date: date || '' };
+    });
 
-  const recentCommits = (Array.isArray(commits) ? commits.slice(0, 5) : []).map(
-    (c) => ({
-      sha: String(c?.sha || '').slice(0, 7),
-      message: String(c?.commit?.message || '').split('\n')[0],
-      date: c?.commit?.committer?.date || c?.commit?.author?.date || '',
-    })
-  );
+  const hasUpdate =
+    remoteVersion !== localVersion ||
+    localHead.slice(0, 7) !== remoteHead.slice(0, 7) ||
+    changedFiles.length > 0;
 
-  if (!hasUpdate && remoteSha) {
-    saveLocalMeta(userDataDir, { sha: remoteSha, version: remoteVersion });
+  if (!hasUpdate && remoteHead) {
+    saveLocalMeta(userDataDir, { sha: remoteHead, version: remoteVersion });
   }
 
   return {
     ok: true,
     hasUpdate,
-    changedFilesCount,
+    changedFilesCount: changedFiles.length,
     localVersion,
     remoteVersion,
-    localSha: localSha ? localSha.slice(0, 7) : remoteSha.slice(0, 7),
-    remoteSha: remoteSha ? remoteSha.slice(0, 7) : '',
-    fullRemoteSha: remoteSha,
+    localSha: localHead.slice(0, 7),
+    remoteSha: remoteHead.slice(0, 7),
+    fullRemoteSha: remoteHead,
     latestMessage:
-      latest?.commit?.message?.split('\n')[0] ||
-      'Đồng bộ bản mới nhất từ GitHub',
-    latestDate:
-      latest?.commit?.committer?.date || latest?.commit?.author?.date || '',
+      recentCommits[0]?.message || 'Đồng bộ bản mới nhất từ GitHub',
+    latestDate: recentCommits[0]?.date || '',
     recentCommits,
     repoUrl: FEED_URL,
   };
+}
+
+/**
+ * Kiểm tra phiên bản mới nhất trên GitHub (kết hợp GitHub Cloud API & Git CLI)
+ */
+export async function checkGithubUpdate(userDataDir) {
+  const { localVersion, localSha } = getLocalMeta(userDataDir);
+  const ts = Date.now();
+
+  try {
+    const [commits, remotePkg] = await Promise.all([
+      fetchJson(
+        `https://api.github.com/repos/${GITHUB_REPO}/commits?sha=${GITHUB_BRANCH}&per_page=6&_t=${ts}`
+      ),
+      fetchJson(
+        `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/package.json?_t=${ts}`
+      ).catch(() => ({ version: localVersion })),
+    ]);
+
+    const latest = Array.isArray(commits) && commits[0] ? commits[0] : null;
+    const remoteSha = latest?.sha || '';
+    const remoteVersion = String(remotePkg?.version || localVersion);
+
+    let changedFilesCount = 0;
+    try {
+      const treeData = await fetchJson(
+        `https://api.github.com/repos/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1&_t=${ts}`
+      );
+      if (Array.isArray(treeData?.tree)) {
+        for (const item of treeData.tree) {
+          if (item.type !== 'blob' || !isUpdatableRepoPath(item.path)) continue;
+          const localFile = path.join(APP_ROOT, ...item.path.split('/'));
+          const blobSha = computeGitBlobSha(localFile);
+          if (blobSha !== item.sha) {
+            changedFilesCount++;
+          }
+        }
+      }
+    } catch {}
+
+    const shaDiff = Boolean(
+      localSha && remoteSha && localSha.slice(0, 7) !== remoteSha.slice(0, 7)
+    );
+    const verDiff = remoteVersion !== localVersion;
+    const hasUpdate = verDiff || shaDiff || changedFilesCount > 0;
+
+    const recentCommits = (Array.isArray(commits) ? commits.slice(0, 5) : []).map(
+      (c) => ({
+        sha: String(c?.sha || '').slice(0, 7),
+        message: String(c?.commit?.message || '').split('\n')[0],
+        date: c?.commit?.committer?.date || c?.commit?.author?.date || '',
+      })
+    );
+
+    if (!hasUpdate && remoteSha) {
+      saveLocalMeta(userDataDir, { sha: remoteSha, version: remoteVersion });
+    }
+
+    return {
+      ok: true,
+      hasUpdate,
+      changedFilesCount,
+      localVersion,
+      remoteVersion,
+      localSha: localSha ? localSha.slice(0, 7) : remoteSha.slice(0, 7),
+      remoteSha: remoteSha ? remoteSha.slice(0, 7) : '',
+      fullRemoteSha: remoteSha,
+      latestMessage:
+        latest?.commit?.message?.split('\n')[0] ||
+        'Đồng bộ bản mới nhất từ GitHub',
+      latestDate:
+        latest?.commit?.committer?.date || latest?.commit?.author?.date || '',
+      recentCommits,
+      repoUrl: FEED_URL,
+    };
+  } catch (apiErr) {
+    if (existsSync(path.join(APP_ROOT, '.git'))) {
+      return await checkUpdateViaGitCli(userDataDir);
+    }
+    throw apiErr;
+  }
 }
 
 /**
@@ -259,93 +354,115 @@ export async function performGithubOnlineUpdate({ userDataDir, onProgress }) {
 
   emit(10, 'Đang kết nối máy chủ GitHub & lấy danh sách tệp mới nhất...');
   const ts = Date.now();
-  const treeData = await fetchJson(
-    `https://api.github.com/repos/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1&_t=${ts}`
-  );
 
-  if (!Array.isArray(treeData?.tree)) {
-    throw new Error('Không đọc được cấu trúc cây thư mục từ GitHub.');
-  }
-
-  const remoteSha = String(treeData.sha || '');
-  const blobs = treeData.tree.filter(
-    (item) => item.type === 'blob' && isUpdatableRepoPath(item.path)
-  );
-
-  emit(22, `Đang kiểm tra ${blobs.length} tệp hệ thống...`);
-  const toDownload = [];
-  for (const item of blobs) {
-    const destPath = path.join(APP_ROOT, ...item.path.split('/'));
-    const localBlobSha = computeGitBlobSha(destPath);
-    if (localBlobSha !== item.sha) {
-      toDownload.push({ ...item, destPath });
-    }
-  }
-
-  let updatedCount = 0;
-  if (toDownload.length === 0) {
-    emit(85, 'Tất cả các tệp mã nguồn đã khớp 100% với bản mới nhất trên GitHub.');
-  } else {
-    for (let i = 0; i < toDownload.length; i++) {
-      const fileItem = toDownload[i];
-      const pct = Math.min(
-        92,
-        Math.round(25 + ((i + 1) / toDownload.length) * 67)
-      );
-      emit(
-        pct,
-        `Đang tải (${i + 1}/${toDownload.length}): ${fileItem.path}...`,
-        { currentFile: fileItem.path }
-      );
-      const rawUrl = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/${encodeURI(fileItem.path)}?_t=${Date.now()}`;
-      const buf = await fetchBuffer(rawUrl);
-      mkdirSync(path.dirname(fileItem.destPath), { recursive: true });
-      writeFileSync(fileItem.destPath, buf);
-      updatedCount++;
-    }
-  }
-
-  // Nếu máy có thư mục .git thì đồng bộ luôn git ref local
-  if (existsSync(path.join(APP_ROOT, '.git'))) {
-    await new Promise((resolve) => {
-      execFile(
-        'git',
-        ['fetch', 'origin', GITHUB_BRANCH],
-        { cwd: APP_ROOT, timeout: 10000 },
-        () => {
-          execFile(
-            'git',
-            ['reset', '--soft', `origin/${GITHUB_BRANCH}`],
-            { cwd: APP_ROOT, timeout: 5000 },
-            () => resolve()
-          );
-        }
-      );
-    });
-  }
-
-  let remoteVersion = '2.5.0';
   try {
-    const pkg = JSON.parse(
-      readFileSync(path.join(APP_ROOT, 'package.json'), 'utf8')
+    const treeData = await fetchJson(
+      `https://api.github.com/repos/${GITHUB_REPO}/git/trees/${GITHUB_BRANCH}?recursive=1&_t=${ts}`
     );
-    if (pkg?.version) remoteVersion = String(pkg.version);
-  } catch {}
 
-  saveLocalMeta(userDataDir, { sha: remoteSha, version: remoteVersion });
-  emit(
-    100,
-    updatedCount > 0
-      ? `Đã cập nhật thành công ${updatedCount} tệp mới nhất từ GitHub!`
-      : 'Hệ thống đã được đồng bộ với bản mới nhất trên GitHub!'
-  );
+    if (!Array.isArray(treeData?.tree)) {
+      throw new Error('Không đọc được cấu trúc cây thư mục từ GitHub.');
+    }
 
-  return {
-    ok: true,
-    updatedCount,
-    remoteVersion,
-    remoteSha: remoteSha.slice(0, 7),
-  };
+    const remoteSha = String(treeData.sha || '');
+    const blobs = treeData.tree.filter(
+      (item) => item.type === 'blob' && isUpdatableRepoPath(item.path)
+    );
+
+    emit(22, `Đang kiểm tra ${blobs.length} tệp hệ thống...`);
+    const toDownload = [];
+    for (const item of blobs) {
+      const destPath = path.join(APP_ROOT, ...item.path.split('/'));
+      const localBlobSha = computeGitBlobSha(destPath);
+      if (localBlobSha !== item.sha) {
+        toDownload.push({ ...item, destPath });
+      }
+    }
+
+    let updatedCount = 0;
+    if (toDownload.length === 0) {
+      emit(85, 'Tất cả các tệp mã nguồn đã khớp 100% với bản mới nhất trên GitHub.');
+    } else {
+      for (let i = 0; i < toDownload.length; i++) {
+        const fileItem = toDownload[i];
+        const pct = Math.min(
+          92,
+          Math.round(25 + ((i + 1) / toDownload.length) * 67)
+        );
+        emit(
+          pct,
+          `Đang tải (${i + 1}/${toDownload.length}): ${fileItem.path}...`,
+          { currentFile: fileItem.path }
+        );
+        const rawUrl = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/${encodeURI(fileItem.path)}?_t=${Date.now()}`;
+        const buf = await fetchBuffer(rawUrl);
+        mkdirSync(path.dirname(fileItem.destPath), { recursive: true });
+        writeFileSync(fileItem.destPath, buf);
+        updatedCount++;
+      }
+    }
+
+    if (existsSync(path.join(APP_ROOT, '.git'))) {
+      await runGit(['fetch', 'origin', GITHUB_BRANCH], 10000).catch(() => {});
+      await runGit(['reset', '--soft', `origin/${GITHUB_BRANCH}`], 5000).catch(
+        () => {}
+      );
+    }
+
+    let remoteVersion = '2.5.0';
+    try {
+      const pkg = JSON.parse(
+        readFileSync(path.join(APP_ROOT, 'package.json'), 'utf8')
+      );
+      if (pkg?.version) remoteVersion = String(pkg.version);
+    } catch {}
+
+    saveLocalMeta(userDataDir, { sha: remoteSha, version: remoteVersion });
+    emit(
+      100,
+      updatedCount > 0
+        ? `Đã cập nhật thành công ${updatedCount} tệp mới nhất từ GitHub!`
+        : 'Hệ thống đã được đồng bộ với bản mới nhất trên GitHub!'
+    );
+
+    return {
+      ok: true,
+      updatedCount,
+      remoteVersion,
+      remoteSha: remoteSha.slice(0, 7),
+    };
+  } catch (apiErr) {
+    if (existsSync(path.join(APP_ROOT, '.git'))) {
+      emit(35, 'Đang đồng bộ trực tiếp qua Git từ nhánh main...');
+      await runGit(['fetch', 'origin', GITHUB_BRANCH], 15000);
+      const diffRaw = await runGit([
+        'diff',
+        '--name-only',
+        'HEAD',
+        `origin/${GITHUB_BRANCH}`,
+      ]).catch(() => '');
+      const changedCount = diffRaw.split(/\r?\n/).filter(Boolean).length;
+      emit(75, 'Đang áp dụng các tệp cập nhật mới nhất...');
+      await runGit(['reset', '--hard', `origin/${GITHUB_BRANCH}`], 15000);
+      const remoteHead = await runGit(['rev-parse', 'HEAD']);
+      let remoteVersion = '2.5.0';
+      try {
+        const pkg = JSON.parse(
+          readFileSync(path.join(APP_ROOT, 'package.json'), 'utf8')
+        );
+        if (pkg?.version) remoteVersion = String(pkg.version);
+      } catch {}
+      saveLocalMeta(userDataDir, { sha: remoteHead, version: remoteVersion });
+      emit(100, 'Đã đồng bộ hoàn tất phiên bản mới nhất từ GitHub!');
+      return {
+        ok: true,
+        updatedCount: changedCount,
+        remoteVersion,
+        remoteSha: remoteHead.slice(0, 7),
+      };
+    }
+    throw apiErr;
+  }
 }
 
 /**
