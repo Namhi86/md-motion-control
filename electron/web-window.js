@@ -24,10 +24,10 @@ export function createControlWindow({
 }) {
   Menu.setApplicationMenu(null);
   const win = new BrowserWindow({
-    width: 1280,
+    width: 1340,
     height: 860,
-    minWidth: 900,
-    minHeight: 600,
+    minWidth: 1200,
+    minHeight: 720,
     show: true,
     autoHideMenuBar: true,
     titleBarStyle: 'hidden',

@@ -8,10 +8,14 @@
 
 /* ── 1. Header, Logo MD MEDIA (Cam Vàng Hoàng Kim), Phiên bản & Nút Cập Nhật ── */
 .qm-header {
-  height: clamp(48px, 5.5vh, 58px);
-  padding: 0 clamp(10px, 1.2vw, 20px);
-  padding-right: calc(100vw - env(titlebar-area-width, 100vw) + 18px) !important;
-  gap: clamp(8px, 1.1vw, 18px);
+  height: clamp(50px, 5.5vh, 58px);
+  min-height: 50px;
+  padding: 0 clamp(12px, 1.2vw, 20px);
+  padding-right: max(152px, calc(100vw - env(titlebar-area-width, 100vw) + 16px)) !important;
+  gap: clamp(10px, 1.1vw, 18px);
+  flex-wrap: nowrap !important;
+  white-space: nowrap;
+  overflow: hidden;
   -webkit-app-region: drag;
   user-select: none;
   background: radial-gradient(ellipse 45% 120% at 45% 100%, rgba(255, 136, 0, 0.22), transparent 70%),
@@ -32,6 +36,12 @@
   -webkit-app-region: no-drag;
 }
 
+/* Ẩn cụm đăng nhập email/đăng xuất cũ trên thanh Header để tránh chiếm chỗ gây chật giao diện */
+.qm-header #auth-user,
+.qm-header #app-version {
+  display: none !important;
+}
+
 .md-brand {
   display: inline-flex;
   align-items: center;
@@ -41,8 +51,8 @@
   background: linear-gradient(135deg, rgba(255, 159, 28, 0.16) 0%, rgba(234, 88, 12, 0.08) 100%);
   border: 1px solid rgba(255, 159, 28, 0.42);
   box-shadow: 0 4px 16px rgba(255, 136, 0, 0.18);
-  flex: 0 1 auto;
-  min-width: 0;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
 }
 
 .md-brand-icon {
@@ -97,7 +107,9 @@
 .md-update-box {
   display: flex;
   align-items: center;
-  flex: 0 0 auto;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+  margin-left: auto;
 }
 
 .md-update-btn {
@@ -114,6 +126,7 @@
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
+  flex: 0 0 auto;
   transition: all 0.18s ease;
 }
 
@@ -133,26 +146,27 @@
 }
 
 /* ── Thanh Điều Hướng 4 Tab Chính (Cam Vàng Nổi Bật) ── */
-.qm-nav {
+.qm-header .qm-nav {
   display: flex;
   align-items: center;
-  gap: clamp(3px, 0.45vw, 6px);
-  padding: 4px;
+  gap: clamp(4px, 0.45vw, 6px) !important;
+  padding: 4px !important;
   background: rgba(15, 23, 42, 0.72);
   border: 1px solid rgba(255, 159, 28, 0.2);
   border-radius: 12px;
-  flex: 0 1 auto;
-  min-width: 0;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
 }
 
-.nav-link {
-  padding: clamp(5px, 0.6vh, 7px) clamp(9px, 1vw, 15px);
-  font-size: clamp(11px, 0.9vw, 13px);
+.qm-header .qm-nav .nav-link {
+  padding: clamp(5px, 0.6vh, 7px) clamp(10px, 1vw, 15px) !important;
+  font-size: clamp(11.5px, 0.9vw, 13px) !important;
   font-weight: 600;
   color: #cbd5e1;
   border-radius: 9px;
   border: 1px solid transparent;
   white-space: nowrap;
+  flex: 0 0 auto;
   transition: all 0.18s ease;
 }
 
@@ -211,8 +225,20 @@
   padding: 0;
   background: transparent;
   border: 0;
-  flex: 0 1 auto;
-  min-width: 0;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+}
+
+@media (max-width: 1260px) {
+  #view-motion .cm-step-arrow,
+  #view-create .cm-step-arrow {
+    display: none;
+  }
+  #view-motion .cm-pill,
+  #view-create .cm-pill {
+    padding: 3px 8px 3px 4px;
+    font-size: 10.5px;
+  }
 }
 
 #view-motion .cm-step-arrow,
