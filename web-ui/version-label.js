@@ -17,11 +17,16 @@ export function versionLabel(coreVersion, webVersion) {
 // -> the core version that was shown ('0.1.10'), or '' when nothing is shown (whats-new-ui.js builds on it).
 export async function showVersion({ dola = window.dola, doc = document } = {}) {
   const el = doc.getElementById('app-version');
-  if (!el) return '';
+  const pill = doc.getElementById('md-ver-pill');
+  if (!el && !pill) return '';
   let core = '';
   try { core = (await dola.meta())?.coreVersion ?? ''; } catch { /* no version shown */ }
   const web = doc.querySelector('meta[name="fs-web-version"]')?.getAttribute('content') ?? '';
   const { text, title } = versionLabel(core, web);
+  if (pill && core) {
+    pill.textContent = `v${core} PRO`;
+  }
+  if (!el) return core;
   el.textContent = text;
   el.title = title;
   el.hidden = !text;

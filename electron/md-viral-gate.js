@@ -39,7 +39,7 @@ function postLicenseJson(urlStr, bodyObj, timeoutMs = 5000) {
           headers: {
             'Content-Type': 'application/json',
             'Content-Length': data.length,
-            'User-Agent': 'MD-Motion-Control-License/2.5.0',
+            'User-Agent': 'MD-Motion-Control-License/2.5.1',
           },
           timeout: timeoutMs,
         },

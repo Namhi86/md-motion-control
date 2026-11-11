@@ -828,7 +828,7 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
             <span class="md-brand-icon">MD</span>
             <div>
               <h3 id="md-up-title" class="md-up-title">MD MEDIA — Trung Tâm Phiên Bản &amp; Cập Nhật Online</h3>
-              <p class="md-up-sub" id="md-up-sub-line">Phiên bản hiện tại: <b>v2.5.0 PRO</b> (Đồng bộ trực tuyến MD Cloud)</p>
+              <p class="md-up-sub" id="md-up-sub-line">Phiên bản hiện tại: <b>v2.5.1 PRO</b> (Đồng bộ trực tuyến MD Cloud)</p>
             </div>
           </div>
           <button type="button" class="md-up-close" id="md-up-close" aria-label="Đóng">✕</button>

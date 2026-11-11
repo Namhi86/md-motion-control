@@ -48,7 +48,7 @@ function fetchBuffer(url, headers = {}, redirects = 4) {
       url,
       {
         headers: {
-          'User-Agent': 'MD-Motion-Control-Updater/2.5.0',
+          'User-Agent': 'MD-Motion-Control-Updater/2.5.1',
           Accept: 'application/vnd.github.v3+json, */*',
           'Cache-Control': 'no-cache',
           ...headers,
@@ -130,7 +130,7 @@ function matchesGitBlobSha(filePath, expectedSha) {
  * Đọc phiên bản và commit SHA hiện tại đang chạy trên máy
  */
 function getLocalMeta(userDataDir) {
-  let localVersion = '2.5.0';
+  let localVersion = '2.5.1';
   try {
     const pkg = JSON.parse(
       readFileSync(path.join(APP_ROOT, 'package.json'), 'utf8')
@@ -419,7 +419,7 @@ export async function performGithubOnlineUpdate({ userDataDir, onProgress }) {
       );
     }
 
-    let remoteVersion = '2.5.0';
+    let remoteVersion = '2.5.1';
     try {
       const pkg = JSON.parse(
         readFileSync(path.join(APP_ROOT, 'package.json'), 'utf8')
@@ -455,7 +455,7 @@ export async function performGithubOnlineUpdate({ userDataDir, onProgress }) {
       emit(75, 'Đang áp dụng các tệp cập nhật mới nhất...');
       await runGit(['reset', '--hard', `origin/${GITHUB_BRANCH}`], 15000);
       const remoteHead = await runGit(['rev-parse', 'HEAD']);
-      let remoteVersion = '2.5.0';
+      let remoteVersion = '2.5.1';
       try {
         const pkg = JSON.parse(
           readFileSync(path.join(APP_ROOT, 'package.json'), 'utf8')
