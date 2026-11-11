@@ -52,6 +52,39 @@ export function initGate({ dola, doc = document, now = Date.now, onUnlocked = ()
     $('gate-tip').textContent = TIP_TEXT;
     $('gate-tip').hidden = !m.tip;
     $('gate-retry').hidden = !m.retry;
+    const hwidVal = s.view?.hwid || m.code || 'MDMC-XXXX-XXXX-XXXX';
+    const hwidEl = $('gate-hwid');
+    if (hwidEl) hwidEl.textContent = hwidVal;
+    const hwidInlineEl = $('gate-hwid-inline');
+    if (hwidInlineEl) hwidInlineEl.textContent = hwidVal;
+    const statusEl = $('gate-status-val');
+    const expEl = $('gate-exp-val');
+    if (statusEl) {
+      if (s.view?.revoked) {
+        statusEl.textContent = '⛔ Đã bị thu hồi bởi Quản trị viên';
+        statusEl.style.color = '#f87171';
+      } else if (s.view?.unlocked) {
+        statusEl.textContent = `✅ Đang hoạt động (${s.view?.planLabel || s.view?.plan || 'VIP'})`;
+        statusEl.style.color = '#34d399';
+      } else {
+        statusEl.textContent = '🔒 Chưa kích hoạt bản quyền';
+        statusEl.style.color = '#fbbf24';
+      }
+    }
+    if (expEl) {
+      if (s.view?.revoked && s.view?.reject_reason) {
+        expEl.textContent = s.view.reject_reason;
+        expEl.style.color = '#fca5a5';
+      } else if (s.view?.unlocked) {
+        expEl.textContent = s.view?.expiresAt
+          ? `${new Date(s.view.expiresAt).toLocaleDateString('vi-VN')}`
+          : 'Vĩnh viễn (VIP)';
+        expEl.style.color = '#6ee7b7';
+      } else {
+        expEl.textContent = 'Vui lòng nhập Key bản quyền để mở khóa công cụ';
+        expEl.style.color = '#94a3b8';
+      }
+    }
   }
 
   async function load() {
@@ -111,6 +144,60 @@ export function initGate({ dola, doc = document, now = Date.now, onUnlocked = ()
 
   const logged = (name, fn) => () => { fn().catch((err) => console.error(`gate: ${name} failed`, err)); };
   $('gate-copy').addEventListener('click', () => { s.copy = { of: 'code', ok: copy(s.view?.code || '') }; render(); });
+  if ($('gate-copy-hwid')) {
+    $('gate-copy-hwid').addEventListener('click', () => {
+      const hwidVal = s.view?.hwid || s.view?.code || '';
+      const ok = copy(hwidVal);
+      const btn = $('gate-copy-hwid');
+      if (btn) btn.textContent = ok ? '✓ Đã sao chép Mã máy' : 'Bôi đen để sao chép';
+      setTimeout(() => {
+        if ($('gate-copy-hwid')) $('gate-copy-hwid').textContent = '📋 Sao chép Mã máy';
+      }, 2000);
+    });
+  }
+  if ($('gate-vip-btn') && typeof gate.activateVip === 'function') {
+    $('gate-vip-btn').addEventListener('click', logged('activateVip', async () => {
+      const inp = $('gate-vip-input');
+      const msgEl = $('gate-vip-msg');
+      const key = inp?.value?.trim() || '';
+      if (!key) {
+        if (msgEl) {
+          msgEl.hidden = false;
+          msgEl.style.color = '#fca5a5';
+          msgEl.textContent = '⚠️ Vui lòng dán mã kích hoạt bản quyền (MDMC2....) vào ô trên.';
+        }
+        return;
+      }
+      if ($('gate-vip-btn')) $('gate-vip-btn').disabled = true;
+      try {
+        const res = await gate.activateVip(key);
+        if (res?.ok && res?.unlocked) {
+          s.view = res;
+          if (msgEl) {
+            msgEl.hidden = false;
+            msgEl.style.color = '#6ee7b7';
+            msgEl.textContent = res.note || '🎉 Kích hoạt bản quyền thành công! Đang mở khóa...';
+          }
+          render();
+          onUnlocked();
+        } else {
+          if (msgEl) {
+            msgEl.hidden = false;
+            msgEl.style.color = '#fca5a5';
+            msgEl.textContent = '❌ ' + (res?.note || 'Mã kích hoạt không hợp lệ hoặc đã hết hạn.');
+          }
+        }
+      } finally {
+        if ($('gate-vip-btn')) $('gate-vip-btn').disabled = false;
+      }
+    }));
+    $('gate-vip-input')?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        $('gate-vip-btn')?.click();
+      }
+    });
+  }
   $('gate-open').addEventListener('click', logged('open', pressOpen));
   if ($('gate-zalo') && typeof gate.openZalo === 'function') {
     $('gate-zalo').addEventListener('click', logged('zalo', async () => {

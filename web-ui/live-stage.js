@@ -961,9 +961,12 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
             <button type="button" class="md-up-btn" id="md-lic-copy-hwid" style="height:34px;padding:0 13px;font-size:12px;border-color:rgba(16,185,129,0.45);background:rgba(16,185,129,0.16);color:#ecfdf5;">📋 Sao chép Mã máy</button>
           </div>
 
-          <div style="padding:12px 16px;border-radius:13px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);font-size:13px;line-height:1.75;color:#e2e8f0;">
-            <div><strong>Trạng thái:</strong> <span id="md-lic-status-val">${statusText}</span></div>
-            <div><strong>Thời hạn sử dụng:</strong> <span id="md-lic-exp-val">${expStr}</span></div>
+          <div style="padding:12px 16px;border-radius:13px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);font-size:13px;line-height:1.75;color:#e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+            <div>
+              <div><strong>Trạng thái:</strong> <span id="md-lic-status-val">${statusText}</span></div>
+              <div><strong>Thời hạn sử dụng:</strong> <span id="md-lic-exp-val">${expStr}</span></div>
+            </div>
+            <button type="button" class="md-up-btn" id="md-lic-deactivate-btn" style="height:32px;padding:0 12px;font-size:11.5px;border-color:rgba(248,113,113,0.4);background:rgba(248,113,113,0.12);color:#fca5a5;">🔒 Khóa máy / Gỡ Key</button>
           </div>
 
           <div style="display:flex;flex-direction:column;gap:8px;">
@@ -1040,6 +1043,13 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
       } finally {
         if (btn) btn.disabled = false;
       }
+    });
+
+    document.getElementById('md-lic-deactivate-btn')?.addEventListener('click', async () => {
+      try {
+        await window.dola?.gate?.deactivate?.();
+      } catch {}
+      modal.remove();
     });
   }
 

@@ -1,16 +1,72 @@
-// Bộ quản lý trạng thái cổng kích hoạt Viral (Facebook Comment + Share + Nhóm Zalo) & Khóa VIP cho MD Motion Control
+// Bộ quản lý trạng thái cổng kích hoạt Bản quyền Ed25519 V2 (MD License Center) & Viral (Facebook + Zalo) cho MD Motion Control
 import fs from 'node:fs';
+import https from 'node:https';
+import http from 'node:http';
+import os from 'node:os';
 import path from 'node:path';
 import {
   DEFAULT_FB_POST_URL,
   DEFAULT_ZALO_GROUP_URL,
   deriveActivationCode,
-  verifyVipKey,
+  deriveMachineHwid,
+  verifyLicenseKeyV2,
 } from '../src/md-gate-code.js';
 import { scanFacebookPostForCode } from './fb-comment-scanner.js';
 
-const DEFAULT_TTL_MS = 14 * 24 * 3600 * 1000; // 14 ngày
-const VIP_TTL_MS = 365 * 24 * 3600 * 1000; // 365 ngày
+const DEFAULT_TTL_MS = 14 * 24 * 3600 * 1000; // 14 ngày (Viral)
+const VIP_TTL_MS = 365 * 24 * 3600 * 1000; // 365 ngày mặc định
+const LICENSE_ENDPOINT = (
+  process.env.MD_LICENSE_ENDPOINT || 'https://md-license-api.cogiaothao25.workers.dev'
+).replace(/\/+$/, '');
+const PRODUCT_ID = 'md-motion-control';
+
+/**
+ * Gửi JSON POST tới MD License Center Worker
+ */
+function postLicenseJson(urlStr, bodyObj, timeoutMs = 5000) {
+  return new Promise((resolve) => {
+    try {
+      const u = new URL(urlStr);
+      const data = Buffer.from(JSON.stringify(bodyObj), 'utf8');
+      const lib = u.protocol === 'https:' ? https : http;
+      const req = lib.request(
+        {
+          hostname: u.hostname,
+          port: u.port || (u.protocol === 'https:' ? 443 : 80),
+          path: u.pathname + u.search,
+          method: 'POST',
+          family: 4,
+          headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': data.length,
+            'User-Agent': 'MD-Motion-Control-License/2.5.0',
+          },
+          timeout: timeoutMs,
+        },
+        (res) => {
+          const chunks = [];
+          res.on('data', (c) => chunks.push(c));
+          res.on('end', () => {
+            try {
+              resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')));
+            } catch {
+              resolve(null);
+            }
+          });
+        }
+      );
+      req.on('timeout', () => {
+        req.destroy();
+        resolve(null);
+      });
+      req.on('error', () => resolve(null));
+      req.write(data);
+      req.end();
+    } catch {
+      resolve(null);
+    }
+  });
+}
 
 /**
  * Kiểm tra đường dẫn URL http/https hợp lệ
@@ -34,12 +90,13 @@ function sanitizeHttpUrl(urlStr) {
  * Khởi tạo bộ quản lý cổng kích hoạt MD Motion Control
  * @param {object} options
  * @param {string} [options.file] - Đường dẫn file JSON lưu trạng thái bền vững
- * @param {string} [options.deviceSeed] - Chuỗi định danh thiết bị để sinh mã MDMC_XXXXXX
+ * @param {string} [options.deviceSeed] - Chuỗi định danh thiết bị để sinh mã MDMC_XXXXXX & MDMC-XXXX-XXXX-XXXX
  * @param {Function} [options.scanner] - Hàm quét bình luận Facebook (mặc định: scanFacebookPostForCode)
  * @param {Function} [options.now] - Hàm lấy thời gian hiện tại (mặc định: Date.now)
  * @param {number} [options.ttlMs] - Thời hạn mở khóa viral (mặc định: 14 ngày)
  * @param {Function} [options.onChange] - Callback khi trạng thái cổng thay đổi
  * @param {Function} [options.log] - Hàm ghi log
+ * @param {boolean} [options.cloudSync] - Bật/tắt đồng bộ với MD License Center Cloud
  */
 export function createMdViralGate({
   file,
@@ -49,11 +106,19 @@ export function createMdViralGate({
   ttlMs = DEFAULT_TTL_MS,
   onChange = () => {},
   log = () => {},
+  cloudSync,
 } = {}) {
   const code = deriveActivationCode(deviceSeed);
+  const hwid = deriveMachineHwid(deviceSeed);
+  const isTestEnv = Boolean(
+    process.env.NODE_TEST_CONTEXT ||
+      (typeof file === 'string' && file.includes('md-viral-gate-test-'))
+  );
+  const enableCloud = cloudSync !== undefined ? Boolean(cloudSync) : !isTestEnv;
 
   const state = {
     code,
+    hwid,
     unlocked: false,
     unlockedAt: 0,
     expiresAt: 0,
@@ -61,8 +126,13 @@ export function createMdViralGate({
     zaloGroupUrl: DEFAULT_ZALO_GROUP_URL,
     fbOpened: false,
     zaloClicked: false,
-    status: 'none', // 'none' | 'in_progress' | 'activated'
+    status: 'none', // 'none' | 'in_progress' | 'activated' | 'rejected'
     unlockMethod: '', // 'viral' | 'vip' | ''
+    licenseKey: '',
+    plan: '',
+    planLabel: '',
+    revoked: false,
+    revokeReason: '',
     note: '',
   };
 
@@ -82,13 +152,32 @@ export function createMdViralGate({
       if (sanitizeHttpUrl(parsed.zaloGroupUrl)) state.zaloGroupUrl = sanitizeHttpUrl(parsed.zaloGroupUrl);
       if (typeof parsed.fbOpened === 'boolean') state.fbOpened = parsed.fbOpened;
       if (typeof parsed.zaloClicked === 'boolean') state.zaloClicked = parsed.zaloClicked;
-      if (['none', 'in_progress', 'activated'].includes(parsed.status)) {
+      if (['none', 'in_progress', 'activated', 'rejected'].includes(parsed.status)) {
         state.status = parsed.status;
       }
       if (['viral', 'vip', ''].includes(parsed.unlockMethod)) {
         state.unlockMethod = parsed.unlockMethod;
       }
+      if (typeof parsed.licenseKey === 'string') state.licenseKey = parsed.licenseKey;
+      if (typeof parsed.plan === 'string') state.plan = parsed.plan;
+      if (typeof parsed.planLabel === 'string') state.planLabel = parsed.planLabel;
+      if (typeof parsed.revoked === 'boolean') state.revoked = parsed.revoked;
+      if (typeof parsed.revokeReason === 'string') state.revokeReason = parsed.revokeReason;
       if (typeof parsed.note === 'string') state.note = parsed.note;
+
+      // Nếu đang lưu licenseKey V2, xác thực lại chữ ký Ed25519 và thời hạn
+      if (state.licenseKey && state.unlockMethod === 'vip') {
+        const ver = verifyLicenseKeyV2(state.licenseKey, state.code, state.hwid, now());
+        if (!ver.valid) {
+          state.unlocked = false;
+          state.status = 'in_progress';
+          state.note = ver.reason || 'Bản quyền không hợp lệ hoặc đã hết hạn.';
+        } else {
+          state.plan = ver.plan || state.plan;
+          state.planLabel = ver.planLabel || state.planLabel;
+          state.expiresAt = ver.isLifetime ? 0 : ver.expiresAt || state.expiresAt;
+        }
+      }
     } catch (err) {
       log(`Không đọc được file trạng thái cổng kích hoạt (${file}): ${err?.message || err}`);
     }
@@ -102,6 +191,7 @@ export function createMdViralGate({
       fs.mkdirSync(dir, { recursive: true });
       const payload = {
         code: state.code,
+        hwid: state.hwid,
         unlocked: state.unlocked,
         unlockedAt: state.unlockedAt,
         expiresAt: state.expiresAt,
@@ -111,6 +201,11 @@ export function createMdViralGate({
         zaloClicked: state.zaloClicked,
         status: state.status,
         unlockMethod: state.unlockMethod,
+        licenseKey: state.licenseKey,
+        plan: state.plan,
+        planLabel: state.planLabel,
+        revoked: state.revoked,
+        revokeReason: state.revokeReason,
         note: state.note,
       };
       fs.writeFileSync(file, JSON.stringify(payload, null, 2), 'utf8');
@@ -125,6 +220,7 @@ export function createMdViralGate({
    * Kiểm tra ứng dụng hiện đã mở khóa và còn hạn hay chưa
    */
   function isUnlocked() {
+    if (state.revoked === true) return false;
     if (state.unlocked !== true) return false;
     if (state.expiresAt && now() >= state.expiresAt) return false;
     return true;
@@ -141,6 +237,7 @@ export function createMdViralGate({
    * Lý do đang bị khóa ('locked' hoặc 'expired')
    */
   function lockReason() {
+    if (state.revoked === true) return 'revoked';
     if (state.unlocked === true && state.expiresAt && now() >= state.expiresAt) {
       return 'expired';
     }
@@ -163,6 +260,8 @@ export function createMdViralGate({
       unlocked: isUnlocked(),
       email: 'cogiaothao25@gmail.com',
       name: 'MD Motion Control',
+      hwid: state.hwid,
+      code: state.code,
     };
   }
 
@@ -186,6 +285,7 @@ export function createMdViralGate({
           unlocked: isUnlocked(),
           status: isUnlocked() ? 'activated' : 'in_progress',
           code: state.code,
+          hwid: state.hwid,
           post_url: state.fbPostUrl,
         },
       };
@@ -204,16 +304,19 @@ export function createMdViralGate({
    */
   function gateView() {
     const unlockedNow = isUnlocked();
-    const effectiveStatus = unlockedNow
-      ? 'activated'
-      : state.status === 'activated'
-        ? 'in_progress'
-        : state.status;
+    const effectiveStatus = state.revoked
+      ? 'rejected'
+      : unlockedNow
+        ? 'activated'
+        : state.status === 'activated'
+          ? 'in_progress'
+          : state.status;
     return {
       ok: true,
       unlocked: unlockedNow,
       exempt: false,
       code: state.code,
+      hwid: state.hwid,
       status: effectiveStatus,
       post_url: state.fbPostUrl,
       zalo_url: state.zaloGroupUrl,
@@ -221,6 +324,10 @@ export function createMdViralGate({
       zaloClicked: state.zaloClicked,
       expiresAt: state.expiresAt,
       unlockMethod: state.unlockMethod,
+      plan: state.plan,
+      planLabel: state.planLabel,
+      revoked: state.revoked,
+      reject_reason: state.revokeReason || undefined,
       note: state.note,
     };
   }
@@ -238,6 +345,84 @@ export function createMdViralGate({
     } catch (err) {
       log(`Lỗi trong callback onChange của cổng kích hoạt: ${err?.message || err}`);
     }
+  }
+
+  /**
+   * Đồng bộ trạng thái bản quyền từ xa với MD License Center Worker (/v1/heartbeat)
+   * Chỉ kiểm tra thu hồi / cập nhật hạn khi máy đã được người dùng kích hoạt Key.
+   * Khi chưa kích hoạt (!state.unlocked || !state.licenseKey), giữ nguyên ở màn hình khóa bản quyền.
+   */
+  async function syncWithLicenseCenter() {
+    if (!enableCloud || !state.unlocked || !state.licenseKey) return gateView();
+    try {
+      const hostname = os.hostname() || 'MD-PC';
+      const res = await postLicenseJson(`${LICENSE_ENDPOINT}/v1/heartbeat`, {
+        product: PRODUCT_ID,
+        key: state.licenseKey || '',
+        mid: state.hwid,
+        hostname,
+      });
+      if (!res || typeof res !== 'object') return gateView();
+
+      if (res.status === 'revoked' || res.revoked === true) {
+        const reason = res.reason || 'Bản quyền trên máy này đã bị thu hồi bởi Quản trị viên.';
+        const changed = state.unlocked !== false || state.revoked !== true || state.revokeReason !== reason;
+        state.unlocked = false;
+        state.revoked = true;
+        state.revokeReason = reason;
+        state.status = 'in_progress';
+        state.note = `⛔ ${reason}`;
+        if (changed) {
+          saveStateToDisk();
+          notifyChange();
+        }
+        return gateView();
+      }
+
+      if ((res.status === 'active' || res.valid === true) && typeof res.key === 'string' && res.key.trim()) {
+        const remoteKey = res.key.trim();
+        const ver = verifyLicenseKeyV2(remoteKey, state.code, state.hwid, now());
+        if (ver.valid) {
+          const nextExp = ver.isLifetime ? 0 : ver.expiresAt || 0;
+          const changed =
+            !state.unlocked ||
+            state.revoked ||
+            state.licenseKey !== remoteKey ||
+            state.expiresAt !== nextExp ||
+            state.plan !== ver.plan;
+          state.unlocked = true;
+          state.revoked = false;
+          state.revokeReason = '';
+          state.unlockedAt = state.unlockedAt || now();
+          state.expiresAt = nextExp;
+          state.status = 'activated';
+          state.unlockMethod = 'vip';
+          state.licenseKey = remoteKey;
+          state.plan = ver.plan;
+          state.planLabel = ver.planLabel;
+          const expText = ver.isLifetime
+            ? 'Vĩnh viễn'
+            : `Hạn: ${new Date(nextExp).toLocaleDateString('vi-VN')} (còn ${ver.daysLeft} ngày)`;
+          state.note = `Đã kích hoạt bản quyền ${ver.planLabel} · ${expText}`;
+          if (changed) {
+            saveStateToDisk();
+            notifyChange();
+          }
+        }
+      }
+    } catch {
+      // Bỏ qua lỗi mạng tạm thời
+    }
+    return gateView();
+  }
+
+  if (enableCloud) {
+    setTimeout(() => {
+      syncWithLicenseCenter().catch(() => {});
+    }, 1500).unref?.();
+    setInterval(() => {
+      syncWithLicenseCenter().catch(() => {});
+    }, 5 * 60 * 1000).unref?.();
   }
 
   /**
@@ -299,24 +484,71 @@ export function createMdViralGate({
   }
 
   /**
-   * Kích hoạt nhanh bằng khóa VIP hợp lệ
+   * Kích hoạt nhanh bằng khóa bản quyền Ed25519 V2 (MDMC2.) hoặc Master Key (MDVIP_)
    */
   function activateVipKey(keyString) {
-    if (!verifyVipKey(keyString, state.code)) {
+    const ver = verifyLicenseKeyV2(keyString, state.code, state.hwid, now());
+    if (!ver.valid) {
       return {
         ok: false,
         reason: 'invalid_key',
-        note: 'Mã kích hoạt VIP không hợp lệ.',
+        note: ver.reason || 'Mã kích hoạt bản quyền không hợp lệ.',
       };
     }
 
     const currentTime = now();
+    const nextExp = ver.isLifetime ? 0 : ver.expiresAt || currentTime + VIP_TTL_MS;
     state.unlocked = true;
+    state.revoked = false;
+    state.revokeReason = '';
     state.unlockedAt = currentTime;
-    state.expiresAt = currentTime + VIP_TTL_MS;
+    state.expiresAt = nextExp;
     state.status = 'activated';
     state.unlockMethod = 'vip';
-    state.note = 'Đã mở khóa VIP thành công!';
+    state.licenseKey = ver.key || String(keyString || '').trim();
+    state.plan = ver.plan || 'VIP';
+    state.planLabel = ver.planLabel || 'VIP';
+    const expText = ver.isLifetime
+      ? 'Vĩnh viễn'
+      : `Hạn dùng: ${new Date(nextExp).toLocaleDateString('vi-VN')} (còn ${ver.daysLeft} ngày)`;
+    state.note = `🎉 Đã kích hoạt bản quyền ${state.planLabel} thành công! (${expText})`;
+    saveStateToDisk();
+    const view = gateView();
+    notifyChange();
+
+    if (enableCloud && state.licenseKey.includes('.')) {
+      const hostname = os.hostname() || 'MD-PC';
+      postLicenseJson(`${LICENSE_ENDPOINT}/v1/activate`, {
+        product: PRODUCT_ID,
+        key: state.licenseKey,
+        mid: state.hwid,
+        plan: state.plan,
+        exp: nextExp ? new Date(nextExp).toISOString() : null,
+        hostname,
+      }).catch(() => {});
+    }
+
+    return {
+      ...view,
+      ok: true,
+    };
+  }
+
+  /**
+   * Khóa lại công cụ / Gỡ Key hiện tại trên máy để quay về màn hình khóa bản quyền mặc định
+   */
+  function deactivateKey() {
+    state.unlocked = false;
+    state.unlockedAt = 0;
+    state.expiresAt = 0;
+    state.status = 'in_progress';
+    state.unlockMethod = '';
+    state.licenseKey = '';
+    state.plan = '';
+    state.planLabel = '';
+    state.revoked = false;
+    state.revokeReason = '';
+    state.note = 'Vui lòng nhập Mã kích hoạt bản quyền (MDMC2....) để mở khóa công cụ.';
     saveStateToDisk();
     const view = gateView();
     notifyChange();
@@ -327,9 +559,12 @@ export function createMdViralGate({
   }
 
   /**
-   * Kiểm tra điều kiện mở khóa ngay (Bắt buộc đã bấm Zalo + Tìm thấy bình luận mã trên bài viết Facebook)
+   * Kiểm tra điều kiện mở khóa ngay (Thử đồng bộ Cloud trước, sau đó kiểm tra Zalo + Facebook)
    */
   async function gateCheckNow() {
+    if (enableCloud) {
+      await syncWithLicenseCenter();
+    }
     if (isUnlocked()) {
       return {
         ...gateView(),
@@ -362,10 +597,14 @@ export function createMdViralGate({
     if (scanResult && scanResult.found === true) {
       const currentTime = now();
       state.unlocked = true;
+      state.revoked = false;
+      state.revokeReason = '';
       state.unlockedAt = currentTime;
       state.expiresAt = currentTime + ttlMs;
       state.status = 'activated';
       state.unlockMethod = 'viral';
+      state.plan = '14D';
+      state.planLabel = 'Cộng đồng 14 Ngày';
       state.note = scanResult.note || 'Đã kích hoạt thành công!';
       saveStateToDisk();
       const view = gateView();
@@ -406,11 +645,21 @@ export function createMdViralGate({
     markZaloClicked,
     setConfig,
     activateVipKey,
+    deactivateKey,
     gateCheckNow,
+    syncWithLicenseCenter,
     // Các alias tương thích cho hệ thống xác thực / voice gate nếu được gọi
-    state: () => ({ status: 'signed-in', unlocked: isUnlocked(), email: 'cogiaothao25@gmail.com', name: 'MD Motion Control', gate: gateView() }),
+    state: () => ({
+      status: 'signed-in',
+      unlocked: isUnlocked(),
+      email: 'cogiaothao25@gmail.com',
+      name: 'MD Motion Control',
+      hwid: state.hwid,
+      code: state.code,
+      gate: gateView(),
+    }),
     login: async () => ({ ok: true, status: 'signed-in', unlocked: isUnlocked() }),
-    logout: async () => ({ ok: true }),
+    logout: async () => deactivateKey(),
     voiceGateView: gateView,
     voiceGateState: gateState,
     voiceGateClaim: gateClaim,

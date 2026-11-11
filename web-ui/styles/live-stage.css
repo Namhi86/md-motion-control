@@ -3497,3 +3497,58 @@
   cursor: pointer;
 }
 
+/* ── 10. MÀN HÌNH KHOÁ BẢN QUYỀN MẶC ĐỊNH KHI CHƯA KÍCH HOẠT (#gate / body[data-auth="gate"]) ── */
+body:not([data-auth="main"]) :is(.qm-header, .qm-nav, #view-create, #view-motion, #view-setup, #view-analyze, #view-admin, #view-studio, #view-voice, #view-skills, #md-live-bar, #md-license-modal) {
+  display: none !important;
+}
+
+#gate.fs-unlock-screen:not([hidden]) {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid !important;
+  place-items: center;
+  padding: 54px 20px 24px;
+  background:
+    radial-gradient(ellipse 75% 55% at 50% 0%, rgba(255, 136, 0, 0.16), transparent 68%),
+    radial-gradient(ellipse 65% 50% at 50% 100%, rgba(16, 185, 129, 0.12), transparent 70%),
+    #090d16;
+  overflow-y: auto;
+}
+
+.md-gate-dragbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  -webkit-app-region: drag;
+  user-select: none;
+  z-index: 10000;
+  pointer-events: auto;
+}
+
+.md-gate-license-card {
+  width: min(560px, 94vw) !important;
+  max-width: 560px !important;
+  padding: 0 !important;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #131c2b 0%, #0d131f 100%);
+  border: 1px solid rgba(255, 159, 28, 0.45);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.78), 0 0 36px rgba(255, 136, 0, 0.16);
+  color: #f8fafc;
+  overflow: hidden;
+  -webkit-app-region: no-drag;
+}
+
+.md-gate-license-card .md-up-head {
+  margin-bottom: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.md-gate-viral-details summary::-webkit-details-marker {
+  display: none;
+}
+
+

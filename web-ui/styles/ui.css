@@ -116,8 +116,8 @@ button { font-family: inherit; }
 .fs-gate h1 { margin: 0; font-size: 22px; color: #d1fe17; }
 .fs-gate p { margin: 0; font-size: 14px; line-height: 1.5; color: #898a8b; }
 
-/* ── Đăng nhập (auth.js): body[data-auth] = login | pending | main; the app's parts show only on "main" ── */
-body:not([data-auth="main"]) :is(.qm-nav, #view-create, #view-setup, #view-analyze, #view-admin, #view-studio) { display: none !important; }
+/* ── Đăng nhập (auth.js): body[data-auth] = login | pending | gate | main; the app's parts show only on "main" ── */
+body:not([data-auth="main"]) :is(.qm-header, .qm-nav, #view-create, #view-motion, #view-setup, #view-analyze, #view-admin, #view-studio, #view-voice, #view-skills, #md-live-bar, #md-license-modal) { display: none !important; }
 .fs-user { margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: 13px; color: #a8a8a8; min-width: 0; }
 .fs-user-email { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 280px; }
 .fs-user-out { height: 32px; padding: 0 12px; border: 1px solid rgba(255, 255, 255, .12); border-radius: 8px; background: none;

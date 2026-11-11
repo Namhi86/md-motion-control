@@ -63,6 +63,10 @@ export function setupGateIpc({ ipc, auth, openExternal, log = () => {} }) {
     return auth.activateVipKey(key);
   });
 
+  ipc.handle('gate:deactivate', async () => {
+    return auth.deactivateKey?.() || { ok: false };
+  });
+
   ipc.handle('gate:setConfig', async (arg1, arg2) => {
     const cfg = arg2 !== undefined ? arg2 : arg1 && typeof arg1 === 'object' ? arg1 : {};
     return auth.setConfig(cfg);

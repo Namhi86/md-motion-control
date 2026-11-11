@@ -60,6 +60,7 @@ contextBridge.exposeInMainWorld('dola', {
     openPost: call('gate:openPost'), // -> { ok } opens the post in the person's browser; the address is the core's own (the backend's post_url, Facebook https only)
     openZalo: call('gate:openZalo'), // mở link nhóm Zalo và đánh dấu đã bấm tham gia Zalo
     activateVip: call('gate:activateVip'), // kích hoạt bằng mã VIP
+    deactivate: call('gate:deactivate'), // khóa lại công cụ / gỡ key hiện tại
     setConfig: call('gate:setConfig'), // cập nhật URL bài viết Facebook và URL nhóm Zalo
     onChanged: on('gate:changed'), // the gate (same fields as state()), whenever `unlocked` or the gate changed
   },
