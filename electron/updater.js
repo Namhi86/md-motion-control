@@ -97,20 +97,32 @@ async function fetchJson(url) {
 }
 
 /**
- * Tính mã băm Git Blob SHA-1 của một file trên máy để đối chiếu trực tiếp với GitHub Tree
+ * Kiểm tra xem file trên máy có khớp mã băm Git Blob SHA-1 trên GitHub Tree không
+ * (Hỗ trợ cả LF và CRLF trên Windows để không báo sai do khác ký tự xuống dòng)
  */
-function computeGitBlobSha(filePath) {
+function matchesGitBlobSha(filePath, expectedSha) {
   try {
-    if (!existsSync(filePath)) return '';
+    if (!existsSync(filePath) || !expectedSha) return false;
     const content = readFileSync(filePath);
-    const header = Buffer.from(`blob ${content.length}\0`, 'utf8');
-    return crypto
-      .createHash('sha1')
-      .update(header)
-      .update(content)
-      .digest('hex');
+    const shaOf = (buf) =>
+      crypto
+        .createHash('sha1')
+        .update(Buffer.from(`blob ${buf.length}\0`, 'utf8'))
+        .update(buf)
+        .digest('hex');
+
+    if (shaOf(content) === expectedSha) return true;
+    // Kiểm tra bản chuẩn hóa CRLF -> LF trên Windows
+    if (content.includes(13)) {
+      const lfBuf = Buffer.from(
+        content.toString('utf8').replace(/\r\n/g, '\n'),
+        'utf8'
+      );
+      if (shaOf(lfBuf) === expectedSha) return true;
+    }
+    return false;
   } catch {
-    return '';
+    return false;
   }
 }
 
@@ -291,8 +303,7 @@ export async function checkGithubUpdate(userDataDir) {
         for (const item of treeData.tree) {
           if (item.type !== 'blob' || !isUpdatableRepoPath(item.path)) continue;
           const localFile = path.join(APP_ROOT, ...item.path.split('/'));
-          const blobSha = computeGitBlobSha(localFile);
-          if (blobSha !== item.sha) {
+          if (!matchesGitBlobSha(localFile, item.sha)) {
             changedFilesCount++;
           }
         }
@@ -373,8 +384,7 @@ export async function performGithubOnlineUpdate({ userDataDir, onProgress }) {
     const toDownload = [];
     for (const item of blobs) {
       const destPath = path.join(APP_ROOT, ...item.path.split('/'));
-      const localBlobSha = computeGitBlobSha(destPath);
-      if (localBlobSha !== item.sha) {
+      if (!matchesGitBlobSha(destPath, item.sha)) {
         toDownload.push({ ...item, destPath });
       }
     }
