@@ -8,10 +8,10 @@
 
 /* ── 1. Header, Logo MD MEDIA (Cam Vàng Hoàng Kim), Phiên bản & Nút Cập Nhật ── */
 .qm-header {
-  height: 58px;
-  padding: 0 20px;
+  height: clamp(48px, 5.5vh, 58px);
+  padding: 0 clamp(10px, 1.2vw, 20px);
   padding-right: calc(100vw - env(titlebar-area-width, 100vw) + 18px) !important;
-  gap: 18px;
+  gap: clamp(8px, 1.1vw, 18px);
   -webkit-app-region: drag;
   user-select: none;
   background: radial-gradient(ellipse 45% 120% at 45% 100%, rgba(255, 136, 0, 0.22), transparent 70%),
@@ -35,77 +35,85 @@
 .md-brand {
   display: inline-flex;
   align-items: center;
-  gap: 11px;
-  padding: 5px 12px 5px 6px;
+  gap: clamp(7px, 0.7vw, 11px);
+  padding: 4px clamp(8px, 0.8vw, 12px) 4px 5px;
   border-radius: 12px;
   background: linear-gradient(135deg, rgba(255, 159, 28, 0.16) 0%, rgba(234, 88, 12, 0.08) 100%);
   border: 1px solid rgba(255, 159, 28, 0.42);
   box-shadow: 0 4px 16px rgba(255, 136, 0, 0.18);
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .md-brand-icon {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: clamp(30px, 2.5vw, 36px);
+  height: clamp(30px, 2.5vw, 36px);
   border-radius: 10px;
   background: linear-gradient(135deg, #ffb703 0%, #fb8500 55%, #ea580c 100%);
   color: #0b0f17;
-  font-size: 14px;
+  font-size: clamp(12px, 1vw, 14px);
   font-weight: 900;
   box-shadow: 0 2px 14px rgba(255, 136, 0, 0.5);
+  flex: 0 0 auto;
 }
 
 .md-brand-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: clamp(5px, 0.5vw, 8px);
 }
 
 .md-brand-name {
-  font-size: 16px;
+  font-size: clamp(13px, 1.1vw, 16px);
   font-weight: 900;
   letter-spacing: 0.05em;
   color: #ffffff;
+  white-space: nowrap;
 }
 
 .md-ver-pill {
-  padding: 2px 8px;
+  padding: 2px clamp(5px, 0.5vw, 8px);
   border-radius: 999px;
   background: linear-gradient(135deg, rgba(255, 159, 28, 0.25), rgba(234, 88, 12, 0.25));
   border: 1px solid rgba(255, 159, 28, 0.65);
   color: #ffbe3d;
-  font-size: 10px;
+  font-size: clamp(8.5px, 0.7vw, 10px);
   font-weight: 800;
   letter-spacing: 0.04em;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .md-brand-sub {
-  font-size: 9.5px;
+  font-size: clamp(8px, 0.65vw, 9.5px);
   font-weight: 700;
   letter-spacing: 0.08em;
   color: #cbd5e1;
+  white-space: nowrap;
 }
 
 .md-update-box {
   display: flex;
   align-items: center;
+  flex: 0 0 auto;
 }
 
 .md-update-btn {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  height: 34px;
-  padding: 0 13px;
+  gap: clamp(5px, 0.5vw, 7px);
+  height: clamp(29px, 3.5vh, 34px);
+  padding: 0 clamp(8px, 0.85vw, 13px);
   border-radius: 9px;
   border: 1px solid rgba(255, 159, 28, 0.45);
   background: linear-gradient(135deg, rgba(255, 159, 28, 0.16) 0%, rgba(234, 88, 12, 0.1) 100%);
   color: #fde68a;
-  font-size: 12.5px;
+  font-size: clamp(10.5px, 0.85vw, 12.5px);
   font-weight: 700;
   cursor: pointer;
+  white-space: nowrap;
   transition: all 0.18s ease;
 }
 
@@ -128,20 +136,23 @@
 .qm-nav {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: clamp(3px, 0.45vw, 6px);
   padding: 4px;
   background: rgba(15, 23, 42, 0.72);
   border: 1px solid rgba(255, 159, 28, 0.2);
   border-radius: 12px;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .nav-link {
-  padding: 7px 15px;
-  font-size: 13px;
+  padding: clamp(5px, 0.6vh, 7px) clamp(9px, 1vw, 15px);
+  font-size: clamp(11px, 0.9vw, 13px);
   font-weight: 600;
   color: #cbd5e1;
   border-radius: 9px;
   border: 1px solid transparent;
+  white-space: nowrap;
   transition: all 0.18s ease;
 }
 
@@ -175,32 +186,28 @@
 /* ── 2.1. Thanh 4 Bước Ở Trên Cùng + Công Cụ Đa Luồng & Cài Đặt Mặc Định (.cm-top-stepper dùng chung cho cả Motion Control & Tạo Video) ── */
 #view-motion .cm-top-stepper,
 #view-create .cm-top-stepper {
+  position: relative;
+  z-index: 45;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  height: 44px;
-  min-height: 44px;
-  padding: 0 14px;
+  gap: clamp(6px, 0.8vw, 10px);
+  height: clamp(38px, 4.5vh, 44px);
+  min-height: clamp(38px, 4.5vh, 44px);
+  padding: 0 clamp(8px, 1vw, 14px);
   background: rgba(11, 16, 28, 0.88);
   border-bottom: 1px solid rgba(255, 159, 28, 0.2);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
-  flex: 0 0 44px;
+  flex: 0 0 clamp(38px, 4.5vh, 44px);
   min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-#view-motion .cm-top-stepper::-webkit-scrollbar,
-#view-create .cm-top-stepper::-webkit-scrollbar {
-  display: none;
+  overflow: visible !important;
 }
 
 #view-motion .cm-pills,
 #view-create .cm-pills {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: clamp(3px, 0.45vw, 6px);
   padding: 0;
   background: transparent;
   border: 0;
@@ -211,7 +218,7 @@
 #view-motion .cm-step-arrow,
 #view-create .cm-step-arrow {
   color: #64748b;
-  font-size: 12px;
+  font-size: clamp(10px, 0.8vw, 12px);
   font-weight: 700;
   user-select: none;
 }
@@ -220,12 +227,12 @@
 #view-create .cm-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 3px 11px 3px 4px;
+  gap: clamp(4px, 0.45vw, 6px);
+  padding: 3px clamp(7px, 0.75vw, 11px) 3px 4px;
   border-radius: 999px;
   background: rgba(18, 25, 40, 0.9);
   border: 1px solid rgba(148, 163, 184, 0.22);
-  font-size: clamp(10.5px, 0.8vw, 12px);
+  font-size: clamp(9.5px, 0.78vw, 12px);
   font-weight: 600;
   color: #94a3b8;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -236,12 +243,12 @@
 #view-create .cm-pill-n {
   display: grid;
   place-items: center;
-  width: 20px;
-  height: 20px;
+  width: clamp(17px, 1.35vw, 20px);
+  height: clamp(17px, 1.35vw, 20px);
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.08);
   color: #94a3b8;
-  font-size: 10.5px;
+  font-size: clamp(9px, 0.72vw, 10.5px);
   font-weight: 800;
 }
 
@@ -279,72 +286,116 @@
 #view-create .cm-top-right-tools {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: clamp(5px, 0.5vw, 7px);
   flex: 0 0 auto;
 }
 
-.cm-stream-count-switch {
+/* Ô bấm chọn số luồng xổ xuống (1 ô duy nhất có dấu tích ✓ ở mục đang chọn) */
+.cm-stream-picker-wrap {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  padding: 2px;
-  border-radius: 999px;
-  background: rgba(15, 23, 38, 0.92);
-  border: 1px solid rgba(255, 159, 28, 0.28);
 }
 
-.cm-sc-btn {
-  height: 26px;
-  padding: 0 9px;
-  border-radius: 999px;
-  border: 0;
-  background: transparent;
-  color: #94a3b8;
-  font-size: 11px;
+.cm-stream-picker-btn {
+  background: linear-gradient(90deg, rgba(255, 145, 0, 0.26), rgba(234, 88, 12, 0.16)) !important;
+  border-color: rgba(255, 159, 28, 0.65) !important;
+  color: #fde68a !important;
+  font-weight: 800 !important;
+}
+
+.cm-picker-caret {
+  font-size: 10px;
+  color: #ffbe3d;
+  margin-left: 2px;
+}
+
+.cm-stream-picker-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 3600;
+  min-width: 176px;
+  padding: 6px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #151f33 0%, #0b111e 100%);
+  border: 1px solid rgba(255, 159, 28, 0.55);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.78), 0 0 22px rgba(255, 136, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cm-stream-picker-menu[hidden] {
+  display: none !important;
+}
+
+.cm-stream-picker-opt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 31px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.02);
+  color: #cbd5e1;
+  font-size: 11.5px;
   font-weight: 700;
   cursor: pointer;
+  text-align: left;
   white-space: nowrap;
+  transition: all 0.14s ease;
 }
 
-.cm-sc-btn--on {
-  background: linear-gradient(90deg, #ff9f1c, #ea580c);
+.cm-stream-picker-opt:hover {
+  background: rgba(255, 159, 28, 0.14);
+  border-color: rgba(255, 159, 28, 0.45);
   color: #ffffff;
-  box-shadow: 0 0 12px rgba(255, 136, 0, 0.4);
 }
 
-.cm-select-all-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 29px;
-  padding: 0 11px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(255, 159, 28, 0.2), rgba(234, 88, 12, 0.12));
-  border: 1px solid rgba(255, 159, 28, 0.55);
-  color: #fde68a;
-  font-size: 11px;
-  font-weight: 800;
-  cursor: pointer;
-  white-space: nowrap;
-  user-select: none;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+.cm-stream-picker-opt .cm-picker-chk {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  border: 1.5px solid rgba(148, 163, 184, 0.4);
+  background: rgba(15, 23, 38, 0.9);
+  color: transparent;
+  font-size: 10px;
+  font-weight: 900;
+  flex: 0 0 16px;
+  line-height: 1;
 }
 
-.cm-select-all-pill:hover {
+.cm-stream-picker-opt--on {
+  background: linear-gradient(90deg, rgba(255, 145, 0, 0.28), rgba(234, 88, 12, 0.16));
   border-color: #ff9f1c;
   color: #ffffff;
+  box-shadow: 0 0 12px rgba(255, 136, 0, 0.25);
+}
+
+.cm-stream-picker-opt--on .cm-picker-chk {
+  background: linear-gradient(135deg, #ffb703, #ea580c);
+  border-color: #fde047;
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 136, 0, 0.5);
 }
 
 .cm-default-cfg-btn {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  height: 29px;
-  padding: 0 10px;
+  height: clamp(26px, 3.1vh, 29px);
+  padding: 0 clamp(8px, 0.75vw, 11px);
   border-radius: 999px;
   background: linear-gradient(90deg, rgba(255, 145, 0, 0.18), rgba(234, 88, 12, 0.1));
   border: 1px solid rgba(255, 159, 28, 0.45);
   color: #e2e8f0;
-  font-size: 11px;
+  font-size: clamp(10px, 0.78vw, 11.5px);
+  font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
@@ -352,7 +403,7 @@
 
 .cm-default-cfg-btn b {
   color: #fde68a;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .cm-default-cfg-btn:hover {
@@ -368,8 +419,8 @@
 #view-motion .cm-layout.cm-streams-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  padding: 8px 12px;
+  gap: clamp(6px, 0.7vw, 10px);
+  padding: clamp(5px, 0.65vh, 8px) clamp(8px, 0.9vw, 12px);
   flex: 1 1 auto;
   min-height: 0;
   width: 100%;
@@ -377,20 +428,20 @@
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="1"] {
   grid-template-columns: minmax(0, 1fr);
-  gap: 12px;
-  padding: 8px 14px;
+  gap: clamp(8px, 0.8vw, 12px);
+  padding: clamp(6px, 0.7vh, 8px) clamp(10px, 1vw, 14px);
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="3"] {
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  padding: 8px 10px;
+  gap: clamp(5px, 0.6vw, 8px);
+  padding: clamp(5px, 0.65vh, 8px) clamp(6px, 0.75vw, 10px);
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] {
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 7px;
-  padding: 6px 8px;
+  gap: clamp(4px, 0.5vw, 7px);
+  padding: clamp(4px, 0.55vh, 6px) clamp(6px, 0.65vw, 8px);
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="10"] {
@@ -401,9 +452,9 @@
 
 #view-motion .cm-stream-unit {
   display: grid;
-  grid-template-columns: 204px minmax(0, 1fr);
-  gap: 8px;
-  padding: 7px;
+  grid-template-columns: clamp(160px, 17.5vw, 220px) minmax(0, 1fr);
+  gap: clamp(5px, 0.6vw, 8px);
+  padding: clamp(5px, 0.55vw, 7px);
   border-radius: 14px;
   background: rgba(13, 19, 31, 0.78);
   border: 1px solid rgba(255, 159, 28, 0.22);
@@ -416,23 +467,23 @@
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="1"] .cm-stream-unit {
-  grid-template-columns: 280px minmax(0, 1fr);
-  gap: 12px;
-  padding: 9px;
+  grid-template-columns: clamp(220px, 24vw, 310px) minmax(0, 1fr);
+  gap: clamp(8px, 0.8vw, 12px);
+  padding: clamp(6px, 0.65vw, 9px);
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="3"] .cm-stream-unit {
-  grid-template-columns: 164px minmax(0, 1fr);
-  gap: 7px;
-  padding: 6px;
+  grid-template-columns: clamp(136px, 14vw, 180px) minmax(0, 1fr);
+  gap: clamp(5px, 0.5vw, 7px);
+  padding: clamp(4px, 0.45vw, 6px);
 }
 
 /* Ở chế độ 5 Luồng của Motion Control: phần trên cần thao tác (Nguyên liệu & AI) rộng rãi, phần dưới chỉ xem trước thu gọn hợp lý */
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] .cm-stream-unit {
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1.85fr) minmax(110px, 0.68fr);
-  gap: 6px;
-  padding: 6px;
+  grid-template-rows: minmax(0, 1.85fr) minmax(88px, 0.68fr);
+  gap: clamp(4px, 0.5vh, 6px);
+  padding: clamp(4px, 0.45vw, 6px);
   border-radius: 13px;
 }
 
@@ -442,57 +493,57 @@
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] .cm-side-header {
-  height: 30px;
-  padding: 0 8px;
-  font-size: 10px;
+  height: clamp(26px, 3.2vh, 30px);
+  padding: 0 clamp(5px, 0.5vw, 8px);
+  font-size: clamp(8.5px, 0.68vw, 10px);
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] .cm-stream-badge {
-  font-size: 9.5px;
-  padding: 2px 6px;
+  font-size: clamp(8px, 0.62vw, 9.5px);
+  padding: 1.5px clamp(4px, 0.4vw, 6px);
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] .cm-side-tabs {
-  padding: 4px 6px 3px;
+  padding: clamp(3px, 0.4vh, 4px) clamp(4px, 0.45vw, 6px) 2px;
   gap: 4px;
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] .cm-side-tab {
-  height: 26px;
-  font-size: 10.5px;
-  padding: 0 6px;
+  height: clamp(22px, 2.7vh, 26px);
+  font-size: clamp(8.5px, 0.68vw, 10.5px);
+  padding: 0 clamp(3px, 0.35vw, 6px);
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] .cm-side-scroll {
   flex: 1 1 auto;
   min-height: 0;
   max-height: none !important;
-  padding: 6px 7px;
+  padding: clamp(4px, 0.5vh, 6px) clamp(5px, 0.5vw, 7px);
   overflow-y: auto;
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] .cm-source {
-  gap: 6px;
+  gap: clamp(4px, 0.5vh, 6px);
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] .cm-source > div {
-  padding: 7px 8px;
+  padding: clamp(5px, 0.55vh, 7px) clamp(5px, 0.55vw, 8px);
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] .cm-vrow {
-  padding: 7px;
-  gap: 8px;
+  padding: clamp(5px, 0.5vh, 7px);
+  gap: clamp(5px, 0.5vw, 8px);
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] .cm-action-bar,
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] .cm-stream-action-bar {
-  padding: 5px 6px 6px;
+  padding: clamp(4px, 0.45vh, 5px) clamp(5px, 0.45vw, 6px) clamp(4px, 0.5vh, 6px);
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] .cm-stream-create-btn {
-  height: 30px;
-  font-size: 11.5px;
-  padding: 0 8px;
+  height: clamp(26px, 3.1vh, 30px);
+  font-size: clamp(9.5px, 0.75vw, 11.5px);
+  padding: 0 clamp(5px, 0.5vw, 8px);
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] .cm-golden-backdrop {
@@ -504,21 +555,21 @@
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] .cm-center-stage .cm-panel-head {
-  min-height: 24px !important;
-  padding: 4px 8px 2px !important;
-  gap: 6px !important;
+  min-height: 22px !important;
+  padding: 3px 6px 2px !important;
+  gap: 4px !important;
   flex-wrap: nowrap;
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] .cm-center-stage .cm-panel-title {
-  font-size: 9.5px;
+  font-size: clamp(8.5px, 0.65vw, 9.5px);
   white-space: nowrap;
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] .cm-center-stage .cm-fact {
-  height: 18px;
-  padding: 0 5px;
-  font-size: 9.5px;
+  height: 17px;
+  padding: 0 4px;
+  font-size: clamp(8px, 0.62vw, 9.5px);
 }
 
 #view-motion .cm-layout.cm-streams-grid[data-cols="5"] .cm-center-stage .cm-panel-foot {
@@ -527,7 +578,7 @@
 
 /* Nút "Tạo video" riêng cho từng luồng (hiện ở chế độ 2 và 3 luồng, ẩn ở chế độ 1 luồng) */
 .cm-stream-action-bar {
-  padding: 6px 8px 8px;
+  padding: clamp(4px, 0.5vh, 6px) clamp(6px, 0.6vw, 8px) clamp(5px, 0.6vh, 8px);
   background: rgba(12, 18, 30, 0.92);
   border-top: 1px solid rgba(255, 159, 28, 0.18);
   flex: 0 0 auto;
@@ -543,18 +594,20 @@
   justify-content: center;
   gap: 5px;
   width: 100%;
-  height: 32px;
-  padding: 0 10px;
+  height: clamp(27px, 3.3vh, 32px);
+  padding: 0 clamp(6px, 0.6vw, 10px);
   border-radius: 9px;
   border: 1px solid #fde047;
   background: linear-gradient(180deg, #ffb703 0%, #fb8500 55%, #ea580c 100%);
   color: #ffffff;
-  font-size: 11.5px;
+  font-size: clamp(9.5px, 0.78vw, 11.5px);
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(255, 136, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.45);
   transition: filter 0.15s ease, transform 0.15s ease;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cm-stream-create-btn:hover:not(:disabled) {
@@ -599,11 +652,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 4px;
-  height: 34px;
-  padding: 0 9px;
+  height: clamp(28px, 3.4vh, 34px);
+  padding: 0 clamp(6px, 0.6vw, 9px);
   background: rgba(17, 24, 39, 0.92);
   border-bottom: 1px solid rgba(255, 159, 28, 0.16);
-  font-size: 10px;
+  font-size: clamp(8.5px, 0.7vw, 10px);
   font-weight: 800;
   letter-spacing: 0.02em;
   color: #f8fafc;
@@ -614,7 +667,7 @@
 .cm-side-header-left {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -627,7 +680,7 @@
 .cm-stream-pick {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   cursor: pointer;
   user-select: none;
   flex: 0 0 auto;
@@ -640,20 +693,20 @@
 
 .cm-stream-badge {
   flex: 0 0 auto;
-  padding: 2px 6px;
+  padding: 2px clamp(4px, 0.45vw, 6px);
   border-radius: 6px;
   background: rgba(255, 159, 28, 0.18);
   border: 1px solid rgba(255, 159, 28, 0.45);
   color: #fde68a;
-  font-size: 9.5px;
+  font-size: clamp(8px, 0.65vw, 9.5px);
   font-weight: 800;
 }
 
 #view-motion .cm-side-tabs {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 5px;
-  padding: 6px 8px 3px;
+  gap: 4px;
+  padding: clamp(4px, 0.5vh, 6px) clamp(5px, 0.55vw, 8px) 3px;
   background: rgba(15, 21, 34, 0.65);
   flex: 0 0 auto;
 }
@@ -662,17 +715,19 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  height: 27px;
-  padding: 0 6px;
+  gap: 3px;
+  height: clamp(23px, 2.8vh, 27px);
+  padding: 0 clamp(4px, 0.4vw, 6px);
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.03);
   color: #94a3b8;
-  font-size: 10.5px;
+  font-size: clamp(8.5px, 0.7vw, 10.5px);
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #view-motion .cm-side-tab--on {
@@ -683,69 +738,72 @@
 }
 
 #view-motion .cm-side-scroll {
-  padding: 7px 8px 10px;
+  padding: clamp(5px, 0.6vh, 7px) clamp(5px, 0.55vw, 8px) clamp(6px, 0.8vh, 10px);
   overflow-y: auto;
 }
 
 #view-motion .cm-source {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: clamp(5px, 0.6vh, 8px);
 }
 
 #view-motion .cm-source > div {
-  padding: 8px 9px;
+  padding: clamp(6px, 0.65vh, 8px) clamp(6px, 0.6vw, 9px);
   background: rgba(255, 255, 255, 0.025);
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 11px;
 }
 
 #view-motion .cm-side-scroll .an-label {
-  font-size: 11px;
+  font-size: clamp(9.5px, 0.75vw, 11px);
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: none;
   color: #e2e8f0;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 /* Thu nhỏ gọn thẻ Video gốc & Ảnh nhân vật trong từng luồng để vừa vặn như Ảnh 4 */
 #view-motion .cm-vrow {
-  gap: 8px;
+  gap: clamp(5px, 0.55vw, 8px);
 }
 
 #view-motion .cm-vthumb {
-  width: 48px !important;
-  height: 68px !important;
+  width: clamp(38px, 3.6vw, 48px) !important;
+  height: clamp(54px, 5vh, 68px) !important;
   border-radius: 8px !important;
   object-fit: cover;
-  flex: 0 0 48px !important;
+  flex: 0 0 clamp(38px, 3.6vw, 48px) !important;
 }
 
 #view-motion .cm-vname {
-  font-size: 11px !important;
+  font-size: clamp(9.5px, 0.75vw, 11px) !important;
 }
 
 #view-motion .cm-vfacts .cm-fact {
-  font-size: 10px !important;
-  padding: 1px 5px !important;
+  font-size: clamp(8.5px, 0.65vw, 10px) !important;
+  padding: 1px 4px !important;
 }
 
 #view-motion .cm-images {
-  gap: 6px !important;
-  margin-bottom: 6px !important;
+  gap: clamp(4px, 0.45vw, 6px) !important;
+  margin-bottom: 5px !important;
 }
 
 #view-motion .cm-image {
-  width: 52px !important;
-  height: 66px !important;
+  width: clamp(42px, 3.8vw, 52px) !important;
+  height: clamp(54px, 5vh, 66px) !important;
   border-radius: 8px !important;
 }
 
 #view-motion .cm-add {
-  height: 30px !important;
-  font-size: 11px !important;
-  padding: 0 8px !important;
+  height: clamp(26px, 3.1vh, 30px) !important;
+  font-size: clamp(9.5px, 0.72vw, 11px) !important;
+  padding: 0 clamp(5px, 0.5vw, 8px) !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #view-motion .cm-pics .cm-hint {
@@ -1232,9 +1290,9 @@
 
 /* ── 2.3. THANH DƯỚI CÙNG CHẠY DÀI TOÀN KHUNG: QUY TRÌNH XỬ LÝ VIDEO (Motion Flow) ── */
 #view-motion .cm-bottom-dock {
-  flex: 0 0 76px;
-  height: 76px;
-  margin: 0 16px 8px;
+  flex: 0 0 clamp(60px, 7.6vh, 76px);
+  height: clamp(60px, 7.6vh, 76px);
+  margin: 0 clamp(10px, 1vw, 16px) clamp(5px, 0.7vh, 8px);
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -1245,10 +1303,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  gap: clamp(8px, 1vw, 14px);
   width: 100%;
   height: 100%;
-  padding: 8px 16px;
+  padding: clamp(5px, 0.7vh, 8px) clamp(10px, 1.1vw, 16px);
   border-radius: 16px;
   background: linear-gradient(90deg, #0b111e 0%, #10192b 50%, #0b111e 100%);
   border: 1px solid rgba(255, 159, 28, 0.32);
@@ -1291,7 +1349,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: clamp(4px, 0.6vh, 7px);
   padding-top: 0;
 }
 
@@ -1299,7 +1357,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 4px;
+  gap: clamp(2px, 0.35vw, 4px);
   width: 100%;
 }
 
@@ -1309,7 +1367,7 @@
   flex: 0 0 auto;
   width: auto;
   min-width: 0;
-  padding: 7px 16px;
+  padding: clamp(4px, 0.55vh, 7px) clamp(8px, 1.05vw, 16px);
   border-radius: 999px;
   background: rgba(11, 17, 30, 0.94);
   border: 1.5px solid rgba(100, 116, 139, 0.45);
@@ -1394,7 +1452,7 @@
   position: relative;
   z-index: 2;
   display: block;
-  font-size: clamp(10px, 0.8vw, 11.5px);
+  font-size: clamp(9px, 0.75vw, 11.5px);
   font-weight: 700;
   color: #ffffff;
   white-space: nowrap;
@@ -1415,8 +1473,8 @@
 .md-mc-arrow-bridge {
   position: relative;
   flex: 1 1 0;
-  min-width: 24px;
-  height: 28px;
+  min-width: clamp(10px, 1.5vw, 24px);
+  height: clamp(22px, 2.8vh, 28px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1453,13 +1511,13 @@
   z-index: 2;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: clamp(7px, 0.8vw, 12px);
   flex: 0 0 auto;
 }
 
 .cm-flow-prog-box {
-  width: 128px;
-  padding: 7px 11px;
+  width: clamp(98px, 8.8vw, 128px);
+  padding: clamp(5px, 0.6vh, 7px) clamp(7px, 0.75vw, 11px);
   border-radius: 12px;
   background: rgba(15, 23, 38, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1469,13 +1527,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11.5px;
+  font-size: clamp(10px, 0.78vw, 11.5px);
   color: #cbd5e1;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .cm-flow-prog-head b {
-  font-size: 13.5px;
+  font-size: clamp(11.5px, 0.9vw, 13.5px);
   font-weight: 800;
   color: #ffffff;
 }
@@ -1515,16 +1573,16 @@
   align-items: center;
   justify-content: center;
   gap: 2px;
-  min-width: 175px;
-  height: 54px;
-  padding: 0 20px;
+  min-width: clamp(138px, 12.5vw, 175px);
+  height: clamp(44px, 5.6vh, 54px);
+  padding: 0 clamp(12px, 1.25vw, 20px);
   border-radius: 15px;
   cursor: pointer;
 }
 
 #view-motion .cm-btn-main-top,
 #view-create .cm-btn-main-top {
-  font-size: 14.5px;
+  font-size: clamp(12px, 1vw, 14.5px);
   font-weight: 900;
   letter-spacing: 0.01em;
   color: #ffffff;
@@ -1534,7 +1592,7 @@
 
 #view-motion .cm-btn-main-sub,
 #view-create .cm-btn-main-sub {
-  font-size: 11px;
+  font-size: clamp(9.5px, 0.75vw, 11px);
   font-weight: 600;
   color: rgba(255, 255, 255, 0.92);
   white-space: nowrap;
@@ -1636,10 +1694,10 @@
 
 #view-create:not([data-subview="library"]) .cv-stage {
   display: flex;
-  flex: 0 0 76px;
-  height: 76px;
-  margin: 0 12px 8px;
-  width: calc(100% - 24px);
+  flex: 0 0 clamp(60px, 7.6vh, 76px);
+  height: clamp(60px, 7.6vh, 76px);
+  margin: 0 clamp(8px, 0.9vw, 12px) clamp(5px, 0.7vh, 8px);
+  width: calc(100% - 2 * clamp(8px, 0.9vw, 12px));
   min-width: 0;
 }
 
@@ -2706,14 +2764,14 @@
 
 /* ── CHẾ ĐỘ TẠO VIDEO HIỂN THỊ THEO HÀNG NGANG (.md-create-streams-wrap[data-layout="rows"]) ── */
 .md-create-streams-wrap[data-layout="rows"] {
-  padding: 6px 12px;
+  padding: clamp(4px, 0.55vh, 6px) clamp(8px, 0.9vw, 12px);
 }
 
 .md-create-streams-wrap[data-layout="rows"] .md-create-streams-grid {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) !important;
-  grid-auto-rows: minmax(42px, 1fr);
-  gap: 5px !important;
+  grid-auto-rows: minmax(clamp(34px, 4.7vh, 42px), 1fr);
+  gap: clamp(3px, 0.45vh, 5px) !important;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -2725,29 +2783,29 @@
 
 .md-create-streams-wrap[data-layout="rows"] .md-cs-card {
   display: grid;
-  grid-template-columns: 184px minmax(0, 1fr) 152px;
+  grid-template-columns: clamp(136px, 13.5vw, 184px) minmax(0, 1fr) clamp(118px, 11.2vw, 152px);
   align-items: center;
-  gap: 8px;
-  padding: 3px 10px;
+  gap: clamp(5px, 0.6vw, 8px);
+  padding: clamp(2px, 0.35vh, 3px) clamp(6px, 0.75vw, 10px);
   border-radius: 10px;
-  min-height: 42px;
+  min-height: clamp(34px, 4.7vh, 42px);
 }
 
 .md-create-streams-wrap[data-layout="rows"] .md-cs-head {
   height: 100%;
-  padding: 0 10px 0 2px;
+  padding: 0 clamp(6px, 0.7vw, 10px) 0 2px;
   background: transparent;
   border-bottom: 0;
   border-right: 1px solid rgba(255, 159, 28, 0.22);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: clamp(4px, 0.45vw, 6px);
 }
 
 .md-create-streams-wrap[data-layout="rows"] .md-cs-badge {
-  font-size: 10.5px;
-  padding: 3px 7px;
+  font-size: clamp(9px, 0.75vw, 10.5px);
+  padding: 2px clamp(5px, 0.5vw, 7px);
   border-radius: 6px;
 }
 
@@ -2756,14 +2814,14 @@
 }
 
 .md-create-streams-wrap[data-layout="rows"] .md-cs-status {
-  font-size: 10px;
+  font-size: clamp(8.5px, 0.7vw, 10px);
 }
 
 .md-create-streams-wrap[data-layout="rows"] .md-cs-body {
   display: grid;
-  grid-template-columns: 215px minmax(0, 1fr) auto;
+  grid-template-columns: clamp(150px, 15.5vw, 215px) minmax(0, 1fr) auto;
   align-items: center;
-  gap: 8px;
+  gap: clamp(5px, 0.6vw, 8px);
   padding: 0;
   height: 100%;
   overflow: visible;
@@ -2779,9 +2837,9 @@
 }
 
 .md-create-streams-wrap[data-layout="rows"] .md-cs-ref-add {
-  height: 32px;
-  padding: 0 9px;
-  font-size: 10.5px;
+  height: clamp(26px, 3.4vh, 32px);
+  padding: 0 clamp(6px, 0.65vw, 9px);
+  font-size: clamp(9px, 0.75vw, 10.5px);
   border-radius: 7px;
   flex: 1 1 auto;
 }
@@ -2794,9 +2852,9 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 8px;
-  height: 34px;
-  padding: 0 10px;
+  gap: clamp(5px, 0.6vw, 8px);
+  height: clamp(28px, 3.6vh, 34px);
+  padding: 0 clamp(6px, 0.75vw, 10px);
   border-radius: 8px;
   min-width: 0;
 }
@@ -2804,18 +2862,18 @@
 .md-create-streams-wrap[data-layout="rows"] .md-cs-prompt-top {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding-right: 8px;
+  gap: clamp(4px, 0.45vw, 6px);
+  padding-right: clamp(5px, 0.55vw, 8px);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   flex: 0 0 auto;
 }
 
 .md-create-streams-wrap[data-layout="rows"] .md-cs-label {
-  font-size: 10.5px;
+  font-size: clamp(9px, 0.75vw, 10.5px);
 }
 
 .md-create-streams-wrap[data-layout="rows"] .md-cs-cmd-count {
-  font-size: 9.5px;
+  font-size: clamp(8.5px, 0.68vw, 9.5px);
   padding: 1px 5px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.05);
@@ -2823,47 +2881,47 @@
 
 .md-create-streams-wrap[data-layout="rows"] .md-cs-ta {
   flex: 1 1 auto;
-  min-height: 24px !important;
-  height: 24px;
-  max-height: 30px;
-  padding: 3px 0;
-  font-size: 11.5px;
-  line-height: 18px;
+  min-height: 20px !important;
+  height: clamp(20px, 2.6vh, 24px);
+  max-height: 28px;
+  padding: 2px 0;
+  font-size: clamp(9.5px, 0.8vw, 11.5px);
+  line-height: 17px;
   overflow-y: auto;
 }
 
 .md-create-streams-wrap[data-layout="rows"] .md-cs-prompt-foot {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   padding-top: 0;
-  padding-left: 8px;
+  padding-left: clamp(5px, 0.55vw, 8px);
   border-top: 0;
   border-left: 1px solid rgba(255, 255, 255, 0.08);
   flex: 0 0 auto;
 }
 
 .md-create-streams-wrap[data-layout="rows"] .md-cs-import-btn {
-  padding: 3px 7px;
-  font-size: 9.5px;
+  padding: 2px clamp(4px, 0.5vw, 7px);
+  font-size: clamp(8.5px, 0.68vw, 9.5px);
 }
 
 .md-create-streams-wrap[data-layout="rows"] .md-cs-clear-btn {
-  font-size: 9.5px;
-  padding: 2px 5px;
+  font-size: clamp(8.5px, 0.68vw, 9.5px);
+  padding: 2px 4px;
 }
 
 .md-create-streams-wrap[data-layout="rows"] .md-cs-specs-row {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: clamp(3px, 0.4vw, 5px);
   flex: 0 0 auto;
 }
 
 .md-create-streams-wrap[data-layout="rows"] .md-cs-spec-pill {
-  height: 30px;
-  padding: 0 9px;
-  font-size: 10.5px;
+  height: clamp(25px, 3.2vh, 30px);
+  padding: 0 clamp(5px, 0.6vw, 9px);
+  font-size: clamp(9px, 0.74vw, 10.5px);
   border-radius: 7px;
 }
 
@@ -2876,13 +2934,13 @@
   flex-direction: row;
   align-items: center;
   justify-content: flex-end;
-  gap: 6px;
+  gap: 5px;
 }
 
 .md-create-streams-wrap[data-layout="rows"] .md-cs-gen-btn {
-  height: 32px;
-  padding: 0 10px;
-  font-size: 11px;
+  height: clamp(26px, 3.4vh, 32px);
+  padding: 0 clamp(6px, 0.65vw, 10px);
+  font-size: clamp(9.5px, 0.78vw, 11px);
   border-radius: 8px;
 }
 

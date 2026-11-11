@@ -191,28 +191,48 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
         <div class="cm-pills" role="tablist">
           <span class="cm-pill cm-pill--done"><span class="cm-pill-n">✓</span><span class="cm-pill-t">Nguyên liệu &amp; Kịch bản</span></span>
           <span class="cm-step-arrow" aria-hidden="true">→</span>
-          <span class="cm-pill cm-pill--on"><span class="cm-pill-n">2</span><span class="cm-pill-t">10 Luồng Ngang</span></span>
+          <span class="cm-pill cm-pill--on"><span class="cm-pill-n">2</span><span class="cm-pill-t" id="md-create-step2-label">10 Luồng Ngang</span></span>
           <span class="cm-step-arrow" aria-hidden="true">→</span>
           <span class="cm-pill"><span class="cm-pill-n">3</span><span class="cm-pill-t">Tạo video</span></span>
           <span class="cm-step-arrow" aria-hidden="true">→</span>
           <span class="cm-pill"><span class="cm-pill-n">4</span><span class="cm-pill-t">Kết quả</span></span>
         </div>
         <div class="cm-top-right-tools">
-          <div class="cm-stream-count-switch" id="md-cs-count-switch" role="group" aria-label="Số luồng tạo video hiển thị">
-            <button type="button" class="cm-sc-btn md-cs-cnt-btn" data-cols="1" data-layout="rows">⚡ 1 Luồng</button>
-            <button type="button" class="cm-sc-btn md-cs-cnt-btn" data-cols="2" data-layout="rows">⚡ 2 Luồng</button>
-            <button type="button" class="cm-sc-btn md-cs-cnt-btn" data-cols="3" data-layout="rows">⚡ 3 Luồng</button>
-            <button type="button" class="cm-sc-btn md-cs-cnt-btn" data-cols="5" data-layout="rows">⚡ 5 Luồng</button>
-            <button type="button" class="cm-sc-btn md-cs-cnt-btn cm-sc-btn--on md-cs-cnt-btn--on" data-cols="10" data-layout="rows" title="Hiển thị 10 luồng tạo video theo hàng ngang">⚡ 10 Hàng ngang</button>
-            <button type="button" class="cm-sc-btn md-cs-cnt-btn" data-cols="10" data-layout="cols" title="Hiển thị 10 luồng tạo video dạng cột cạnh nhau">▥ 10 Cột</button>
+          <div class="cm-stream-picker-wrap" id="md-cs-count-switch">
+            <button type="button" class="cm-default-cfg-btn cm-stream-picker-btn" id="md-cs-picker-btn" title="Bấm để chọn số luồng và bố cục hiển thị">
+              <span id="md-cs-picker-label">⚡ 10 Hàng ngang</span>
+              <span class="cm-picker-caret">▾</span>
+            </button>
+            <div class="cm-stream-picker-menu" id="md-cs-picker-menu" hidden>
+              <button type="button" class="cm-stream-picker-opt" data-cols="1" data-layout="rows" data-label="⚡ 1 Luồng" data-step="1 Luồng">
+                <span class="cm-picker-chk">✓</span>
+                <span>⚡ 1 Luồng</span>
+              </button>
+              <button type="button" class="cm-stream-picker-opt" data-cols="2" data-layout="rows" data-label="⚡ 2 Luồng" data-step="2 Luồng">
+                <span class="cm-picker-chk">✓</span>
+                <span>⚡ 2 Luồng</span>
+              </button>
+              <button type="button" class="cm-stream-picker-opt" data-cols="3" data-layout="rows" data-label="⚡ 3 Luồng" data-step="3 Luồng">
+                <span class="cm-picker-chk">✓</span>
+                <span>⚡ 3 Luồng</span>
+              </button>
+              <button type="button" class="cm-stream-picker-opt" data-cols="5" data-layout="rows" data-label="⚡ 5 Luồng" data-step="5 Luồng">
+                <span class="cm-picker-chk">✓</span>
+                <span>⚡ 5 Luồng</span>
+              </button>
+              <button type="button" class="cm-stream-picker-opt cm-stream-picker-opt--on" data-cols="10" data-layout="rows" data-label="⚡ 10 Hàng ngang" data-step="10 Luồng Ngang">
+                <span class="cm-picker-chk">✓</span>
+                <span>⚡ 10 Hàng ngang</span>
+              </button>
+              <button type="button" class="cm-stream-picker-opt" data-cols="10" data-layout="cols" data-label="▥ 10 Cột" data-step="10 Cột">
+                <span class="cm-picker-chk">✓</span>
+                <span>▥ 10 Cột</span>
+              </button>
+            </div>
           </div>
-          <label class="cm-select-all-pill" title="Tích chọn hoặc bỏ chọn tất cả các luồng tạo video để chạy đồng loạt">
-            <input type="checkbox" class="stp-chk" id="md-cs-select-all-chk" checked />
-            <span id="md-cs-select-all-label">Chọn cả 10 luồng (10/10)</span>
-          </label>
           <button type="button" class="cm-default-cfg-btn" id="md-stage-open-cfg" title="Cài đặt mặc định Model AI, số luồng chạy, chia tài khoản & thư mục lưu video">
-            <span>⚙️ Cài đặt mặc định:</span>
-            <b id="md-cs-top-cfg-summary">Omni 1.2 Flash · Lưu file</b>
+            <span class="cm-dcfg-ico">⚙️</span>
+            <span>Cài đặt mặc định</span>
           </button>
           <button type="button" class="cm-default-cfg-btn" id="md-stage-open-folder" title="Mở thư mục lưu video trên máy tính">
             <span>📂 Mở thư mục</span>
@@ -696,9 +716,6 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
       st.chkEl = chkEl;
     }
 
-    const selectAllChk = document.getElementById('md-cs-select-all-chk');
-    const selectAllLbl = document.getElementById('md-cs-select-all-label');
-
     const syncCreateSelectAll = () => {
       const visibleStates = streamStates.filter((s) => !s.card?.hidden);
       const totalVis = visibleStates.length || 10;
@@ -707,28 +724,11 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
         s.checked = s.chkEl ? !!s.chkEl.checked : true;
         s.card?.classList.toggle('md-cs-card--unchecked', !s.checked);
       });
-      if (selectAllChk) {
-        selectAllChk.checked = checkedCount === totalVis && totalVis > 0;
-        selectAllChk.indeterminate = checkedCount > 0 && checkedCount < totalVis;
-      }
-      if (selectAllLbl) {
-        selectAllLbl.textContent = `Chọn cả ${totalVis} luồng (${checkedCount}/${totalVis})`;
-      }
       const footSum = document.getElementById('md-foot-queue-summary');
       if (footSum && createRunning + createQueued === 0) {
         footSum.textContent = `Chạy ${checkedCount}/${totalVis} luồng đã tích`;
       }
     };
-
-    selectAllChk?.addEventListener('change', () => {
-      const checked = !!selectAllChk.checked;
-      streamStates.forEach((s) => {
-        if (!s.card?.hidden && s.chkEl) {
-          s.chkEl.checked = checked;
-        }
-      });
-      syncCreateSelectAll();
-    });
 
     streamStates.forEach((s) => {
       s.chkEl?.addEventListener('change', syncCreateSelectAll);
@@ -759,26 +759,47 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
       }
     });
 
-    // Chuyển đổi chế độ hiển thị 1 / 2 / 3 / 5 / 10 luồng theo hàng ngang hoặc cột
+    // Ô bấm chọn chế độ hiển thị 1 / 2 / 3 / 5 / 10 luồng theo hàng ngang hoặc cột
     const countSwitch = document.getElementById('md-cs-count-switch');
-    countSwitch?.querySelectorAll('.md-cs-cnt-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const cols = btn.dataset.cols || '10';
-        const layoutMode = btn.dataset.layout || 'rows';
-        streamsWrap.dataset.cols = cols;
-        streamsWrap.dataset.layout = layoutMode;
-        countSwitch.querySelectorAll('.md-cs-cnt-btn').forEach((b) => {
-          const on = b === btn;
-          b.classList.toggle('md-cs-cnt-btn--on', on);
-          b.classList.toggle('cm-sc-btn--on', on);
-        });
-        const maxVisible = Number(cols) || 10;
-        streamsGrid.querySelectorAll('.md-cs-card').forEach((card) => {
-          const idx = Number(card.dataset.stream) || 1;
-          card.hidden = idx > maxVisible;
-        });
-        syncCreateSelectAll();
+    const csPickerBtn = document.getElementById('md-cs-picker-btn');
+    const csPickerLabel = document.getElementById('md-cs-picker-label');
+    const csPickerMenu = document.getElementById('md-cs-picker-menu');
+    const step2Lbl = document.getElementById('md-create-step2-label');
+
+    csPickerBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (csPickerMenu) csPickerMenu.hidden = !csPickerMenu.hidden;
+    });
+
+    document.addEventListener('pointerdown', (e) => {
+      if (csPickerMenu && !csPickerMenu.hidden && countSwitch && !countSwitch.contains(e.target)) {
+        csPickerMenu.hidden = true;
+      }
+    });
+
+    csPickerMenu?.addEventListener('click', (e) => {
+      const opt = e.target.closest('.cm-stream-picker-opt');
+      if (!opt) return;
+      const cols = opt.dataset.cols || '10';
+      const layoutMode = opt.dataset.layout || 'rows';
+      streamsWrap.dataset.cols = cols;
+      streamsWrap.dataset.layout = layoutMode;
+      csPickerMenu.querySelectorAll('.cm-stream-picker-opt').forEach((b) => {
+        b.classList.toggle('cm-stream-picker-opt--on', b === opt);
       });
+      if (csPickerLabel && opt.dataset.label) {
+        csPickerLabel.textContent = opt.dataset.label;
+      }
+      if (step2Lbl && opt.dataset.step) {
+        step2Lbl.textContent = opt.dataset.step;
+      }
+      csPickerMenu.hidden = true;
+      const maxVisible = Number(cols) || 10;
+      streamsGrid.querySelectorAll('.md-cs-card').forEach((card) => {
+        const idx = Number(card.dataset.stream) || 1;
+        card.hidden = idx > maxVisible;
+      });
+      syncCreateSelectAll();
     });
   }
 
@@ -882,6 +903,149 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
     modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
   }
 
+  async function refreshHeaderLicenseBadge() {
+    try {
+      const st = await window.dola?.gate?.state?.();
+      const lbl = document.getElementById('md-license-btn-label');
+      if (!lbl || !st) return;
+      if (st.unlocked) {
+        const daysLeft = st.expiresAt
+          ? Math.max(0, Math.ceil((st.expiresAt - Date.now()) / 86400000))
+          : null;
+        lbl.textContent = daysLeft != null ? `Bản quyền (${daysLeft} ngày)` : 'Bản quyền VIP';
+      } else {
+        lbl.textContent = 'Kích hoạt Key';
+      }
+    } catch {}
+  }
+
+  async function openLicenseModal() {
+    let existing = document.getElementById('md-license-modal');
+    if (existing) existing.remove();
+
+    let st = {};
+    try {
+      st = (await window.dola?.gate?.state?.()) || {};
+    } catch {}
+    const hwid = st.hwid || st.code || 'MDMC-XXXX-XXXX-XXXX';
+    const expStr = st.expiresAt
+      ? `${new Date(st.expiresAt).toLocaleDateString('vi-VN')} (còn ${Math.max(0, Math.ceil((st.expiresAt - Date.now()) / 86400000))} ngày)`
+      : st.unlocked
+        ? 'Vĩnh viễn (VIP)'
+        : 'Chưa kích hoạt';
+    const statusText = st.unlocked
+      ? `✅ Đang hoạt động (${st.planLabel || st.plan || 'VIP'})`
+      : '🔒 Chưa kích hoạt hoặc đã hết hạn';
+
+    const modal = document.createElement('div');
+    modal.id = 'md-license-modal';
+    modal.className = 'md-up-overlay';
+    modal.innerHTML = `
+      <div class="md-up-card" role="dialog" aria-modal="true" style="max-width:520px;">
+        <div class="md-up-head">
+          <div class="md-up-brand">
+            <span class="md-up-icon">🔑</span>
+            <div>
+              <h3>Bản Quyền &amp; Mã Máy — MD Motion Control</h3>
+              <p>Hệ thống quản lý bản quyền tập trung MD License Center (Ed25519 V2)</p>
+            </div>
+          </div>
+          <button type="button" class="md-up-close" id="md-lic-close">✕</button>
+        </div>
+        <div class="md-up-body" style="display:flex;flex-direction:column;gap:12px;">
+          <div style="padding:12px 14px;border-radius:12px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.35);display:flex;align-items:center;justify-content:space-between;gap:10px;">
+            <div>
+              <div style="font-size:11px;color:#94a3b8;text-transform:uppercase;font-weight:700;">Mã máy (HWID) của thiết bị này:</div>
+              <code id="md-lic-hwid-val" style="font-size:16px;font-weight:800;color:#34d399;font-family:monospace;">${hwid}</code>
+            </div>
+            <button type="button" class="md-up-btn md-up-btn--ghost" id="md-lic-copy-hwid" style="padding:7px 12px;font-size:12px;">📋 Sao chép Mã máy</button>
+          </div>
+
+          <div style="padding:12px 14px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);font-size:12.5px;line-height:1.7;color:#e2e8f0;">
+            <div><strong>Trạng thái:</strong> <span id="md-lic-status-val">${statusText}</span></div>
+            <div><strong>Thời hạn sử dụng:</strong> <span id="md-lic-exp-val">${expStr}</span></div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <label style="font-size:12px;font-weight:700;color:#cbd5e1;">Nhập / Đổi Mã Kích Hoạt Bản Quyền (MDMC2....):</label>
+            <div style="display:flex;gap:8px;">
+              <input type="text" id="md-lic-key-input" placeholder="Dán mã MDMC2.... vào đây" style="flex:1;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.16);background:rgba(9,13,22,0.9);color:#f8fafc;font-family:monospace;font-size:12.5px;" />
+              <button type="button" class="md-up-btn md-up-btn--primary" id="md-lic-activate-btn" style="white-space:nowrap;">🔑 Kích hoạt Key</button>
+            </div>
+            <div id="md-lic-msg" style="font-size:12px;min-height:18px;color:#94a3b8;">
+              💡 Gửi Mã máy <strong>${hwid}</strong> cho Admin hoặc nhập trên <strong>mdtool.io.vn</strong> để nhận Key tự động.
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    document.getElementById('md-lic-close')?.addEventListener('click', () => modal.remove());
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+
+    document.getElementById('md-lic-copy-hwid')?.addEventListener('click', async () => {
+      const btn = document.getElementById('md-lic-copy-hwid');
+      try {
+        await navigator.clipboard.writeText(hwid);
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = hwid;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+      }
+      if (btn) {
+        btn.textContent = '✓ Đã chép Mã máy';
+        setTimeout(() => { btn.textContent = '📋 Sao chép Mã máy'; }, 1800);
+      }
+    });
+
+    document.getElementById('md-lic-activate-btn')?.addEventListener('click', async () => {
+      const inp = document.getElementById('md-lic-key-input');
+      const msg = document.getElementById('md-lic-msg');
+      const btn = document.getElementById('md-lic-activate-btn');
+      const rawKey = inp?.value?.trim() || '';
+      if (!rawKey) {
+        if (msg) {
+          msg.style.color = '#fca5a5';
+          msg.textContent = '⚠️ Vui lòng dán mã kích hoạt bản quyền (MDMC2....) vào ô trên.';
+        }
+        return;
+      }
+      if (btn) btn.disabled = true;
+      try {
+        const res = await window.dola?.gate?.activateVip?.(rawKey);
+        if (res?.ok && res?.unlocked) {
+          if (msg) {
+            msg.style.color = '#6ee7b7';
+            msg.textContent = res.note || '🎉 Đã kích hoạt Key bản quyền thành công!';
+          }
+          const stVal = document.getElementById('md-lic-status-val');
+          const expVal = document.getElementById('md-lic-exp-val');
+          if (stVal) stVal.textContent = `✅ Đang hoạt động (${res.planLabel || res.plan || 'VIP'})`;
+          if (expVal) {
+            expVal.textContent = res.expiresAt
+              ? `${new Date(res.expiresAt).toLocaleDateString('vi-VN')} (còn ${Math.max(0, Math.ceil((res.expiresAt - Date.now()) / 86400000))} ngày)`
+              : 'Vĩnh viễn (VIP)';
+          }
+          refreshHeaderLicenseBadge();
+        } else {
+          if (msg) {
+            msg.style.color = '#fca5a5';
+            msg.textContent = '❌ ' + (res?.note || 'Mã kích hoạt không hợp lệ hoặc đã hết hạn.');
+          }
+        }
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    });
+  }
+
+  refreshHeaderLicenseBadge();
+  window.dola?.gate?.onChanged?.(() => refreshHeaderLicenseBadge());
+
   // Gắn sự kiện cho các nút điều hướng & nút Cập nhật
   const bindClick = (id, fn) => {
     const btn = document.getElementById(id);
@@ -891,6 +1055,7 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
   bindClick('md-stage-go-lib', () => onOpenLibrary?.());
   bindClick('md-live-bar-lib', () => onOpenLibrary?.());
   bindClick('md-live-bar-stage', () => onOpenCreate?.());
+  bindClick('md-license-btn', openLicenseModal);
   bindClick('md-update-btn', openUpdateModal);
   bindClick('md-ver-pill', openUpdateModal);
   bindClick('md-stage-open-folder', () => {

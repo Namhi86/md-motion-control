@@ -35,34 +35,45 @@ export function buildWorkspace() {
 
   const topRight = el('div', 'cm-top-right-tools');
 
-  // Nút chọn số luồng hiển thị ở chế độ Motion Control (1 Luồng, 2 Luồng, 3 Luồng, 5 Luồng)
-  const streamCountSwitch = el('div', 'cm-stream-count-switch');
+  // Ô bấm chọn số luồng hiển thị ở chế độ Motion Control (gộp chung vào 1 ô bấm tích hiện ra lựa chọn)
+  const streamCountSwitch = el('div', 'cm-stream-picker-wrap');
   streamCountSwitch.innerHTML = `
-    <button type="button" class="cm-sc-btn" data-cols="1" title="Hiển thị 1 luồng tạo video toàn khung">⚡ 1 Luồng</button>
-    <button type="button" class="cm-sc-btn" data-cols="2" title="Hiển thị 2 luồng tạo video song song">⚡ 2 Luồng</button>
-    <button type="button" class="cm-sc-btn" data-cols="3" title="Hiển thị 3 luồng tạo video song song">⚡ 3 Luồng</button>
-    <button type="button" class="cm-sc-btn cm-sc-btn--on" data-cols="5" title="Hiển thị 5 luồng tạo video song song">⚡ 5 Luồng</button>
+    <button type="button" class="cm-default-cfg-btn cm-stream-picker-btn" id="cm-stream-picker-btn" title="Bấm để chọn số luồng hiển thị">
+      <span id="cm-stream-picker-label">⚡ 5 Luồng</span>
+      <span class="cm-picker-caret">▾</span>
+    </button>
+    <div class="cm-stream-picker-menu" id="cm-stream-picker-menu" hidden>
+      <button type="button" class="cm-stream-picker-opt" data-cols="1" data-label="⚡ 1 Luồng">
+        <span class="cm-picker-chk">✓</span>
+        <span>⚡ 1 Luồng</span>
+      </button>
+      <button type="button" class="cm-stream-picker-opt" data-cols="2" data-label="⚡ 2 Luồng">
+        <span class="cm-picker-chk">✓</span>
+        <span>⚡ 2 Luồng</span>
+      </button>
+      <button type="button" class="cm-stream-picker-opt" data-cols="3" data-label="⚡ 3 Luồng">
+        <span class="cm-picker-chk">✓</span>
+        <span>⚡ 3 Luồng</span>
+      </button>
+      <button type="button" class="cm-stream-picker-opt cm-stream-picker-opt--on" data-cols="5" data-label="⚡ 5 Luồng">
+        <span class="cm-picker-chk">✓</span>
+        <span>⚡ 5 Luồng</span>
+      </button>
+    </div>
   `;
 
-  // Ô tích chọn tất cả 5 luồng cùng chạy
-  const selectAllWrap = el('label', 'cm-select-all-pill');
-  selectAllWrap.title = 'Tích chọn hoặc bỏ chọn tất cả các luồng để chạy đồng loạt';
-  selectAllWrap.innerHTML = `
-    <input type="checkbox" class="stp-chk" id="cm-select-all-chk" checked />
-    <span id="cm-select-all-label">Chọn cả 5 luồng (5/5)</span>
-  `;
-
-  // Nút mở Cài đặt mặc định (Ảnh 2 & Ảnh 3)
+  // Nút mở Cài đặt mặc định (chỉ để gọn chữ "Cài đặt mặc định")
   const defaultSettingsBtn = el('button', 'cm-default-cfg-btn');
   defaultSettingsBtn.type = 'button';
+  defaultSettingsBtn.title = 'Mở cài đặt mặc định Google Flow & Motion Control';
   defaultSettingsBtn.innerHTML = `
     <span class="cm-dcfg-ico">⚙️</span>
-    <span>Cài đặt mặc định: <b id="cm-dcfg-summary">Omni 1.2 Flash · 4K · Giữ nhạc gốc · Motion AI (50/70/90%)</b></span>
+    <span>Cài đặt mặc định</span>
   `;
 
   const priceChip = el('span', 'cm-top-price', '');
   priceChip.hidden = true;
-  topRight.append(streamCountSwitch, selectAllWrap, defaultSettingsBtn, priceChip);
+  topRight.append(streamCountSwitch, defaultSettingsBtn, priceChip);
   top.append(pillBar, topRight);
 
   // ── 2. KHU VỰC GIỮA: 5 LUỒNG MOTION CONTROL (MỖI LUỒNG NHƯ ẢNH 4 THU NHỎ) ──
@@ -156,46 +167,44 @@ export function buildWorkspace() {
   });
   const stream1 = allStreams[0];
 
-  const selectAllChk = selectAllWrap.querySelector('#cm-select-all-chk');
-  const selectAllLabel = selectAllWrap.querySelector('#cm-select-all-label');
-
   function syncSelectAllState() {
-    const visibleStreams = allStreams.filter((st) => !st.unit.hidden);
-    const checkedCount = visibleStreams.filter((st) => st.checkInput?.checked).length;
-    const totalVisible = visibleStreams.length || 5;
-    if (selectAllChk) {
-      selectAllChk.checked = checkedCount === totalVisible && totalVisible > 0;
-      selectAllChk.indeterminate = checkedCount > 0 && checkedCount < totalVisible;
-    }
-    if (selectAllLabel) {
-      selectAllLabel.textContent = `Chọn cả ${totalVisible} luồng (${checkedCount}/${totalVisible})`;
-    }
     allStreams.forEach((st) => {
       st.unit.classList.toggle('cm-stream-unit--unchecked', !st.checkInput?.checked);
     });
     window.dispatchEvent(new CustomEvent('md:motion-checks-changed'));
   }
 
-  selectAllChk?.addEventListener('change', () => {
-    const checked = !!selectAllChk.checked;
-    allStreams.forEach((st) => {
-      if (!st.unit.hidden && st.checkInput) {
-        st.checkInput.checked = checked;
-      }
-    });
-    syncSelectAllState();
-  });
-
   allStreams.forEach((st) => {
     st.checkInput?.addEventListener('change', syncSelectAllState);
   });
 
-  streamCountSwitch.addEventListener('click', (e) => {
-    const btn = e.target.closest('.cm-sc-btn');
-    if (!btn) return;
-    const cols = btn.dataset.cols || '5';
+  const pickerBtn = streamCountSwitch.querySelector('#cm-stream-picker-btn');
+  const pickerLabel = streamCountSwitch.querySelector('#cm-stream-picker-label');
+  const pickerMenu = streamCountSwitch.querySelector('#cm-stream-picker-menu');
+
+  pickerBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (pickerMenu) pickerMenu.hidden = !pickerMenu.hidden;
+  });
+
+  document.addEventListener('pointerdown', (e) => {
+    if (pickerMenu && !pickerMenu.hidden && !streamCountSwitch.contains(e.target)) {
+      pickerMenu.hidden = true;
+    }
+  });
+
+  pickerMenu?.addEventListener('click', (e) => {
+    const opt = e.target.closest('.cm-stream-picker-opt');
+    if (!opt) return;
+    const cols = opt.dataset.cols || '5';
     const maxCols = Number(cols) || 5;
-    streamCountSwitch.querySelectorAll('.cm-sc-btn').forEach((b) => b.classList.toggle('cm-sc-btn--on', b === btn));
+    pickerMenu.querySelectorAll('.cm-stream-picker-opt').forEach((b) => {
+      b.classList.toggle('cm-stream-picker-opt--on', b === opt);
+    });
+    if (pickerLabel && opt.dataset.label) {
+      pickerLabel.textContent = opt.dataset.label;
+    }
+    pickerMenu.hidden = true;
     layout.dataset.cols = cols;
     allStreams.forEach((st, idx) => {
       st.unit.hidden = idx >= maxCols;

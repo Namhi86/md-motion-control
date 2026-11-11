@@ -76,19 +76,6 @@ export async function initMotion({ dola = window.dola, root, opts, say = () => {
     ws.defaultLeftPane.append(source.settingsNode);
   }
 
-  // Đồng bộ dòng tóm tắt trên nút Cài đặt mặc định khi đổi Model trong hộp Cài đặt mặc định
-  const syncDefaultSummary = (flowModel) => {
-    const cur = flowModel || source.get().flowModel || 'omni-1-2-flash';
-    const sumEl = ws.node.querySelector('#cm-dcfg-summary');
-    if (sumEl) {
-      const mLabel = cur === 'omni-1-1-flash' ? 'Omni 1.1 Flash' : 'Omni 1.2 Flash';
-      sumEl.textContent = `${mLabel} · 4K · Giữ nhạc gốc · Motion AI (50/70/90%)`;
-    }
-  };
-  window.addEventListener('md:motion-model-changed', (e) => {
-    syncDefaultSummary(e.detail?.flowModel);
-  });
-  syncDefaultSummary(source.get().flowModel);
   const resultPanel = createResultPanel();
   const emptyZone = createEmptyZone();
   const showPlayers = (restored) => {
