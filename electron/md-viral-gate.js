@@ -348,28 +348,43 @@ export function createMdViralGate({
   }
 
   /**
-   * Đồng bộ trạng thái bản quyền từ xa với MD License Center Worker (/v1/heartbeat)
-   * Chỉ kiểm tra thu hồi / cập nhật hạn khi máy đã được người dùng kích hoạt Key.
-   * Khi chưa kích hoạt (!state.unlocked || !state.licenseKey), giữ nguyên ở màn hình khóa bản quyền.
+   * Đồng bộ trạng thái bản quyền 2 chiều từ xa với MD License Center Worker (/v1/heartbeat):
+   * 1. Thu hồi từ xa (revoked: true) -> Khóa máy ngay lập tức và chuyển về màn hình khóa (#gate).
+   * 2. Gỡ / Xóa bản quyền từ xa (valid: false, reason: 'no_license' | 'expired') -> Gỡ Key trên máy và đưa về màn hình khóa (#gate).
+   * 3. Kích hoạt / Cấp Key / Gia hạn từ xa (valid: true, key: 'MDMC2...') -> Tự động nhận Key và mở khóa vào thẳng công cụ.
    */
+  let manualDeactivatedKey = '';
+
   async function syncWithLicenseCenter() {
-    if (!enableCloud || !state.unlocked || !state.licenseKey) return gateView();
+    if (!enableCloud) return gateView();
     try {
       const hostname = os.hostname() || 'MD-PC';
+      // Gửi key: '' để tra cứu chuẩn trạng thái trên Cloud theo mid (tránh việc Worker tự chèn lại Key đã bị Admin xóa)
       const res = await postLicenseJson(`${LICENSE_ENDPOINT}/v1/heartbeat`, {
         product: PRODUCT_ID,
-        key: state.licenseKey || '',
+        key: '',
         mid: state.hwid,
         hostname,
       });
       if (!res || typeof res !== 'object') return gateView();
 
+      // 1. Admin bấm Thu hồi / Khóa từ xa (Revoke)
       if (res.status === 'revoked' || res.revoked === true) {
+        manualDeactivatedKey = '';
         const reason = res.reason || 'Bản quyền trên máy này đã bị thu hồi bởi Quản trị viên.';
-        const changed = state.unlocked !== false || state.revoked !== true || state.revokeReason !== reason;
+        const changed =
+          state.unlocked !== false ||
+          state.revoked !== true ||
+          state.revokeReason !== reason ||
+          Boolean(state.licenseKey);
         state.unlocked = false;
         state.revoked = true;
         state.revokeReason = reason;
+        state.licenseKey = '';
+        state.unlockMethod = '';
+        state.plan = '';
+        state.planLabel = '';
+        state.expiresAt = 0;
         state.status = 'in_progress';
         state.note = `⛔ ${reason}`;
         if (changed) {
@@ -379,8 +394,37 @@ export function createMdViralGate({
         return gateView();
       }
 
+      // 2. Admin bấm Gỡ / Xóa bản quyền từ xa (Remove) hoặc máy chưa được kích hoạt trên Cloud
+      if (res.valid === false && (res.reason === 'no_license' || res.reason === 'expired')) {
+        manualDeactivatedKey = '';
+        if ((state.unlocked && state.unlockMethod !== 'viral') || state.revoked || state.licenseKey) {
+          state.unlocked = false;
+          state.revoked = false;
+          state.revokeReason = '';
+          state.unlockedAt = 0;
+          state.expiresAt = 0;
+          state.licenseKey = '';
+          state.unlockMethod = '';
+          state.plan = '';
+          state.planLabel = '';
+          state.status = 'in_progress';
+          state.note =
+            res.reason === 'expired'
+              ? '⌛ Bản quyền đã hết hạn. Vui lòng gia hạn hoặc nhập Key mới.'
+              : '🔒 Bản quyền đã được gỡ từ xa. Vui lòng kích hoạt lại để sử dụng.';
+          saveStateToDisk();
+          notifyChange();
+        }
+        return gateView();
+      }
+
+      // 3. Admin Cấp Key / Kích hoạt / Mở khóa lại / Gia hạn từ xa trên Cloud
       if ((res.status === 'active' || res.valid === true) && typeof res.key === 'string' && res.key.trim()) {
         const remoteKey = res.key.trim();
+        if (manualDeactivatedKey && remoteKey === manualDeactivatedKey) {
+          return gateView();
+        }
+        manualDeactivatedKey = '';
         const ver = verifyLicenseKeyV2(remoteKey, state.code, state.hwid, now());
         if (ver.valid) {
           const nextExp = ver.isLifetime ? 0 : ver.expiresAt || 0;
@@ -419,10 +463,10 @@ export function createMdViralGate({
   if (enableCloud) {
     setTimeout(() => {
       syncWithLicenseCenter().catch(() => {});
-    }, 1500).unref?.();
+    }, 1000).unref?.();
     setInterval(() => {
       syncWithLicenseCenter().catch(() => {});
-    }, 5 * 60 * 1000).unref?.();
+    }, 5000).unref?.();
   }
 
   /**
@@ -435,6 +479,9 @@ export function createMdViralGate({
     saveStateToDisk();
     const view = gateView();
     notifyChange();
+    if (enableCloud) {
+      syncWithLicenseCenter().catch(() => {});
+    }
     return view;
   }
 
@@ -498,6 +545,7 @@ export function createMdViralGate({
 
     const currentTime = now();
     const nextExp = ver.isLifetime ? 0 : ver.expiresAt || currentTime + VIP_TTL_MS;
+    manualDeactivatedKey = '';
     state.unlocked = true;
     state.revoked = false;
     state.revokeReason = '';
@@ -526,6 +574,12 @@ export function createMdViralGate({
         exp: nextExp ? new Date(nextExp).toISOString() : null,
         hostname,
       }).catch(() => {});
+      postLicenseJson(`${LICENSE_ENDPOINT}/v1/heartbeat`, {
+        product: PRODUCT_ID,
+        key: state.licenseKey,
+        mid: state.hwid,
+        hostname,
+      }).catch(() => {});
     }
 
     return {
@@ -538,6 +592,7 @@ export function createMdViralGate({
    * Khóa lại công cụ / Gỡ Key hiện tại trên máy để quay về màn hình khóa bản quyền mặc định
    */
   function deactivateKey() {
+    manualDeactivatedKey = state.licenseKey || '';
     state.unlocked = false;
     state.unlockedAt = 0;
     state.expiresAt = 0;
@@ -562,6 +617,7 @@ export function createMdViralGate({
    * Kiểm tra điều kiện mở khóa ngay (Thử đồng bộ Cloud trước, sau đó kiểm tra Zalo + Facebook)
    */
   async function gateCheckNow() {
+    manualDeactivatedKey = '';
     if (enableCloud) {
       await syncWithLicenseCenter();
     }

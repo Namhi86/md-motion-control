@@ -160,16 +160,28 @@ export function initGate({ dola, doc = document, now = Date.now, onUnlocked = ()
       const inp = $('gate-vip-input');
       const msgEl = $('gate-vip-msg');
       const key = inp?.value?.trim() || '';
-      if (!key) {
-        if (msgEl) {
-          msgEl.hidden = false;
-          msgEl.style.color = '#fca5a5';
-          msgEl.textContent = '⚠️ Vui lòng dán mã kích hoạt bản quyền (MDMC2....) vào ô trên.';
-        }
-        return;
-      }
       if ($('gate-vip-btn')) $('gate-vip-btn').disabled = true;
       try {
+        if (!key) {
+          const remoteRes = await gate.checkNow?.();
+          if (remoteRes?.unlocked) {
+            s.view = remoteRes;
+            if (msgEl) {
+              msgEl.hidden = false;
+              msgEl.style.color = '#6ee7b7';
+              msgEl.textContent = remoteRes.note || '🎉 Đã đồng bộ kích hoạt bản quyền từ xa thành công!';
+            }
+            render();
+            onUnlocked();
+            return;
+          }
+          if (msgEl) {
+            msgEl.hidden = false;
+            msgEl.style.color = '#fca5a5';
+            msgEl.textContent = '⚠️ Vui lòng dán mã kích hoạt (MDMC2....) vào ô trên hoặc nhờ Admin cấp Key từ xa.';
+          }
+          return;
+        }
         const res = await gate.activateVip(key);
         if (res?.ok && res?.unlocked) {
           s.view = res;
