@@ -1,0 +1,73 @@
+/* The video detail panel (video-detail.js) and the play button over the picture of a history card. Sizes from MD Motion Control's share viewer
+   (trending-viewer.vue): the panel is 368 px wide with a 24 px radius, the main button 40 px high. The one accent is lime. Every
+   transition is 120 ms or less (a test reads this file). z-index 1150: above the prompt suggestions (1100), below the element popup
+   (1200 / 1201) and window (1250), so those still open over it. */
+
+/* ── the picture of a history card: the first frame, a play button over it ── */
+.cvr-open { position: absolute; inset: 0; z-index: 1; display: grid; place-items: center; width: 100%; height: 100%; padding: 0; border: 0;
+  background: transparent; color: #fff; cursor: pointer; }
+.cvr-open:focus-visible { outline: 2px solid rgba(209, 254, 23, .6); outline-offset: -2px; border-radius: 16px; }
+.cvr-open-play { display: grid; place-items: center; width: 44px; height: 44px; padding-left: 2px; border-radius: 50%;
+  background: rgba(15, 17, 19, .62); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16); transition: background .1s, color .1s; }
+.cvr-open:hover .cvr-open-play, .cvr-open:focus-visible .cvr-open-play { background: #d1fe17; color: #14151a; }
+.cvr-grid .cvr-open-play { width: 36px; height: 36px; }
+
+/* ── the panel ── */
+.vd { position: fixed; inset: 0; z-index: 1150; display: flex; background: rgba(15, 17, 19, .94); color: #f7f7f8; }
+.vd-stage { position: relative; flex: 1 1 auto; min-width: 0; min-height: 0; padding: 12px; }
+.vd-video { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: 16px; background: #000; }
+.vd-stage .cvr-state { font-size: 14px; }
+.vd-panel { flex: 0 0 368px; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 8px; width: 368px; height: calc(100% - 16px); margin: 8px 8px 8px 0;
+  padding: 8px; border: 1px solid rgba(217, 217, 217, .06); border-radius: 24px; overflow: hidden; outline: 0;
+  background: rgba(26, 27, 29, .9); -webkit-backdrop-filter: blur(40px); backdrop-filter: blur(40px); }
+.vd-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 40px; padding-left: 8px; }
+.vd-title { min-width: 0; margin: 0; overflow: hidden; font-size: 14px; line-height: 20px; font-weight: 600; color: #fff; text-overflow: ellipsis; white-space: nowrap; }
+.vd-x { display: grid; place-items: center; flex: 0 0 auto; width: 32px; height: 32px; margin: 4px; padding: 0; border: 0; border-radius: 50%;
+  background: rgba(255, 255, 255, .05); color: #fff; font-size: 13px; cursor: pointer; transition: background .1s; }
+.vd-x:hover { background: rgba(255, 255, 255, .1); }
+
+.vd-scroll { display: flex; flex-direction: column; gap: 8px; min-height: 0; overflow-x: hidden; overflow-y: auto; scrollbar-width: none; }
+.vd-scroll::-webkit-scrollbar { display: none; }
+.vd-sec { display: flex; flex-direction: column; flex: 0 0 auto; gap: 8px; }
+.vd-h { height: 28px; margin: 0; padding: 6px 4px; font-size: 12px; line-height: 16px; font-weight: 500; text-transform: uppercase; color: #828282; }
+.vd-box { max-height: 160px; margin: 0; padding: 12px; overflow-y: auto; border-radius: 8px; background: rgba(255, 255, 255, .05);
+  font-size: 14px; line-height: 20px; color: #fff; white-space: pre-wrap; overflow-wrap: anywhere; }
+.vd-row { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: 0 12px; padding: 10px 12px; border-radius: 8px; background: rgba(255, 255, 255, .05); }
+.vd-k, .vd-v { margin: 0; font-size: 14px; line-height: 20px; color: #828282; }
+.vd-v { color: #fff; text-align: right; overflow-wrap: anywhere; }
+
+.vd-foot { display: flex; flex-direction: column; gap: 8px; }
+.vd-note { margin: 0; font-size: 12px; line-height: 17px; color: #e5837d; overflow-wrap: anywhere; }
+.vd-note:empty { display: none; }
+.vd-btns { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 8px; }
+.vd-btn { display: inline-flex; align-items: center; justify-content: center; height: 40px; padding: 8px 16px; border: 0; border-radius: 10px;
+  background: rgba(255, 255, 255, .08); color: #fff; font-size: 14px; line-height: 16px; font-weight: 600; white-space: nowrap; cursor: pointer; transition: background .1s, filter .1s; }
+.vd-btn:hover:not(:disabled) { background: rgba(255, 255, 255, .14); }
+.vd-btn:disabled { opacity: .5; cursor: progress; }
+.vd-btn--main { background: #d1fe17; color: #14151a; box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .22), 0 6px 4px rgba(0, 0, 0, .25); }
+.vd-btn--main:hover:not(:disabled) { background: #d1fe17; filter: brightness(1.06); }
+.vd :is(button, video):focus-visible { outline: 2px solid #d1fe17; outline-offset: 2px; }
+
+/* ── MÔ TẢ heading row with the Chép button ── */
+.vd-hrow { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.vd-copy { flex: 0 0 auto; height: 28px; padding: 0 10px; border: 0; border-radius: 8px; background: rgba(255, 255, 255, .08); color: #fff;
+  font-size: 12px; line-height: 16px; font-weight: 600; white-space: nowrap; cursor: pointer; transition: background .1s; }
+.vd-copy:hover { background: rgba(255, 255, 255, .14); }
+
+/* ── LÀM TIẾP VỚI MD MOTION CONTROL: the cards of share.mdmotion.local (56 px, 2 columns, 8 px gap), lime border on hover. The card that is
+   sending keeps the hover look and says "Đang gửi…" (no spinner: the file test forbids animations, opening must be instant). ── */
+.vd-studios { min-width: 0; }
+.vd-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.vd-card { position: relative; display: flex; flex-direction: column; justify-content: center; gap: 2px; min-width: 0; min-height: 56px; padding: 10px 12px;
+  border: 1px solid rgba(209, 254, 23, .18); border-radius: 10px; background: rgba(255, 255, 255, .05); color: #fff; text-align: left; cursor: pointer;
+  transition: border-color .1s, background .1s; }
+.vd-card:hover:not([disabled]) { border-color: rgba(209, 254, 23, .5); background: rgba(209, 254, 23, .08); }
+.vd-card[disabled] { opacity: .45; cursor: not-allowed; }
+.vd-card-t { font-size: 14px; line-height: 18px; font-weight: 600; overflow-wrap: anywhere; }
+.vd-card-s { font-size: 12px; line-height: 16px; color: #9a9ba0; overflow-wrap: anywhere; }
+.vd-card--busy[disabled] { opacity: 1; border-color: rgba(209, 254, 23, .5); background: rgba(209, 254, 23, .08); cursor: progress; }
+.vd-status { margin: 0; font-size: 12px; line-height: 17px; color: #b9bac0; overflow-wrap: anywhere; }
+.vd-status:empty { display: none; }
+.vd-status--err { color: #e5837d; }
+.vd-signin { align-self: flex-start; }
+.vd-signin[hidden] { display: none; } /* .vd-btn sets display, which would otherwise win over the hidden attribute */

@@ -1,0 +1,432 @@
+{
+  "_doc": [
+    "Shared test vectors of the graph v1 sanitizer (contracts.md section 7, red team #14). The backend (services/auth/fs-template-graph.js, CommonJS) and the core",
+    "(src/board-template-graph.js, ESM) must give the SAME answer for every case: copy this file into the core (src/graph-v1-vectors.json) and read it in both tests.",
+    "Each case: { name, input, expect }. `input` is passed to cleanGraph(input) with keepMedia = false (the sharing path; the core's keepMedia:true path is tested on its own).",
+    "`expect` is { ok:true, nodes, wires, dropped } or { ok:false, reason }. Key order inside objects does not matter; array order does.",
+    "Count limits (more than 100 nodes, more than 300 wires), the 64 KB output size and long strings (cut to the key's maximum) are generated in code by each test, not stored here.",
+    "Rules in short: unknown node types are dropped and counted in `dropped` (wires on them go too, indexes are renumbered); wire from/to must be integers in range; a handle that is",
+    "present but not a safe id drops the wire; strings lose control characters except \\n \\t and lone surrogates; numbers are rounded and clamped to +-1e6; values outside the allowlist",
+    "are dropped from `data` (the receiver falls back to its default)."
+  ],
+  "version": 1,
+  "cases": [
+    {
+      "name": "text: keeps content and _title, rounds the position, drops every other key",
+      "input": { "nodes": [ { "type": "text", "position": { "x": 10.4, "y": -20.6 }, "data": { "content": "Hello", "_title": "Intro", "handle": "h1", "url": "fs-media://pick/abc", "task_id": "t1", "path": "/etc/passwd", "evil": { "a": 1 } } } ], "wires": [] },
+      "expect": { "ok": true, "nodes": [ { "type": "text", "position": { "x": 10, "y": -21 }, "data": { "content": "Hello", "_title": "Intro" } } ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "note: the text lives in data.text (not content), plus a colour name",
+      "input": { "nodes": [ { "type": "note", "position": { "x": 0, "y": 0 }, "data": { "text": "Remember the logo", "color": "yellow", "content": "not a note key", "fontSize": 99 } } ], "wires": [] },
+      "expect": { "ok": true, "nodes": [ { "type": "note", "position": { "x": 0, "y": 0 }, "data": { "text": "Remember the logo", "color": "yellow" } } ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "note: a colour that is not a lowercase word is dropped, the text stays",
+      "input": { "nodes": [ { "type": "note", "position": { "x": 0, "y": 0 }, "data": { "text": "Hi", "color": "Yellow!" } } ], "wires": [] },
+      "expect": { "ok": true, "nodes": [ { "type": "note", "position": { "x": 0, "y": 0 }, "data": { "text": "Hi" } } ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "upload: shared as an empty box with its hint only (no ref, name, url, handle, media_type)",
+      "input": { "nodes": [ { "type": "upload", "position": { "x": 5, "y": 5 }, "data": { "hint": "Drop a face", "ref": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef.png", "name": "face.png", "url": "fs-media://studio/0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef.png", "handle": "h", "media_type": "image", "_title": "Face" } } ], "wires": [] },
+      "expect": { "ok": true, "nodes": [ { "type": "upload", "position": { "x": 5, "y": 5 }, "data": { "hint": "Drop a face", "_title": "Face" } } ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "upload: a missing hint gets the default text",
+      "input": { "nodes": [ { "type": "upload", "position": { "x": 0, "y": 0 }, "data": { "ref": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef.png" } }, { "type": "upload", "position": { "x": 1, "y": 1 } } ], "wires": [] },
+      "expect": { "ok": true, "nodes": [ { "type": "upload", "position": { "x": 0, "y": 0 }, "data": { "hint": "Thả ảnh của bạn" } }, { "type": "upload", "position": { "x": 1, "y": 1 }, "data": { "hint": "Thả ảnh của bạn" } } ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "muse_image: every generator key kept, results and handles dropped",
+      "input": { "nodes": [ { "type": "muse_image", "position": { "x": 0, "y": 0 }, "data": { "prompt": "A red fox runs through snow", "model_key": "muse-image:v1.2", "aspect_ratio": "9:16", "duration": 8, "mode": "voice", "quality": "high_2k", "_title": "Fox", "video_handle": "h", "video_url": "fs-media://pick/h", "task_id": "t9", "output": { "url": "u" }, "node_status": "done" } } ], "wires": [] },
+      "expect": { "ok": true, "nodes": [ { "type": "muse_image", "position": { "x": 0, "y": 0 }, "data": { "prompt": "A red fox runs through snow", "model_key": "muse-image:v1.2", "aspect_ratio": "9:16", "duration": 8, "mode": "voice", "quality": "high_2k", "_title": "Fox" } } ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "nano_image: same generator keys",
+      "input": { "nodes": [ { "type": "nano_image", "position": { "x": 0, "y": 0 }, "data": { "prompt": "Poster", "model_key": "nano-banana-pro", "aspect_ratio": "3:4", "quality": "2k", "task_id": "t" } } ], "wires": [] },
+      "expect": { "ok": true, "nodes": [ { "type": "nano_image", "position": { "x": 0, "y": 0 }, "data": { "prompt": "Poster", "model_key": "nano-banana-pro", "aspect_ratio": "3:4", "quality": "2k" } } ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "muse_video: same generator keys",
+      "input": { "nodes": [ { "type": "muse_video", "position": { "x": 0, "y": 0 }, "data": { "prompt": "Pan across a city", "model_key": "muse-video", "aspect_ratio": "16:9", "duration": 10, "video_url": "u" } } ], "wires": [] },
+      "expect": { "ok": true, "nodes": [ { "type": "muse_video", "position": { "x": 0, "y": 0 }, "data": { "prompt": "Pan across a city", "model_key": "muse-video", "aspect_ratio": "16:9", "duration": 10 } } ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "seedance_video: same generator keys (mode fast|voice|pro)",
+      "input": { "nodes": [ { "type": "seedance_video", "position": { "x": 0, "y": 0 }, "data": { "prompt": "Dance", "model_key": "seedance-2.0", "aspect_ratio": "9:16", "duration": 15, "mode": "pro", "handle": "h" } } ], "wires": [] },
+      "expect": { "ok": true, "nodes": [ { "type": "seedance_video", "position": { "x": 0, "y": 0 }, "data": { "prompt": "Dance", "model_key": "seedance-2.0", "aspect_ratio": "9:16", "duration": 15, "mode": "pro" } } ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "veo_video: same generator keys",
+      "input": { "nodes": [ { "type": "veo_video", "position": { "x": 0, "y": 0 }, "data": { "prompt": "Rain on glass", "model_key": "veo-3.1-fast", "aspect_ratio": "9:16", "duration": 8, "quality": "fast", "url": "u" } } ], "wires": [] },
+      "expect": { "ok": true, "nodes": [ { "type": "veo_video", "position": { "x": 0, "y": 0 }, "data": { "prompt": "Rain on glass", "model_key": "veo-3.1-fast", "aspect_ratio": "9:16", "duration": 8, "quality": "fast" } } ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "analyze_video: target_* kept, the picked video (video_*) dropped",
+      "input": { "nodes": [ { "type": "analyze_video", "position": { "x": 0, "y": 0 }, "data": { "count": 5, "kind": "copy", "dialogue": "rewrite", "language": "vi", "target_mode": "voice", "target_duration": 10, "target_ratio": "16:9", "_title": "Study", "video_handle": "h", "video_url": "fs-media://pick/h", "video_name": "clip.mp4", "video_seconds": 12.5 } } ], "wires": [] },
+      "expect": { "ok": true, "nodes": [ { "type": "analyze_video", "position": { "x": 0, "y": 0 }, "data": { "count": 5, "kind": "copy", "dialogue": "rewrite", "language": "vi", "target_mode": "voice", "target_duration": 10, "target_ratio": "16:9", "_title": "Study" } } ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "assistant: prompt, format, count, model_key",
+      "input": { "nodes": [ { "type": "assistant", "position": { "x": 0, "y": 0 }, "data": { "prompt": "Write 6 scenes", "format": "list", "count": 6, "model_key": "ai-studio-1", "_title": "Writer", "output": "x" } } ], "wires": [] },
+      "expect": { "ok": true, "nodes": [ { "type": "assistant", "position": { "x": 0, "y": 0 }, "data": { "prompt": "Write 6 scenes", "format": "list", "count": 6, "model_key": "ai-studio-1", "_title": "Writer" } } ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "stitch: order, trim (a string), ratio",
+      "input": { "nodes": [ { "type": "stitch", "position": { "x": 0, "y": 0 }, "data": { "order": "edges", "trim": "3", "ratio": "16:9", "_title": "Join", "video_url": "u" } } ], "wires": [] },
+      "expect": { "ok": true, "nodes": [ { "type": "stitch", "position": { "x": 0, "y": 0 }, "data": { "order": "edges", "trim": "3", "ratio": "16:9", "_title": "Join" } } ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "text.multi (Nhiều prompt): kept only as the boolean true; false, 1, 'true', null, an object leave the key out",
+      "input": { "nodes": [
+        { "type": "text", "position": { "x": 0, "y": 0 }, "data": { "content": "A\n\nB\n\nC", "multi": true } },
+        { "type": "text", "position": { "x": 1, "y": 0 }, "data": { "content": "off", "multi": false } },
+        { "type": "text", "position": { "x": 2, "y": 0 }, "data": { "content": "one", "multi": 1 } },
+        { "type": "text", "position": { "x": 3, "y": 0 }, "data": { "content": "str", "multi": "true" } },
+        { "type": "text", "position": { "x": 4, "y": 0 }, "data": { "content": "nul", "multi": null } },
+        { "type": "text", "position": { "x": 5, "y": 0 }, "data": { "content": "obj", "multi": { "on": true } } },
+        { "type": "note", "position": { "x": 6, "y": 0 }, "data": { "text": "not a prompt", "multi": true } }
+      ], "wires": [] },
+      "expect": { "ok": true, "nodes": [
+        { "type": "text", "position": { "x": 0, "y": 0 }, "data": { "content": "A\n\nB\n\nC", "multi": true } },
+        { "type": "text", "position": { "x": 1, "y": 0 }, "data": { "content": "off" } },
+        { "type": "text", "position": { "x": 2, "y": 0 }, "data": { "content": "one" } },
+        { "type": "text", "position": { "x": 3, "y": 0 }, "data": { "content": "str" } },
+        { "type": "text", "position": { "x": 4, "y": 0 }, "data": { "content": "nul" } },
+        { "type": "text", "position": { "x": 5, "y": 0 }, "data": { "content": "obj" } },
+        { "type": "note", "position": { "x": 6, "y": 0 }, "data": { "text": "not a prompt" } }
+      ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "a saved '3 clips + stitch' board keeps multi, the p1..p3 wires, the styles and the stitch order",
+      "input": { "nodes": [
+        { "type": "text", "position": { "x": 0, "y": 0 }, "data": { "content": "one\n\ntwo\n\nthree", "multi": true } },
+        { "type": "muse_video", "position": { "x": 500, "y": 0 }, "data": { "_title": "Clip 1", "style": "cinematic" } },
+        { "type": "muse_video", "position": { "x": 500, "y": 400 }, "data": { "_title": "Clip 2", "style": "cinematic" } },
+        { "type": "muse_video", "position": { "x": 500, "y": 800 }, "data": { "_title": "Clip 3", "style": "cinematic" } },
+        { "type": "stitch", "position": { "x": 1000, "y": 400 }, "data": { "_title": "Ghép 3 clip", "order": "edges" } }
+      ], "wires": [
+        { "from": 0, "to": 1, "source_handle": "p1", "target_handle": "prompt" },
+        { "from": 0, "to": 2, "source_handle": "p2", "target_handle": "prompt" },
+        { "from": 0, "to": 3, "source_handle": "p3", "target_handle": "prompt" },
+        { "from": 1, "to": 4, "source_handle": "video", "target_handle": "video" },
+        { "from": 2, "to": 4, "source_handle": "video", "target_handle": "video" },
+        { "from": 3, "to": 4, "source_handle": "video", "target_handle": "video" }
+      ] },
+      "expect": { "ok": true, "nodes": [
+        { "type": "text", "position": { "x": 0, "y": 0 }, "data": { "content": "one\n\ntwo\n\nthree", "multi": true } },
+        { "type": "muse_video", "position": { "x": 500, "y": 0 }, "data": { "_title": "Clip 1", "style": "cinematic" } },
+        { "type": "muse_video", "position": { "x": 500, "y": 400 }, "data": { "_title": "Clip 2", "style": "cinematic" } },
+        { "type": "muse_video", "position": { "x": 500, "y": 800 }, "data": { "_title": "Clip 3", "style": "cinematic" } },
+        { "type": "stitch", "position": { "x": 1000, "y": 400 }, "data": { "_title": "Ghép 3 clip", "order": "edges" } }
+      ], "wires": [
+        { "from": 0, "to": 1, "source_handle": "p1", "target_handle": "prompt" },
+        { "from": 0, "to": 2, "source_handle": "p2", "target_handle": "prompt" },
+        { "from": 0, "to": 3, "source_handle": "p3", "target_handle": "prompt" },
+        { "from": 1, "to": 4, "source_handle": "video", "target_handle": "video" },
+        { "from": 2, "to": 4, "source_handle": "video", "target_handle": "video" },
+        { "from": 3, "to": 4, "source_handle": "video", "target_handle": "video" }
+      ], "dropped": 0 }
+    },
+    {
+      "name": "style (Phong cách) on every generator: a short id is kept; spaces, capitals, too long, empty, a number or an object are dropped; no other node takes a style",
+      "input": { "nodes": [
+        { "type": "muse_image", "position": { "x": 0, "y": 0 }, "data": { "style": "clay_3d" } },
+        { "type": "nano_image", "position": { "x": 1, "y": 0 }, "data": { "style": "pixar-3d" } },
+        { "type": "muse_video", "position": { "x": 2, "y": 0 }, "data": { "style": "anime" } },
+        { "type": "seedance_video", "position": { "x": 3, "y": 0 }, "data": { "style": "phone_vlog" } },
+        { "type": "veo_video", "position": { "x": 4, "y": 0 }, "data": { "style": "aaaaaaaaaaaaaaaaaaaaaaaa" } },
+        { "type": "veo_video", "position": { "x": 5, "y": 0 }, "data": { "style": "Cinematic" } },
+        { "type": "veo_video", "position": { "x": 6, "y": 0 }, "data": { "style": "with space" } },
+        { "type": "veo_video", "position": { "x": 7, "y": 0 }, "data": { "style": "this_id_is_longer_than_24" } },
+        { "type": "veo_video", "position": { "x": 8, "y": 0 }, "data": { "style": "" } },
+        { "type": "veo_video", "position": { "x": 9, "y": 0 }, "data": { "style": 5 } },
+        { "type": "veo_video", "position": { "x": 10, "y": 0 }, "data": { "style": { "key": "anime" } } },
+        { "type": "stitch", "position": { "x": 11, "y": 0 }, "data": { "style": "anime", "order": "edges" } },
+        { "type": "text", "position": { "x": 12, "y": 0 }, "data": { "style": "anime", "content": "x" } }
+      ], "wires": [] },
+      "expect": { "ok": true, "nodes": [
+        { "type": "muse_image", "position": { "x": 0, "y": 0 }, "data": { "style": "clay_3d" } },
+        { "type": "nano_image", "position": { "x": 1, "y": 0 }, "data": { "style": "pixar-3d" } },
+        { "type": "muse_video", "position": { "x": 2, "y": 0 }, "data": { "style": "anime" } },
+        { "type": "seedance_video", "position": { "x": 3, "y": 0 }, "data": { "style": "phone_vlog" } },
+        { "type": "veo_video", "position": { "x": 4, "y": 0 }, "data": { "style": "aaaaaaaaaaaaaaaaaaaaaaaa" } },
+        { "type": "veo_video", "position": { "x": 5, "y": 0 }, "data": {} },
+        { "type": "veo_video", "position": { "x": 6, "y": 0 }, "data": {} },
+        { "type": "veo_video", "position": { "x": 7, "y": 0 }, "data": {} },
+        { "type": "veo_video", "position": { "x": 8, "y": 0 }, "data": {} },
+        { "type": "veo_video", "position": { "x": 9, "y": 0 }, "data": {} },
+        { "type": "veo_video", "position": { "x": 10, "y": 0 }, "data": {} },
+        { "type": "stitch", "position": { "x": 11, "y": 0 }, "data": { "order": "edges" } },
+        { "type": "text", "position": { "x": 12, "y": 0 }, "data": { "content": "x" } }
+      ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "light (Ánh sáng) and composition (Bố cục) on every generator: a short id is kept; capitals, spaces, too long, empty, a number or an object are dropped; no other node takes them",
+      "input": { "nodes": [
+        { "type": "muse_image", "position": { "x": 0, "y": 0 }, "data": { "light": "golden_hour", "composition": "rule_of_thirds" } },
+        { "type": "nano_image", "position": { "x": 1, "y": 0 }, "data": { "light": "neon_night" } },
+        { "type": "muse_video", "position": { "x": 2, "y": 0 }, "data": { "composition": "low_angle_hero" } },
+        { "type": "seedance_video", "position": { "x": 3, "y": 0 }, "data": { "light": "soft_daylight", "composition": "close_up", "style": "cinematic" } },
+        { "type": "veo_video", "position": { "x": 4, "y": 0 }, "data": { "light": "aaaaaaaaaaaaaaaaaaaaaaaa", "composition": "top-down" } },
+        { "type": "veo_video", "position": { "x": 5, "y": 0 }, "data": { "light": "Golden_Hour", "composition": "Close Up" } },
+        { "type": "veo_video", "position": { "x": 6, "y": 0 }, "data": { "light": "this_id_is_longer_than_24", "composition": "" } },
+        { "type": "veo_video", "position": { "x": 7, "y": 0 }, "data": { "light": 5, "composition": { "key": "close_up" } } },
+        { "type": "stitch", "position": { "x": 8, "y": 0 }, "data": { "light": "golden_hour", "composition": "close_up", "order": "edges" } },
+        { "type": "text", "position": { "x": 9, "y": 0 }, "data": { "light": "golden_hour", "composition": "close_up", "content": "x" } }
+      ], "wires": [] },
+      "expect": { "ok": true, "nodes": [
+        { "type": "muse_image", "position": { "x": 0, "y": 0 }, "data": { "light": "golden_hour", "composition": "rule_of_thirds" } },
+        { "type": "nano_image", "position": { "x": 1, "y": 0 }, "data": { "light": "neon_night" } },
+        { "type": "muse_video", "position": { "x": 2, "y": 0 }, "data": { "composition": "low_angle_hero" } },
+        { "type": "seedance_video", "position": { "x": 3, "y": 0 }, "data": { "light": "soft_daylight", "composition": "close_up", "style": "cinematic" } },
+        { "type": "veo_video", "position": { "x": 4, "y": 0 }, "data": { "light": "aaaaaaaaaaaaaaaaaaaaaaaa", "composition": "top-down" } },
+        { "type": "veo_video", "position": { "x": 5, "y": 0 }, "data": {} },
+        { "type": "veo_video", "position": { "x": 6, "y": 0 }, "data": {} },
+        { "type": "veo_video", "position": { "x": 7, "y": 0 }, "data": {} },
+        { "type": "stitch", "position": { "x": 8, "y": 0 }, "data": { "order": "edges" } },
+        { "type": "text", "position": { "x": 9, "y": 0 }, "data": { "content": "x" } }
+      ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "motion (Chuyển động máy) of a clip: a short id is kept on the three video generators; a picture, a join and a prompt carry none; capitals, spaces, too long, empty, a number or an object are dropped",
+      "input": { "nodes": [
+        { "type": "muse_video", "position": { "x": 0, "y": 0 }, "data": { "motion": "dolly_in" } },
+        { "type": "seedance_video", "position": { "x": 1, "y": 0 }, "data": { "motion": "orbit_left", "prompt": "walk" } },
+        { "type": "veo_video", "position": { "x": 2, "y": 0 }, "data": { "motion": "aaaaaaaaaaaaaaaaaaaaaaaa" } },
+        { "type": "veo_video", "position": { "x": 3, "y": 0 }, "data": { "motion": "Dolly_In" } },
+        { "type": "veo_video", "position": { "x": 4, "y": 0 }, "data": { "motion": "with space" } },
+        { "type": "veo_video", "position": { "x": 5, "y": 0 }, "data": { "motion": "this_id_is_longer_than_24" } },
+        { "type": "veo_video", "position": { "x": 6, "y": 0 }, "data": { "motion": "" } },
+        { "type": "veo_video", "position": { "x": 7, "y": 0 }, "data": { "motion": 5 } },
+        { "type": "veo_video", "position": { "x": 8, "y": 0 }, "data": { "motion": { "key": "dolly_in" } } },
+        { "type": "muse_image", "position": { "x": 9, "y": 0 }, "data": { "motion": "dolly_in", "prompt": "p" } },
+        { "type": "nano_image", "position": { "x": 10, "y": 0 }, "data": { "motion": "dolly_in" } },
+        { "type": "stitch", "position": { "x": 11, "y": 0 }, "data": { "motion": "dolly_in", "order": "edges" } },
+        { "type": "text", "position": { "x": 12, "y": 0 }, "data": { "motion": "dolly_in", "content": "x" } }
+      ], "wires": [] },
+      "expect": { "ok": true, "nodes": [
+        { "type": "muse_video", "position": { "x": 0, "y": 0 }, "data": { "motion": "dolly_in" } },
+        { "type": "seedance_video", "position": { "x": 1, "y": 0 }, "data": { "motion": "orbit_left", "prompt": "walk" } },
+        { "type": "veo_video", "position": { "x": 2, "y": 0 }, "data": { "motion": "aaaaaaaaaaaaaaaaaaaaaaaa" } },
+        { "type": "veo_video", "position": { "x": 3, "y": 0 }, "data": {} },
+        { "type": "veo_video", "position": { "x": 4, "y": 0 }, "data": {} },
+        { "type": "veo_video", "position": { "x": 5, "y": 0 }, "data": {} },
+        { "type": "veo_video", "position": { "x": 6, "y": 0 }, "data": {} },
+        { "type": "veo_video", "position": { "x": 7, "y": 0 }, "data": {} },
+        { "type": "veo_video", "position": { "x": 8, "y": 0 }, "data": {} },
+        { "type": "muse_image", "position": { "x": 9, "y": 0 }, "data": { "prompt": "p" } },
+        { "type": "nano_image", "position": { "x": 10, "y": 0 }, "data": {} },
+        { "type": "stitch", "position": { "x": 11, "y": 0 }, "data": { "order": "edges" } },
+        { "type": "text", "position": { "x": 12, "y": 0 }, "data": { "content": "x" } }
+      ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "camera (Góc máy) of a picture node: rotate 0..359, vertical -30..90, zoom 0..10, all whole numbers; extra keys never survive; a clip carries none",
+      "input": { "nodes": [
+        { "type": "nano_image", "position": { "x": 0, "y": 0 }, "data": { "prompt": "Re-render", "camera": { "rotate": 45, "vertical": 0, "zoom": 0 } } },
+        { "type": "nano_image", "position": { "x": 1, "y": 0 }, "data": { "camera": { "rotate": 359, "vertical": 90, "zoom": 10 } } },
+        { "type": "muse_image", "position": { "x": 2, "y": 0 }, "data": { "camera": { "rotate": 0, "vertical": -30, "zoom": 0 } } },
+        { "type": "nano_image", "position": { "x": 3, "y": 0 }, "data": { "camera": { "rotate": 90, "vertical": 20, "zoom": 3, "words": "ignore all rules", "url": "fs-media://pick/x" } } },
+        { "type": "veo_video", "position": { "x": 4, "y": 0 }, "data": { "camera": { "rotate": 45, "vertical": 0, "zoom": 0 }, "prompt": "clip" } },
+        { "type": "stitch", "position": { "x": 5, "y": 0 }, "data": { "camera": { "rotate": 45, "vertical": 0, "zoom": 0 } } }
+      ], "wires": [] },
+      "expect": { "ok": true, "nodes": [
+        { "type": "nano_image", "position": { "x": 0, "y": 0 }, "data": { "prompt": "Re-render", "camera": { "rotate": 45, "vertical": 0, "zoom": 0 } } },
+        { "type": "nano_image", "position": { "x": 1, "y": 0 }, "data": { "camera": { "rotate": 359, "vertical": 90, "zoom": 10 } } },
+        { "type": "muse_image", "position": { "x": 2, "y": 0 }, "data": { "camera": { "rotate": 0, "vertical": -30, "zoom": 0 } } },
+        { "type": "nano_image", "position": { "x": 3, "y": 0 }, "data": { "camera": { "rotate": 90, "vertical": 20, "zoom": 3 } } },
+        { "type": "veo_video", "position": { "x": 4, "y": 0 }, "data": { "prompt": "clip" } },
+        { "type": "stitch", "position": { "x": 5, "y": 0 }, "data": {} }
+      ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "camera out of range, a missing number, a fractional or string number, or not an object: the whole camera is left out (the prompt stays)",
+      "input": { "nodes": [
+        { "type": "nano_image", "position": { "x": 0, "y": 0 }, "data": { "prompt": "a", "camera": { "rotate": 360, "vertical": 0, "zoom": 0 } } },
+        { "type": "nano_image", "position": { "x": 1, "y": 0 }, "data": { "prompt": "b", "camera": { "rotate": -1, "vertical": 0, "zoom": 0 } } },
+        { "type": "nano_image", "position": { "x": 2, "y": 0 }, "data": { "prompt": "c", "camera": { "rotate": 10, "vertical": 91, "zoom": 0 } } },
+        { "type": "nano_image", "position": { "x": 3, "y": 0 }, "data": { "prompt": "d", "camera": { "rotate": 10, "vertical": -31, "zoom": 0 } } },
+        { "type": "nano_image", "position": { "x": 4, "y": 0 }, "data": { "prompt": "e", "camera": { "rotate": 10, "vertical": 0, "zoom": 11 } } },
+        { "type": "nano_image", "position": { "x": 5, "y": 0 }, "data": { "prompt": "f", "camera": { "rotate": 10, "vertical": 0, "zoom": -1 } } },
+        { "type": "nano_image", "position": { "x": 6, "y": 0 }, "data": { "prompt": "g", "camera": { "rotate": 10, "vertical": 0 } } },
+        { "type": "nano_image", "position": { "x": 7, "y": 0 }, "data": { "prompt": "h", "camera": { "rotate": 10.5, "vertical": 0, "zoom": 0 } } },
+        { "type": "nano_image", "position": { "x": 8, "y": 0 }, "data": { "prompt": "i", "camera": { "rotate": "10", "vertical": 0, "zoom": 0 } } },
+        { "type": "nano_image", "position": { "x": 9, "y": 0 }, "data": { "prompt": "j", "camera": { "rotate": null, "vertical": 0, "zoom": 0 } } },
+        { "type": "nano_image", "position": { "x": 10, "y": 0 }, "data": { "prompt": "k", "camera": {} } },
+        { "type": "nano_image", "position": { "x": 11, "y": 0 }, "data": { "prompt": "l", "camera": [45, 0, 0] } },
+        { "type": "nano_image", "position": { "x": 12, "y": 0 }, "data": { "prompt": "m", "camera": "front view" } },
+        { "type": "nano_image", "position": { "x": 13, "y": 0 }, "data": { "prompt": "n", "camera": 45 } },
+        { "type": "nano_image", "position": { "x": 14, "y": 0 }, "data": { "prompt": "o", "camera": null } }
+      ], "wires": [] },
+      "expect": { "ok": true, "nodes": [
+        { "type": "nano_image", "position": { "x": 0, "y": 0 }, "data": { "prompt": "a" } },
+        { "type": "nano_image", "position": { "x": 1, "y": 0 }, "data": { "prompt": "b" } },
+        { "type": "nano_image", "position": { "x": 2, "y": 0 }, "data": { "prompt": "c" } },
+        { "type": "nano_image", "position": { "x": 3, "y": 0 }, "data": { "prompt": "d" } },
+        { "type": "nano_image", "position": { "x": 4, "y": 0 }, "data": { "prompt": "e" } },
+        { "type": "nano_image", "position": { "x": 5, "y": 0 }, "data": { "prompt": "f" } },
+        { "type": "nano_image", "position": { "x": 6, "y": 0 }, "data": { "prompt": "g" } },
+        { "type": "nano_image", "position": { "x": 7, "y": 0 }, "data": { "prompt": "h" } },
+        { "type": "nano_image", "position": { "x": 8, "y": 0 }, "data": { "prompt": "i" } },
+        { "type": "nano_image", "position": { "x": 9, "y": 0 }, "data": { "prompt": "j" } },
+        { "type": "nano_image", "position": { "x": 10, "y": 0 }, "data": { "prompt": "k" } },
+        { "type": "nano_image", "position": { "x": 11, "y": 0 }, "data": { "prompt": "l" } },
+        { "type": "nano_image", "position": { "x": 12, "y": 0 }, "data": { "prompt": "m" } },
+        { "type": "nano_image", "position": { "x": 13, "y": 0 }, "data": { "prompt": "n" } },
+        { "type": "nano_image", "position": { "x": 14, "y": 0 }, "data": { "prompt": "o" } }
+      ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "camera with prototype keys: only OWN rotate / vertical / zoom count, __proto__ / constructor never reach the output",
+      "input": { "nodes": [
+        { "type": "nano_image", "position": { "x": 0, "y": 0 }, "data": { "prompt": "a", "camera": { "__proto__": { "rotate": 10, "vertical": 0, "zoom": 0 } } } },
+        { "type": "nano_image", "position": { "x": 1, "y": 0 }, "data": { "prompt": "b", "camera": { "rotate": 10, "vertical": 0, "zoom": 0, "__proto__": { "polluted": true }, "constructor": { "prototype": { "polluted": true } }, "toString": "x" } } },
+        { "type": "nano_image", "position": { "x": 2, "y": 0 }, "data": { "prompt": "c", "__proto__": { "camera": { "rotate": 10, "vertical": 0, "zoom": 0 } }, "style": "__proto__" } },
+        { "type": "nano_image", "position": { "x": 3, "y": 0 }, "data": { "prompt": "d", "camera": { "constructor": { "rotate": 1, "vertical": 1, "zoom": 1 } } } }
+      ], "wires": [] },
+      "expect": { "ok": true, "nodes": [
+        { "type": "nano_image", "position": { "x": 0, "y": 0 }, "data": { "prompt": "a" } },
+        { "type": "nano_image", "position": { "x": 1, "y": 0 }, "data": { "prompt": "b", "camera": { "rotate": 10, "vertical": 0, "zoom": 0 } } },
+        { "type": "nano_image", "position": { "x": 2, "y": 0 }, "data": { "prompt": "c", "style": "__proto__" } },
+        { "type": "nano_image", "position": { "x": 3, "y": 0 }, "data": { "prompt": "d" } }
+      ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "values outside the allowlist are dropped (duration 0 is valid)",
+      "input": { "nodes": [
+        { "type": "muse_video", "position": { "x": 0, "y": 0 }, "data": { "prompt": 123, "model_key": "a b", "aspect_ratio": "wide", "duration": 61, "mode": "FAST", "quality": "x y" } },
+        { "type": "seedance_video", "position": { "x": 0, "y": 0 }, "data": { "duration": "8" } },
+        { "type": "veo_video", "position": { "x": 0, "y": 0 }, "data": { "duration": 8.5 } },
+        { "type": "nano_image", "position": { "x": 0, "y": 0 }, "data": { "duration": -1 } },
+        { "type": "muse_image", "position": { "x": 0, "y": 0 }, "data": { "duration": 0 } }
+      ], "wires": [] },
+      "expect": { "ok": true, "nodes": [
+        { "type": "muse_video", "position": { "x": 0, "y": 0 }, "data": {} },
+        { "type": "seedance_video", "position": { "x": 0, "y": 0 }, "data": {} },
+        { "type": "veo_video", "position": { "x": 0, "y": 0 }, "data": {} },
+        { "type": "nano_image", "position": { "x": 0, "y": 0 }, "data": {} },
+        { "type": "muse_image", "position": { "x": 0, "y": 0 }, "data": { "duration": 0 } }
+      ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "ranges of analyze_video, assistant and stitch",
+      "input": { "nodes": [
+        { "type": "analyze_video", "position": { "x": 0, "y": 0 }, "data": { "count": 21, "target_duration": 4, "target_mode": "FAST", "kind": "a b" } },
+        { "type": "analyze_video", "position": { "x": 0, "y": 0 }, "data": { "count": 20, "target_duration": 15 } },
+        { "type": "assistant", "position": { "x": 0, "y": 0 }, "data": { "count": 0, "format": "table" } },
+        { "type": "stitch", "position": { "x": 0, "y": 0 }, "data": { "order": "random", "trim": "100", "ratio": "9x16" } }
+      ], "wires": [] },
+      "expect": { "ok": true, "nodes": [
+        { "type": "analyze_video", "position": { "x": 0, "y": 0 }, "data": {} },
+        { "type": "analyze_video", "position": { "x": 0, "y": 0 }, "data": { "count": 20, "target_duration": 15 } },
+        { "type": "assistant", "position": { "x": 0, "y": 0 }, "data": {} },
+        { "type": "stitch", "position": { "x": 0, "y": 0 }, "data": {} }
+      ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "unknown node types are dropped and counted; wires on them go; indexes are renumbered",
+      "input": {
+        "nodes": [
+          { "type": "text", "position": { "x": 0, "y": 0 }, "data": { "content": "A" } },
+          { "type": "script", "position": { "x": 0, "y": 0 }, "data": { "content": "x" } },
+          { "type": "text", "position": { "x": 100, "y": 0 }, "data": { "content": "C" } },
+          { "type": "group", "position": { "x": 0, "y": 0 }, "data": {} },
+          { "type": "drawing", "position": { "x": 0, "y": 0 }, "data": { "strokes": [] } },
+          { "type": "__proto__", "data": {} },
+          { "type": "constructor", "data": {} },
+          { "type": 7, "data": {} },
+          null,
+          "text"
+        ],
+        "wires": [
+          { "from": 0, "to": 1 },
+          { "from": 0, "to": 2, "source_handle": "text", "target_handle": "prompt" },
+          { "from": 1, "to": 2 },
+          { "from": 2, "to": 0 },
+          { "from": 3, "to": 3 }
+        ]
+      },
+      "expect": { "ok": true, "nodes": [
+        { "type": "text", "position": { "x": 0, "y": 0 }, "data": { "content": "A" } },
+        { "type": "text", "position": { "x": 100, "y": 0 }, "data": { "content": "C" } }
+      ], "wires": [
+        { "from": 0, "to": 1, "source_handle": "text", "target_handle": "prompt" },
+        { "from": 1, "to": 0 }
+      ], "dropped": 8 }
+    },
+    {
+      "name": "wires: from/to must be integers in range (a string would wire into a block the receiver already has); a present but unsafe handle drops the wire",
+      "input": {
+        "nodes": [
+          { "type": "text", "position": { "x": 0, "y": 0 }, "data": { "content": "A" } },
+          { "type": "text", "position": { "x": 1, "y": 0 }, "data": { "content": "B" } }
+        ],
+        "wires": [
+          { "from": "0", "to": 1 },
+          { "from": 0, "to": 1.5 },
+          { "from": -1, "to": 0 },
+          { "from": 0, "to": 2 },
+          { "from": 1, "to": 1 },
+          { "from": 0, "to": 1, "source_handle": "text", "target_handle": "prompt" },
+          { "from": 1, "to": 0 },
+          { "from": 0, "to": 1, "target_handle": "a b" },
+          { "from": 0, "to": 1, "source_handle": 7 },
+          null,
+          "x",
+          { "from": null, "to": 1 },
+          { "from": 0, "to": 1, "source_handle": null, "target_handle": "image" }
+        ]
+      },
+      "expect": { "ok": true, "nodes": [
+        { "type": "text", "position": { "x": 0, "y": 0 }, "data": { "content": "A" } },
+        { "type": "text", "position": { "x": 1, "y": 0 }, "data": { "content": "B" } }
+      ], "wires": [
+        { "from": 0, "to": 1, "source_handle": "text", "target_handle": "prompt" },
+        { "from": 1, "to": 0 },
+        { "from": 0, "to": 1, "target_handle": "image" }
+      ], "dropped": 0 }
+    },
+    {
+      "name": "strings: control characters go except newline and tab, lone surrogates go, real emoji stay",
+      "input": { "nodes": [
+        { "type": "text", "position": { "x": 0, "y": 0 }, "data": { "content": "a\u0000b\u0007c\td\ne\rf\u007fg\u0085h" } },
+        { "type": "text", "position": { "x": 0, "y": 0 }, "data": { "content": "ok 😀 bad\ud800 \udc00end" } }
+      ], "wires": [] },
+      "expect": { "ok": true, "nodes": [
+        { "type": "text", "position": { "x": 0, "y": 0 }, "data": { "content": "abc\td\nefgh" } },
+        { "type": "text", "position": { "x": 0, "y": 0 }, "data": { "content": "ok 😀 bad end" } }
+      ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "positions: only finite numbers count, rounded and clamped to +-1e6, anything else is 0",
+      "input": { "nodes": [
+        { "type": "text", "position": { "x": "5", "y": null }, "data": {} },
+        { "type": "text", "position": { "x": 1e9, "y": -1e9 }, "data": {} },
+        { "type": "text", "data": {} },
+        { "type": "text", "position": { "x": 1e999, "y": 2.5 }, "data": {} },
+        { "type": "text", "position": { "x": -0.4, "y": 0.5 }, "data": {} },
+        { "type": "text", "position": [1, 2], "data": {} }
+      ], "wires": [] },
+      "expect": { "ok": true, "nodes": [
+        { "type": "text", "position": { "x": 0, "y": 0 }, "data": {} },
+        { "type": "text", "position": { "x": 1000000, "y": -1000000 }, "data": {} },
+        { "type": "text", "position": { "x": 0, "y": 0 }, "data": {} },
+        { "type": "text", "position": { "x": 0, "y": 3 }, "data": {} },
+        { "type": "text", "position": { "x": 0, "y": 1 }, "data": {} },
+        { "type": "text", "position": { "x": 0, "y": 0 }, "data": {} }
+      ], "wires": [], "dropped": 0 }
+    },
+    {
+      "name": "wires missing or not a list: no wires",
+      "input": { "nodes": [ { "type": "text", "position": { "x": 0, "y": 0 }, "data": { "content": "A" } } ] },
+      "expect": { "ok": true, "nodes": [ { "type": "text", "position": { "x": 0, "y": 0 }, "data": { "content": "A" } } ], "wires": [], "dropped": 0 }
+    },
+    { "name": "empty: null", "input": null, "expect": { "ok": false, "reason": "empty" } },
+    { "name": "empty: a string", "input": "text", "expect": { "ok": false, "reason": "empty" } },
+    { "name": "empty: an object without nodes", "input": {}, "expect": { "ok": false, "reason": "empty" } },
+    { "name": "empty: nodes is not a list", "input": { "nodes": "x" }, "expect": { "ok": false, "reason": "empty" } },
+    { "name": "empty: no nodes", "input": { "nodes": [], "wires": [] }, "expect": { "ok": false, "reason": "empty" } },
+    { "name": "empty: every node is of an unknown type", "input": { "nodes": [ { "type": "script" }, { "type": "group" } ], "wires": [] }, "expect": { "ok": false, "reason": "empty" } }
+  ]
+}

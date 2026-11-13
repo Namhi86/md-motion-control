@@ -1,0 +1,139 @@
+/* The "Kho skill" tab (skills-*.js). No new colour: the palette the app already uses (surface 19 21 23 / 28 30 32, lime 209 254 23, red 229 131 125,
+   amber 255 162 61, text 247 247 248, muted 137 138 139), written once as custom properties (rgb() form) so every rule below uses a variable. */
+:root {
+  --sk-panel: rgb(19 21 23); --sk-surface: rgb(28 30 32); --sk-lime: rgb(209 254 23); --sk-ink: rgb(20 21 26); --sk-red: rgb(229 131 125);
+  --sk-amber: rgb(255 162 61); --sk-text: rgb(247 247 248); --sk-muted: rgb(137 138 139); --sk-soft: rgb(168 168 168); }
+#view-skills { overflow-y: auto; padding: 16px 16px 40px; flex: 1 1 auto; min-height: 0; }
+body:not([data-auth="main"]) #view-skills { display: none !important; }
+#view-skills[hidden] { display: none; }
+.sk-wrap { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.sk-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; min-height: 40px; }
+.sk-top-title { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
+.sk-switch { display: inline-flex; gap: 4px; padding: 3px; background: var(--sk-surface); border-radius: 10px; }
+.sk-period { height: 30px; padding: 0 14px; border: 0; border-radius: 8px; background: none; color: var(--sk-soft); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.sk-period:hover { color: var(--sk-text); }
+.sk-period--on { color: var(--sk-ink); background: var(--sk-lime); }
+.sk-tools { margin-left: auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 10px; min-width: 0; }
+.sk-status { margin: 0; padding: 10px 12px; font-size: 14px; color: var(--sk-soft); background: var(--sk-surface); border-radius: 10px; }
+.sk-status[hidden] { display: none; }
+.sk-status .sk-retry { margin-left: 10px; }
+.sk--busy .sk-top, .sk--busy .sk-cols { opacity: .6; }
+.sk-foot { margin: 4px 0 0; font-size: 12.5px; color: var(--sk-muted); text-align: center; }
+.sk-empty { margin: 0; padding: 18px 12px; font-size: 14px; line-height: 1.5; color: var(--sk-muted); text-align: center; background: var(--sk-surface); border-radius: 12px; }
+.sk-empty .an-btn { margin-top: 8px; }
+
+/* top 1-2-3: a wide card, the sample at the left (9:16, at most 210 px wide) and the words at the right, so the row stays short enough to fit a 1280x800 window */
+.sk-top { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.sk-top-empty { grid-column: 1 / -1; }
+.sk-card.sk-card--top { display: grid; grid-template-columns: min(50%, 210px) minmax(0, 1fr); gap: 14px; align-items: start; padding: 12px; border-radius: 16px;
+  background: linear-gradient(160deg, rgb(209 254 23 / .12), var(--sk-panel) 62%); border: 1px solid rgb(209 254 23 / .35); }
+.sk-card--top .sk-title { font-size: 17px; }
+.sk-card--top .sk-body { padding: 4px 0; }
+@media (max-width: 760px) {
+  .sk-top { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* the two columns */
+.sk-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+@media (max-width: 900px) { .sk-cols { grid-template-columns: minmax(0, 1fr); } }
+.sk-col { display: flex; flex-direction: column; gap: 10px; min-width: 0; padding: 14px; background: var(--sk-panel); border: 1px solid rgb(217 217 217 / .04); border-radius: 16px; }
+.sk-col-title { margin: 0; font-size: 17px; font-weight: 700; }
+.sk-col-sub { margin: -6px 0 2px; font-size: 13px; color: var(--sk-muted); }
+.sk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 12px; align-items: start; }
+.sk-grid > .sk-empty { grid-column: 1 / -1; }
+
+/* a card */
+.sk-card { display: flex; flex-direction: column; gap: 10px; min-width: 0; padding: 8px; background: var(--sk-surface); border: 1px solid transparent; border-radius: 14px; }
+.sk-media { position: relative; width: 100%; aspect-ratio: 9 / 16; overflow: hidden; border-radius: 10px; background: rgb(0 0 0); }
+.sk-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.sk-nomedia { position: absolute; inset: 0; margin: 0; display: grid; place-items: center; padding: 8px; text-align: center; font-size: 12.5px; color: var(--sk-muted); }
+.sk-dots { position: absolute; left: 0; right: 0; bottom: 6px; display: flex; justify-content: center; gap: 6px; }
+.sk-dot { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%; background: rgb(255 255 255 / .45); cursor: pointer; }
+.sk-dot--on { background: var(--sk-lime); }
+.sk-rank { position: absolute; top: 8px; left: 8px; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font-size: 15px; font-weight: 800; color: var(--sk-ink); background: var(--sk-lime); }
+.sk-rank--2 { background: var(--sk-text); }
+.sk-rank--3 { background: var(--sk-amber); }
+.sk-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; padding: 0 4px 4px; }
+.sk-title { margin: 0; font-size: 14px; font-weight: 700; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
+.sk-desc { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--sk-soft); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
+.sk-modes { display: flex; flex-wrap: wrap; gap: 4px; }
+.sk-mode { padding: 1px 8px; font-size: 11.5px; font-weight: 600; border-radius: 999px; color: var(--sk-lime); background: rgb(209 254 23 / .12); }
+.sk-mode--muse { color: var(--sk-text); background: rgb(255 255 255 / .1); }
+.sk-unreviewed { margin: 0; font-size: 12px; line-height: 1.4; color: var(--sk-amber); }
+.sk-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 8px; margin: 0; font-size: 12px; color: var(--sk-muted); }
+.sk-author { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.sk-author--system { color: var(--sk-lime); font-weight: 600; }
+.sk-use { height: 34px; margin-top: 2px; border: 0; border-radius: 10px; background: var(--sk-lime); color: var(--sk-ink); font: inherit; font-size: 13.5px; font-weight: 700; cursor: pointer; }
+.sk-use:hover:not(:disabled) { filter: brightness(1.05); }
+.sk-use:disabled { opacity: .45; cursor: not-allowed; }
+.sk-use:focus-visible, .sk-period:focus-visible, .sk-dot:focus-visible { outline: 2px solid var(--sk-lime); outline-offset: 2px; }
+
+/* the name line of the tab */
+.sk-profile { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; color: var(--sk-soft); }
+.sk-profile[hidden] { display: none; }
+.sk-profile-name { color: var(--sk-text); }
+.sk-profile-input { width: 200px; }
+.sk-profile-msg { flex-basis: 100%; margin: 0; font-size: 12.5px; color: var(--sk-red); text-align: right; }
+.sk-profile-msg[hidden] { display: none; }
+.sk-link { padding: 0; border: 0; background: none; color: var(--sk-lime); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.sk-link:hover { text-decoration: underline; }
+
+/* admin: under a card */
+.sk-admin { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
+.sk-admin-btn { height: 28px; padding: 0 10px; border: 1px solid rgb(255 255 255 / .16); border-radius: 8px; background: none; color: var(--sk-text); font: inherit; font-size: 12px; cursor: pointer; }
+.sk-admin-btn:hover:not(:disabled) { background: rgb(255 255 255 / .07); }
+.sk-admin-btn:disabled { opacity: .45; cursor: not-allowed; }
+.sk-admin-btn--sm { height: 24px; padding: 0 8px; font-size: 11.5px; }
+.sk-admin-btn--danger { color: var(--sk-red); border-color: rgb(229 131 125 / .45); }
+.sk-admin-warn, .sk-admin-msg { margin: 0; font-size: 12px; line-height: 1.4; color: var(--sk-amber); }
+.sk-admin-msg--bad { color: var(--sk-red); }
+.sk-admin-panel { display: flex; flex-direction: column; gap: 4px; max-height: 240px; overflow: auto; }
+.sk-admin-pre { margin: 0; padding: 8px; font: 11.5px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--sk-text); background: var(--sk-panel); border-radius: 8px; }
+.sk-admin-label { margin: 0; font-size: 12px; color: var(--sk-muted); }
+.sk-admin-use { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 12px; }
+.sk-admin-who { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* the "Đăng skill" window (it borrows the .el-modal frame of the element window) */
+.sk-modal { width: min(980px, 100%); }
+.sk-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.sk-field-label { font-size: 13px; color: var(--sk-muted); }
+.sk-desc-in { min-height: 64px; }
+.sk-body-in { min-height: 180px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; }
+.sk-modes-in { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.sk-mode-opt { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; cursor: pointer; }
+.sk-check { width: 16px; height: 16px; margin: 0; accent-color: var(--sk-lime); cursor: pointer; }
+.sk-mode-hint { font-size: 12px; font-style: normal; color: var(--sk-muted); }
+.sk-hint { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--sk-amber); }
+.sk-file-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.sk-file { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--sk-lime); }
+.sk-progress { margin: 0; font-size: 13.5px; line-height: 1.45; color: var(--sk-soft); }
+.sk-progress[hidden] { display: none; }
+.el-count--bad { color: var(--sk-red); }
+.sk-samples { display: flex; flex-direction: column; gap: 8px; }
+.sk-sample-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.sk-sample-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.sk-sample-msg { margin: 0; font-size: 12.5px; color: var(--sk-red); }
+.sk-sample-msg[hidden], .sk-sample-panel[hidden] { display: none; }
+.sk-sample-note { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--sk-muted); }
+.sk-chip { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 3px 4px 3px 10px; border-radius: 6px; background: rgb(209 254 23 / .1); color: var(--sk-lime); font-size: 12px; font-weight: 600; }
+.sk-chip-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sk-chip-x { flex: 0 0 auto; width: 18px; height: 18px; padding: 0; border: 0; border-radius: 50%; background: rgb(0 0 0 / .35); color: var(--sk-text); font-size: 10px; cursor: pointer; }
+.sk-pick-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; max-height: 260px; overflow-y: auto; }
+.sk-pick { display: flex; flex-direction: column; gap: 4px; padding: 4px; border: 1.5px solid transparent; border-radius: 10px; background: var(--sk-surface); color: var(--sk-text); font: inherit; cursor: pointer; }
+.sk-pick--on { border-color: var(--sk-lime); }
+.sk-pick-video { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; border-radius: 6px; background: rgb(0 0 0); pointer-events: none; }
+.sk-pick-text { font-size: 11px; line-height: 1.3; color: var(--sk-soft); overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; text-align: left; }
+
+/* the "Tách skill" window (extract-skill-panel.js; it borrows the .el-modal frame, the .sk-switch tabs and the .sk-body-in text box) */
+.ex-modal { width: min(760px, 100%); }
+.ex-content { min-width: 0; }
+.ex-body { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.ex-tabs { align-self: flex-start; }
+.ex-text { min-height: 280px; resize: vertical; }
+.ex-text[hidden] { display: none; }
+.ex-warn { margin: 0; padding: 10px 12px; font-size: 13px; line-height: 1.5; color: var(--sk-amber); background: rgb(255 162 61 / .1); border-radius: 10px; }
+.ex-warn-head { margin: 0 0 4px; font-weight: 600; }
+.ex-problems { margin: 0; padding-left: 18px; }
+.ex-running { display: flex; align-items: center; gap: 12px; min-height: 120px; justify-content: center; }
+.ex-error { margin: 0; padding: 18px 12px; font-size: 14px; line-height: 1.5; color: var(--sk-red); text-align: center; }
+.el-err.ex-ok { color: rgb(83 197 70); }

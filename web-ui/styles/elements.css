@@ -1,0 +1,124 @@
+/* The element library: the tray in the form, the popup, the "Phần tử mới" window and the prompt box with chips. Sizes and surfaces from
+   MD Motion Control's Elements (assets-picker, cv-element-create, mention-prompt-input); the accent is lime like the rest of the app. */
+
+/* ── the reference box of the form (elements-tray.js) reuses the old tray styles (ui.css); a tile whose picture is gone is dashed ── */
+.cv-ref-tile--miss .cv-ref-thumb { opacity: .5; border: 1px dashed #e5837d; }
+
+/* ── the popup ── */
+.el-pop-back { position: fixed; inset: 0; z-index: 1200; }
+.el-pop { position: fixed; z-index: 1201; display: flex; flex-direction: column; padding: 8px; color: #f7f7f8; border-radius: 24px;
+  background: rgba(35, 38, 42, .75); -webkit-backdrop-filter: blur(40px); backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, .05); box-shadow: 0 12px 20px rgba(0, 0, 0, .24); }
+.el-pop-top { display: flex; align-items: center; justify-content: space-between; flex: 0 0 auto; padding: 4px 4px 8px; }
+.el-pop-tab { display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border-radius: 999px; background: #fff; color: #0b0b0b; font-size: 12px; font-weight: 600; }
+.el-x { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .05); color: #f7f7f8; font-size: 13px; cursor: pointer; }
+.el-x:hover { background: rgba(255, 255, 255, .12); }
+.el-pop-body { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 8px; padding: 8px; border-radius: 16px; background: rgba(255, 255, 255, .05); }
+.el-tools { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.el-tool { height: 32px; padding: 0 12px; border: 0; border-radius: 8px; background: rgba(255, 255, 255, .06); color: #f7f7f8; font: inherit; font-size: 13px; font-weight: 500; white-space: nowrap; cursor: pointer; }
+.el-tool:hover:not(:disabled) { background: rgba(255, 255, 255, .12); }
+.el-tool:disabled { opacity: .4; cursor: default; }
+.el-search-wrap { display: flex; align-items: center; gap: 6px; height: 32px; margin-left: auto; padding: 0 10px; color: #898a8b;
+  border: 1px solid rgba(255, 255, 255, .1); border-radius: 8px; background: rgba(255, 255, 255, .05); }
+.el-search { width: 150px; min-width: 0; border: 0; outline: 0; background: transparent; color: #f7f7f8; font: inherit; font-size: 13px; }
+.el-info { flex: 0 0 auto; margin: 0; font-size: 12px; color: #898a8b; }
+.el-info:empty { display: none; }
+.el-grid { flex: 1 1 auto; min-height: 0; margin: -2px; padding: 2px; overflow-y: auto; scrollbar-width: none;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; align-content: start; }
+.el-grid::-webkit-scrollbar { display: none; }
+.el-card { position: relative; display: flex; flex-direction: column; min-width: 0; padding: 2px; border: 0; border-radius: 12px; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.el-card:hover { background: rgba(255, 255, 255, .05); }
+.el-card:focus-visible { outline: 2px solid rgba(209, 254, 23, .6); outline-offset: 1px; }
+.el-card-img { position: relative; display: grid; place-items: center; aspect-ratio: 1; overflow: hidden; border-radius: 10px; background: #1c1e20; }
+.el-card-img img { width: 100%; height: 100%; object-fit: contain; }
+.el-card-lost { font-size: 12px; font-weight: 600; color: #e5837d; }
+.el-card--miss .el-card-img { opacity: .6; }
+.el-card-cap { display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 8px; }
+.el-cap1 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 16px; color: rgba(255, 255, 255, .5); }
+.el-cap2 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; color: #fff; }
+.el-card--on { background: rgb(28, 30, 33); box-shadow: 0 0 0 1.5px #d1fe17; }
+.el-card--on .el-card-img::after { content: ""; position: absolute; inset: 0; background: rgba(0, 0, 0, .4); }
+.el-card-tick { position: absolute; top: 10px; left: 10px; z-index: 2; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 6px;
+  color: transparent; border: 1.5px solid rgba(255, 255, 255, .4); background: rgba(15, 17, 19, .55); opacity: 0; transition: opacity .12s; }
+.el-card:hover .el-card-tick, .el-card:focus-visible .el-card-tick, .el-card--on .el-card-tick { opacity: 1; }
+.el-card--on .el-card-tick { color: #1a1a1a; border-color: #d1fe17; background: #d1fe17; }
+.el-card-acts { position: absolute; top: 8px; right: 8px; z-index: 3; display: flex; gap: 4px; opacity: 0; transition: opacity .12s; }
+.el-card:hover .el-card-acts, .el-card:focus-within .el-card-acts { opacity: 1; }
+.el-act { display: grid; place-items: center; min-width: 26px; height: 26px; padding: 0 6px; border: 0; border-radius: 13px; background: rgba(15, 17, 19, .7); color: #f7f7f8; font: inherit; font-size: 11px; font-weight: 600; cursor: pointer; }
+.el-act:hover { background: rgba(15, 17, 19, .95); }
+.el-act--bin:hover, .el-act--ask { background: rgba(229, 131, 125, .92); color: #1a1a1a; }
+.el-card--new { align-items: center; justify-content: center; gap: 12px; aspect-ratio: 1; padding: 0; border: 1px dashed rgba(255, 255, 255, .1); border-radius: 10px;
+  background: rgba(255, 255, 255, .05); font-size: 12px; font-weight: 500; color: #f7f7f8; }
+.el-card--new svg { box-sizing: border-box; width: 44px; height: 44px; padding: 10px; border: 1px solid rgba(197, 197, 197, .3); border-radius: 50%; }
+.el-card--new:hover { background: rgba(255, 255, 255, .1); }
+.el-empty { grid-column: 1 / -1; margin: 12px 4px; font-size: 13px; line-height: 1.5; color: #898a8b; }
+
+/* ── the "Phần tử mới" / "Sửa phần tử" window ── */
+.el-modal-back { position: fixed; inset: 0; z-index: 1250; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, .4); }
+.el-modal { box-sizing: border-box; width: min(960px, 100%); max-height: 100%; overflow-y: auto; padding: 20px; color: #f7f7f8; border-radius: 24px;
+  background: rgba(35, 38, 42, .9); -webkit-backdrop-filter: blur(40px); backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, .05); box-shadow: 0 16px 32px rgba(0, 0, 0, .3); }
+.el-modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.el-modal-title { margin: 0; font-size: 16px; font-weight: 600; text-transform: none; letter-spacing: 0; }
+.el-modal-body { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.el-col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.el-input { box-sizing: border-box; width: 100%; padding: 10px 12px; border: 1px solid transparent; border-radius: 10px; outline: 0;
+  background: rgba(255, 255, 255, .05); color: #f7f7f8; font: inherit; font-size: 14px; }
+.el-input:focus { border-color: rgba(255, 255, 255, .18); }
+.el-textarea { min-height: 120px; resize: vertical; line-height: 1.45; }
+.el-handle { margin: -4px 2px 0; font-size: 12px; color: #d1fe17; }
+.el-count { align-self: flex-end; margin-top: -6px; font-size: 11px; color: #6b6c6d; }
+.el-row { display: flex; align-items: center; gap: 12px; }
+.el-label { flex: 0 0 80px; font-size: 13px; color: #898a8b; }
+.el-select { flex: 1 1 auto; }
+.el-up { position: relative; display: grid; place-items: center; align-content: center; gap: 10px; min-height: 320px; overflow: hidden; border-radius: 16px;
+  background: rgba(255, 255, 255, .04); border: 1px dashed rgba(255, 255, 255, .12); color: #f7f7f8; font: inherit; cursor: pointer; }
+.el-up:hover { border-color: rgba(255, 255, 255, .25); }
+.el-up--has { border-style: solid; background: #000; align-content: end; }
+.el-up-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.el-up-text { position: relative; z-index: 1; padding: 6px 12px; border-radius: 999px; font-size: 13px; color: #898a8b; }
+.el-up--has .el-up-text { margin-bottom: 12px; background: rgba(0, 0, 0, .6); color: #fff; }
+.el-modal-foot { display: flex; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.el-err { flex: 1 1 auto; margin: 0; font-size: 13px; color: #e5837d; }
+.el-btn { height: 36px; padding: 0 18px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .08); color: #f7f7f8; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.el-btn:hover:not(:disabled) { background: rgba(255, 255, 255, .14); }
+.el-btn--main { background: #fff; color: #0b0b0b; }
+.el-btn--main:hover:not(:disabled) { background: #e8e8e8; }
+.el-btn:disabled { opacity: .4; cursor: not-allowed; }
+@media (max-width: 760px) { .el-modal-body { grid-template-columns: 1fr; } .el-up { min-height: 200px; } }
+
+/* ── the prompt box with chips (it replaces the visible textarea; the textarea stays hidden and holds the text) ── */
+.cv-prompt { position: relative; }
+.cv-prompt-ed { width: 100%; min-height: 72px; max-height: 220px; overflow-y: auto; outline: none; cursor: text; white-space: pre-wrap; overflow-wrap: anywhere;
+  color: #f7f7f8; font-size: 13px; line-height: 1.45; }
+.cv-prompt-ed:empty::before { content: attr(data-placeholder); color: #6b6c6d; pointer-events: none; }
+.cv-chip-el { display: inline-flex; align-items: center; gap: 4px; max-width: 200px; margin: 0 1px; padding: 1px 6px 1px 2px; border-radius: 6px;
+  background: rgba(209, 254, 23, .16); color: #d1fe17; font-size: 13px; font-weight: 600; vertical-align: baseline; }
+.cv-chip-el img { flex: 0 0 auto; width: 18px; height: 18px; border-radius: 50%; object-fit: cover; }
+.cv-chip-el span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cv-sugg { position: fixed; z-index: 1100; box-sizing: border-box; overflow-y: auto; padding: 6px; border-radius: 12px; background: #1c1e20;
+  border: 1px solid rgba(255, 255, 255, .08); box-shadow: 0 12px 28px rgba(0, 0, 0, .4); }
+.cv-sugg-item { display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: 10px; cursor: pointer; }
+.cv-sugg-item--on, .cv-sugg-item:hover { background: rgba(255, 255, 255, .06); }
+.cv-sugg-img { flex: 0 0 auto; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 8px; object-fit: cover; background: #26282b; color: #e5837d; font-weight: 700; }
+.cv-sugg-text { display: flex; flex-direction: column; min-width: 0; }
+.cv-sugg-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; font-weight: 500; color: #f7f7f8; }
+.cv-sugg-tag { font-size: 12px; color: #7c7d80; }
+.cv-sugg-none { margin: 6px 8px; font-size: 13px; line-height: 1.45; color: #898a8b; }
+.cv-prompt-limit { margin: 8px 0 0; padding: 6px 10px; border-radius: 8px; background: rgba(229, 131, 125, .12); font-size: 12.5px; line-height: 1.45; color: #e5837d; }
+@media (max-height: 1100px) { .cv-prompt-ed { min-height: 56px; } }
+
+/* pictures dropped on a window: it lights up while files are over it */
+.el-drop { outline: 2px dashed #d1fe17; outline-offset: -6px; background-color: rgba(209, 254, 23, .06); }
+.el-multi { width: 100%; height: 36px; border: 1px dashed rgba(255, 255, 255, .18); border-radius: 999px; background: transparent; color: #d1fe17; font: inherit; font-size: 13px; cursor: pointer; }
+.el-multi:hover { background: rgba(209, 254, 23, .08); }
+/* "Thêm nhiều phần tử": a row per picture */
+.el-bulk { width: min(860px, 100%); }
+.el-bulk-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.el-bulk-all { max-width: 260px; }
+.el-bulk-list { display: flex; flex-direction: column; gap: 8px; max-height: min(56vh, 520px); overflow-y: auto; padding-right: 4px; }
+.el-bulk-row { display: grid; grid-template-columns: 56px 1fr 150px 28px; gap: 10px; align-items: start; padding: 8px; border-radius: 14px; background: rgba(255, 255, 255, .04); }
+.el-bulk-thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 10px; background: #000; }
+.el-bulk-fields { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.el-bulk-note { margin: 0; min-height: 0; font-size: 12px; color: #ff6b6b; }
+.el-bulk-note:empty { display: none; }

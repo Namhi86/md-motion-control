@@ -1,0 +1,33 @@
+/* The admin screen (admin-*.js) and its header link. Only the colours the app already uses: surface #131517 / #1c1e20, lime #d1fe17, red #e5837d, amber #ffa23d,
+   text #f7f7f8, muted #898a8b. The inputs and buttons are the "an-*" ones of analyze.css. */
+.fs-user-link { height: 32px; padding: 0 12px; border: 1px solid rgba(209, 254, 23, .35); border-radius: 8px; background: none; color: #d1fe17; font-size: 13px; cursor: pointer; }
+.fs-user-link:hover, .fs-user-link--on { background: rgba(209, 254, 23, .1); }
+.fs-user-link:focus-visible { outline: 2px solid rgba(209, 254, 23, .6); outline-offset: 2px; }
+
+#view-admin { overflow-y: auto; padding: 24px 16px 40px; flex: 1 1 auto; min-height: 0; }
+#view-admin[hidden] { display: none; }
+.ad-wrap { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.ad-title { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -.01em; }
+.ad-sub { margin: 4px 0 0; font-size: 14px; color: #89898b; }
+.ad-card { display: flex; flex-direction: column; gap: 10px; min-width: 0; padding: 16px; background: #131517; border: 1px solid rgba(217, 217, 217, .04); border-radius: 16px; }
+.ad-card-title { margin: 0; font-size: 16px; font-weight: 700; }
+.ad-note { margin: 0; font-size: 14px; line-height: 1.5; color: #a8a8a8; }
+.ad-warn { margin: 0; font-size: 14px; line-height: 1.5; color: #ffa23d; }
+.ad-line { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ad-line .an-input { flex: 1 1 280px; width: auto; min-width: 0; }
+.ad-line .ad-date { flex: 0 0 auto; width: 160px; color-scheme: dark; }
+.ad-label { font-size: 13px; color: #898a8b; }
+.ad-textarea { min-height: 132px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; line-height: 1.5; }
+.ad-msg { margin: 0; font-size: 14px; line-height: 1.5; }
+.ad-msg[hidden] { display: none; }
+.ad-msg--ok { color: #d1fe17; }
+.ad-msg--bad { color: #e5837d; }
+.ad-msg--wait { color: #a8a8a8; }
+
+.ad-table-wrap { overflow: auto; max-height: 460px; background: #1c1e20; border-radius: 10px; }
+.ad-table-wrap[hidden] { display: none; }
+.ad-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ad-table th, .ad-table td { padding: 6px 10px; text-align: left; white-space: nowrap; border-bottom: 1px solid rgba(255, 255, 255, .06); }
+.ad-table th { position: sticky; top: 0; background: #24272a; color: #898a8b; font-weight: 600; }
+.ad-tr--bad td { color: #e5837d; }
+.ad-tr--wait td { color: #ffa23d; }

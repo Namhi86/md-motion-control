@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' fs-media: data: https:; media-src 'self' fs-media: https: http:; style-src 'self' 'unsafe-inline'" />
+    <title>MD Motion Control · AI Video Studio</title>
+    <link rel="stylesheet" href="ui.css" />
+    <link rel="stylesheet" href="history.css" />
+    <link rel="stylesheet" href="setup.css" />
+    <link rel="stylesheet" href="promo.css" />
+    <link rel="stylesheet" href="queue.css" />
+    <link rel="stylesheet" href="proxy.css" />
+    <link rel="stylesheet" href="motion.css" />
+  </head>
+  <body>
+    <header class="qm-header">
+      <div class="qm-logo">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 3.5v17l6.4-3.2V6.7L4 3.5Zm8.2 3.2v10.6l7.8-5.3-7.8-5.3Z" /></svg>
+        <span><b>MD Motion Control</b> · AI Video Studio</span>
+      </div>
+      <nav class="qm-nav">
+        <button type="button" id="nav-motion" class="nav-link nav-link--on">Motion Control</button>
+        <button type="button" id="nav-create" class="nav-link" hidden>Tạo video</button>
+        <button type="button" id="nav-setup" class="nav-link">Setup tài khoản (Veo 3 &amp; Muse AI) <span id="nav-badge" class="nav-badge nav-badge--zero">0</span></button>
+      </nav>
+      <div class="qm-header-right">
+        <button type="button" id="gate-status-btn" class="mc-gate-pill mc-gate-pill--locked" title="Trạng thái kích hoạt MD Viral Gate">
+          <span class="mc-gate-dot"></span>
+          <span id="gate-status-text">Chưa kích hoạt</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- TAB 1: MOTION CONTROL STUDIO -->
+    <section class="mc-page" id="view-motion">
+      <aside class="mc-sidebar">
+        <div class="mc-sidebar-scroll">
+          <!-- Banner giới thiệu -->
+          <div class="mc-banner">
+            <div class="mc-banner-badge">VIDEO MOTION CLONE</div>
+            <h2 class="mc-banner-title">MD Motion Control</h2>
+            <p class="mc-banner-sub">Tách cảnh thông minh, bóc băng lời thoại &amp; sao chép chuyển động bằng Google Flow Omni / Meta Muse AI</p>
+          </div>
+
+          <!-- 1. Chọn Video Nguồn -->
+          <div class="mc-card">
+            <div class="mc-card-head">
+              <span class="mc-step-num">1</span>
+              <span class="mc-card-title">Video nguồn (Reference Video)</span>
+              <button type="button" id="mc-video-clear-btn" class="mc-link-btn" hidden>Đổi video</button>
+            </div>
+            <div id="mc-video-drop" class="mc-dropzone" role="button" tabindex="0">
+              <div class="mc-dropzone-icon">🎬</div>
+              <div class="mc-dropzone-title" id="mc-video-name">Kéo thả video vào đây hoặc bấm để chọn</div>
+              <div class="mc-dropzone-sub" id="mc-video-meta">Hỗ trợ .mp4, .mov, .m4v, .mkv, .webm (mọi thời lượng)</div>
+              <button type="button" id="mc-video-pick-btn" class="mc-btn mc-btn--secondary mc-btn--sm">Chọn tệp Video</button>
+            </div>
+
+            <!-- 2. Tùy chọn Dịch lời thoại -->
+            <div class="mc-field-row" style="margin-top: 10px;">
+              <label class="mc-label" for="mc-translate-select">Dịch lời thoại khi bóc băng</label>
+              <select id="mc-translate-select" class="mc-select">
+                <option value="">Không dịch (giữ nguyên ngôn ngữ gốc)</option>
+                <option value="Vietnamese">Tiếng Việt (Vietnamese)</option>
+                <option value="English">Tiếng Anh (English)</option>
+                <option value="Chinese">Tiếng Trung (Chinese)</option>
+                <option value="Japanese">Tiếng Nhật (Japanese)</option>
+                <option value="Korean">Tiếng Hàn (Korean)</option>
+              </select>
+            </div>
+
+            <!-- 3. Nút Phân tích Video & Bóc băng -->
+            <button type="button" id="mc-prepare-btn" class="mc-btn mc-btn--gold mc-btn--full" style="margin-top: 10px;">
+              <span>🔍 Phân tích Video &amp; Bóc băng</span>
+            </button>
+            <p id="mc-prepare-status" class="mc-status-line" hidden></p>
+          </div>
+
+          <!-- 4. Chọn Engine Tạo Video -->
+          <div class="mc-card">
+            <div class="mc-card-head">
+              <span class="mc-step-num">2</span>
+              <span class="mc-card-title">Engine Tạo Video</span>
+            </div>
+            <label class="mc-label" for="mc-engine-select">Chọn nền tảng xử lý chuyển động</label>
+            <select id="mc-engine-select" class="mc-select">
+              <option value="veo-ref">Google Flow — Omni 1.1 Flash (Sao chép chuyển động Video-to-Video chuẩn gốc)</option>
+              <option value="muse">Meta Muse AI (Chạy chuỗi đoạn 10s + nối khung hình cuối miễn phí bằng Cookie Muse)</option>
+            </select>
+            <p id="mc-engine-hint" class="mc-hint">Omni 1.1 Flash dùng video tham chiếu trực tiếp cho từng phân đoạn (tốn credit Flow).</p>
+          </div>
+
+          <!-- 5. Ảnh Nhân vật / Chủ thể (1 - 5 ảnh) -->
+          <div class="mc-card">
+            <div class="mc-card-head">
+              <span class="mc-step-num">3</span>
+              <span class="mc-card-title">Ảnh nhân vật / chủ thể</span>
+              <span id="mc-images-count" class="mc-badge-muted">0 / 5 ảnh</span>
+            </div>
+            <div id="mc-images-grid" class="mc-images-grid"></div>
+            <button type="button" id="mc-pick-images-btn" class="mc-btn mc-btn--secondary mc-btn--full">
+              + Chọn ảnh nhân vật (1 – 5 ảnh)
+            </button>
+          </div>
+
+          <!-- 6. Thiết lập Nhân vật, Bối cảnh & Giọng nói -->
+          <div class="mc-card">
+            <div class="mc-card-head">
+              <span class="mc-step-num">4</span>
+              <span class="mc-card-title">Nhân vật, Bối cảnh &amp; Giọng nói</span>
+            </div>
+
+            <div class="mc-field">
+              <label class="mc-label" for="mc-subject-input">Mô tả nhân vật (Subject)</label>
+              <textarea id="mc-subject-input" class="mc-textarea" rows="2" maxlength="300">The person from the reference images (same face, hair and clothes)</textarea>
+            </div>
+
+            <div class="mc-field">
+              <label class="mc-label" for="mc-scene-input">Mô tả bối cảnh (Scene)</label>
+              <textarea id="mc-scene-input" class="mc-textarea" rows="2" maxlength="400">is in the same place, with the same light and camera framing as the reference video</textarea>
+            </div>
+
+            <div class="mc-field-grid">
+              <div class="mc-field">
+                <label class="mc-label" for="mc-language-input">Ngôn ngữ nói (Language)</label>
+                <input type="text" id="mc-language-input" class="mc-input" value="Vietnamese" maxlength="40" />
+              </div>
+              <div class="mc-field">
+                <label class="mc-label" for="mc-voice-input">Mô tả giọng đọc (Voice)</label>
+                <input type="text" id="mc-voice-input" class="mc-input" placeholder="Tự động điền từ AI Studio…" maxlength="160" />
+              </div>
+            </div>
+            <p id="mc-detected-voice" class="mc-hint" hidden></p>
+
+            <div class="mc-field-grid">
+              <div class="mc-field">
+                <label class="mc-label" for="mc-ratio-select">Tỷ lệ khung hình</label>
+                <select id="mc-ratio-select" class="mc-select">
+                  <option value="auto">Tự động (theo video gốc)</option>
+                  <option value="9:16">9:16 (Dọc · Shorts/Reels/TikTok)</option>
+                  <option value="16:9">16:9 (Ngang · YouTube)</option>
+                </select>
+              </div>
+              <div class="mc-field">
+                <label class="mc-label" for="mc-resolution-select">Độ phân giải</label>
+                <select id="mc-resolution-select" class="mc-select">
+                  <option value="720p">720p HD (Chuẩn)</option>
+                  <option value="360p">360p (Tiết kiệm credit)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mc-field">
+              <label class="mc-label" for="mc-name-input">Tên file xuất</label>
+              <input type="text" id="mc-name-input" class="mc-input" value="copy-motion" maxlength="40" placeholder="copy-motion" />
+            </div>
+
+            <div class="mc-field">
+              <label class="mc-label">Thư mục lưu phim</label>
+              <div class="mc-dir-bar">
+                <button type="button" id="mc-dir-choose-btn" class="mc-dir-pick" title="Đổi thư mục lưu phim Motion Control">
+                  <span id="mc-dir-path">Đang tải…</span>
+                </button>
+                <button type="button" id="mc-dir-open-btn" class="mc-dir-open" title="Mở thư mục lưu phim">📂</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. Thanh Tác vụ Dưới cùng -->
+        <div class="mc-sidebar-footer">
+          <div class="mc-cost-row">
+            <span class="mc-cost-label">Dự kiến thực thi:</span>
+            <strong id="mc-cost-summary" class="mc-cost-val">0 đoạn · 0 credit</strong>
+          </div>
+          <div class="mc-action-btns">
+            <button type="button" id="mc-start-btn" class="mc-btn mc-btn--gold mc-btn--lg">
+              <span>🚀 Bắt đầu tạo Motion Video</span>
+            </button>
+            <button type="button" id="mc-cancel-btn" class="mc-btn mc-btn--danger" hidden>
+              <span>Huỷ</span>
+            </button>
+          </div>
+          <p id="mc-warn" class="mc-warn"></p>
+        </div>
+      </aside>
+
+      <!-- CỘT PHẢI: WORKSPACE SÓNG ÂM, PHÂN ĐOẠN & KẾT QUẢ -->
+      <div class="mc-workspace">
+        <!-- 1. Biểu đồ Sóng âm & Quản lý Vạch cắt -->
+        <div class="mc-wave-panel">
+          <div class="mc-wave-header">
+            <div>
+              <h3 class="mc-panel-title">Biểu đồ Sóng âm &amp; Vạch cắt Phân đoạn</h3>
+              <p id="mc-plan-summary" class="mc-panel-sub">Chưa phân tích video. Hãy chọn video nguồn và bấm "Phân tích Video &amp; Bóc băng".</p>
+            </div>
+            <div class="mc-wave-actions">
+              <button type="button" id="mc-replan-btn" class="mc-btn mc-btn--secondary mc-btn--sm" disabled>✂️ Chia lại đoạn (Replan)</button>
+              <button type="button" id="mc-discard-btn" class="mc-btn mc-btn--ghost mc-btn--sm" disabled>🗑️ Làm mới / Bỏ phiên</button>
+            </div>
+          </div>
+
+          <div class="mc-wave-canvas-wrap">
+            <canvas id="mc-waveform" width="960" height="110"></canvas>
+          </div>
+
+          <div class="mc-wave-toolbar">
+            <div class="mc-wave-legend">
+              <span class="mc-legend-item"><i class="mc-dot mc-dot--cut"></i> Vạch cắt hiện tại</span>
+              <span class="mc-legend-item"><i class="mc-dot mc-dot--scene"></i> Gợi ý đổi cảnh (Scene)</span>
+              <span class="mc-legend-item"><i class="mc-dot mc-dot--pause"></i> Khoảng nghỉ nói (Pause)</span>
+            </div>
+            <div class="mc-cut-manual">
+              <input type="number" id="mc-cut-sec-input" class="mc-input mc-input--sm" step="0.1" min="0.5" placeholder="Giây (VD: 6.4)" />
+              <button type="button" id="mc-add-cut-btn" class="mc-btn mc-btn--secondary mc-btn--sm">+ Thêm / Xóa vạch</button>
+            </div>
+          </div>
+          <div id="mc-cuts-list" class="mc-cuts-chips"></div>
+        </div>
+
+        <!-- 3. Khung Xem Video Thành phẩm -->
+        <div id="mc-result-box" class="mc-result-card" hidden>
+          <div class="mc-result-head">
+            <div>
+              <span class="mc-badge-success">HOÀN THÀNH</span>
+              <strong id="mc-result-name" class="mc-result-title">copy-motion.mp4</strong>
+              <span id="mc-result-duration" class="mc-result-meta"></span>
+            </div>
+            <div class="mc-result-actions">
+              <button type="button" id="mc-result-open-dir" class="mc-btn mc-btn--secondary mc-btn--sm">📂 Mở thư mục lưu</button>
+              <button type="button" id="mc-result-close" class="mc-btn mc-btn--ghost mc-btn--sm">Đóng</button>
+            </div>
+          </div>
+          <div class="mc-result-body">
+            <video id="mc-result-video" class="mc-result-video" controls playsinline></video>
+          </div>
+        </div>
+
+        <!-- 2. Danh sách Phân đoạn & Chỉnh sửa Lời thoại -->
+        <div class="mc-segments-panel">
+          <div class="mc-segments-header">
+            <h3 class="mc-panel-title">Danh sách Phân đoạn &amp; Lời thoại <span id="mc-segments-badge" class="cv-mtab-badge">0</span></h3>
+            <div id="mc-job-banner" class="mc-job-banner" hidden>
+              <span class="mc-spinner-sm"></span>
+              <span id="mc-job-stage-text">Đang xử lý…</span>
+            </div>
+          </div>
+          <div class="mc-segments-body">
+            <div id="mc-segments-empty" class="mc-empty-state">
+              <div class="mc-empty-icon">🎞️</div>
+              <p>Chưa có phân đoạn nào.<br />Chọn video ở cột trái và bấm <b>"Phân tích Video &amp; Bóc băng"</b> để AI tự động tách cảnh và nhận diện lời thoại.</p>
+            </div>
+            <div id="mc-segments-list" class="mc-segments-list"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: TẠO VIDEO GỐC fast SHARE (GIỮ NGUYÊN 100% DOM & ID) -->
+    <div class="cv-page" id="view-create" hidden>
+      <div class="cv-col">
+      <aside class="cv-left">
+        <div class="cv-subtabs"><button type="button" class="cv-subtab cv-subtab--on">Tạo Video</button></div>
+        <form class="cv-form" onsubmit="return false">
+          <div class="cv-scroll">
+            <div class="cv-mcard">
+              <div class="cv-mcard-cap">
+                <p class="cv-mcard-title">Seedance</p>
+                <p class="cv-mcard-sub" id="card-sub">Tạo video AI từ mô tả hoặc ảnh</p>
+              </div>
+            </div>
+
+            <div id="refs"></div>
+            <div id="skill-row" class="cv-skill-row" hidden></div>
+
+            <div class="cv-prompt">
+              <p class="cv-prompt-label">Mô tả video</p>
+              <textarea id="prompt" class="cv-prompt-ta" placeholder="Mô tả cảnh quay…">A red apple sitting on a wooden table, slow camera push-in, natural daylight.</textarea>
+              <div class="cv-prompt-tools"><label class="cv-import" for="import-file">Nhập tệp .txt / .csv</label><input id="import-file" type="file" accept=".txt,.csv" hidden /><span id="prompt-count" class="cv-prompt-count"></span></div>
+            </div>
+
+            <button type="button" id="model-btn" class="cv-frow">
+              <span class="cv-frow-text">
+                <span class="cv-frow-label">Model</span>
+                <span class="cv-frow-value" id="model-val">—</span>
+              </span>
+              <svg class="cv-frow-chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6" /></svg>
+            </button>
+
+            <div class="cv-controls-row">
+              <button type="button" id="dur-btn" class="cv-pill" aria-label="Thời lượng">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 7.75V12L14.75 14.75M21.25 12C21.25 17.1086 17.1086 21.25 12 21.25C6.89137 21.25 2.75 17.1086 2.75 12C2.75 6.89137 6.89137 2.75 12 2.75C17.1086 2.75 21.25 6.89137 21.25 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                <span id="dur-val">10s</span>
+              </button>
+              <button type="button" id="ratio-btn" class="cv-pill" aria-label="Tỷ lệ khung hình">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M4.75 3.75C4.75 3.19772 5.19772 2.75 5.75 2.75H18.25C18.8023 2.75 19.25 3.19772 19.25 3.75V20.25C19.25 20.8023 18.8023 21.25 18.25 21.25H5.75C5.19771 21.25 4.75 20.8023 4.75 20.25V3.75Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" /></svg>
+                <span id="ratio-val">9:16</span>
+              </button>
+              <button type="button" id="mode-btn" class="cv-pill" aria-label="Chế độ Dola" hidden>
+                <svg viewBox="0 0 24 24" fill="none"><path d="M13 2.75 4.75 13.25H12L11 21.25l8.25-10.5H12L13 2.75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                <span id="mode-val">Nhanh</span>
+              </button>
+            </div>
+
+            <div id="mount-queue-settings" class="qs"></div>
+            <div id="mount-save-dir"></div>
+          </div>
+
+          <div class="cv-genwrap">
+            <button type="button" id="generate" class="cv-gen">
+              <span id="gen-label">Tạo video</span>
+              <svg id="gen-icon" width="20" height="20" viewBox="0 0 20 20"><path d="M11.8525 4.21651L11.7221 3.2387C11.6906 3.00226 11.4889 2.82568 11.2504 2.82568C11.0118 2.82568 10.8102 3.00226 10.7786 3.23869L10.6483 4.21651C10.2658 7.0847 8.00939 9.34115 5.14119 9.72358L4.16338 9.85396C3.92694 9.88549 3.75037 10.0872 3.75037 10.3257C3.75037 10.5642 3.92694 10.7659 4.16338 10.7974L5.14119 10.9278C8.00938 11.3102 10.2658 13.5667 10.6483 16.4349L10.7786 17.4127C10.8102 17.6491 11.0118 17.8257 11.2504 17.8257C11.4889 17.8257 11.6906 17.6491 11.7221 17.4127L11.8525 16.4349C12.2349 13.5667 14.4913 11.3102 17.3595 10.9278L18.3374 10.7974C18.5738 10.7659 18.7504 10.5642 18.7504 10.3257C18.7504 10.0872 18.5738 9.88549 18.3374 9.85396L17.3595 9.72358C14.4913 9.34115 12.2349 7.0847 11.8525 4.21651Z" fill="currentColor" /></svg>
+            </button>
+            <p id="warn" class="cv-warn"></p>
+          </div>
+        </form>
+      </aside>
+      <aside class="qm-promo" aria-label="MD Motion Control">
+        <div class="qm-promo-top">
+          <img class="qm-promo-logo" src="qm-logo.svg" alt="MD Motion Control" />
+          <span class="qm-promo-tag">Bản ổn định</span>
+        </div>
+        <p class="qm-promo-title">Cần tạo nhiều, ổn định, ít bị chặn? Dùng <b>MD Motion Control</b></p>
+        <ul class="qm-promo-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11" /></svg><span>Tới <b>30 ảnh tham chiếu</b> mỗi video (app này chỉ 10)</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11" /></svg><span>Thêm <b>âm thanh, video tham chiếu</b>, clip <b>tới 30 giây</b>, tới <b>1080p</b></span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11" /></svg><span>Nhiều model khác (Veo, Kling, Gemini Omni…), <b>ít vướng bộ lọc ảnh</b> hơn</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-11" /></svg><span>Chạy trên server riêng, <b>không phụ thuộc acc Dola</b></span></li>
+        </ul>
+        <button type="button" id="qm-open" class="qm-promo-go">Dùng thử MD Motion Control
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9" /></svg>
+        </button>
+        <p class="qm-promo-note"><b>Lưu ý:</b> app này đang chạy <b>miễn phí qua Dola</b>. Dola có thể đổi hoặc chặn bất kỳ lúc nào, nên có lúc tạo lỗi hoặc dừng. Cần chạy đều và chắc chắn thì dùng MD Motion Control.</p>
+      </aside>
+      </div>
+
+      <section class="cv-main">
+        <div class="cv-maintabs">
+          <button type="button" id="tab-hist" class="cv-mtab cv-mtab--on">Lịch sử <span id="hist-badge" class="cv-mtab-badge">0</span></button>
+          <div id="mount-queue-stats" class="cv-tabs-stats"></div>
+          <div id="mount-queue-actions" class="cv-tabs-actions"></div>
+        </div>
+        <div id="mount-queue"></div>
+        <div class="cv-main-body">
+          <div id="history"><p class="cv-empty" id="hist-empty">Chưa có video nào trong phiên này.<br />Nhập mô tả rồi bấm "Tạo video".</p></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 3: SETUP TÀI KHOẢN GỐC fast SHARE (GIỮ NGUYÊN 100% DOM & ID) -->
+    <section class="su-page" id="view-setup" hidden>
+      <div class="su-wrap">
+        <div>
+          <h1 class="su-title">Setup tài khoản</h1>
+          <div class="su-tabs" role="tablist">
+            <button type="button" id="su-tab-accounts" class="su-tab su-tab--on" role="tab">Quản lý tài khoản</button>
+            <button type="button" id="su-tab-proxy" class="su-tab" role="tab">Quản lý proxy <span id="su-tab-proxy-n" class="su-tab-n"></span></button>
+          </div>
+        </div>
+        <div class="su-types" id="su-types"></div>
+
+        <div id="su-accounts" class="su-wrap-in">
+        <label class="qs-toggle su-show" id="su-show" title="Bật: cửa sổ đăng nhập (Google Flow, Meta Muse AI) hiện ra để bạn xem và tự tích captcha. Tắt: chạy ẩn, gặp captcha thì acc báo lỗi captcha. Áp cho các lần đăng nhập sau.">
+          <span class="qs-toggle-text"><span class="qs-toggle-name">Hiện cửa sổ đăng nhập</span><span class="qs-toggle-desc">Bật để xem quá trình đăng nhập và tự tích captcha; tắt để chạy ẩn</span></span>
+          <input type="checkbox" class="qs-check" id="su-show-box"><span class="qs-sw"><i></i></span>
+        </label>
+        <label class="qs-toggle su-show" id="su-browser" hidden title="Bật: mỗi acc dùng một Google Chrome thật của máy (hồ sơ riêng, proxy riêng). Tắt: cửa sổ trong app với vân tay giả riêng cho từng acc. Một công tắc cho cả app; đổi được khi không có acc nào đang chạy hay đăng nhập; áp cho các cửa sổ mở từ giờ.">
+          <span class="qs-toggle-text"><span class="qs-toggle-name" id="su-browser-name"></span><span class="qs-toggle-desc" id="su-browser-desc"></span></span>
+          <input type="checkbox" class="qs-check" id="su-browser-box"><span class="qs-sw"><i></i></span>
+        </label>
+        <p class="stp-msg" id="su-browser-hint" hidden></p>
+        <div class="stp-card">
+          <p class="stp-card-label"><span id="su-form-title" style="margin:0;font-size:14px;color:#f7f7f8">Thêm cookie</span></p>
+          <div class="stp-card-body">
+            <textarea id="su-cookies" class="stp-input" spellcheck="false"></textarea>
+            <div class="stp-actions">
+              <button type="button" id="su-add" class="stp-btn stp-btn--gold">Thêm vào danh sách</button>
+              <p id="su-msg" class="stp-msg"></p>
+            </div>
+            <p class="stp-hint" id="su-hint"></p>
+          </div>
+        </div>
+
+        <div class="stp-card">
+          <div class="stp-card-label"><div class="stp-kinds" id="su-kinds" role="tablist"></div><span id="su-table-count"></span></div>
+          <div class="stp-card-body stp-card-body--flush" id="su-table"></div>
+        </div>
+        </div>
+        <div id="mount-proxies" class="su-wrap-in" hidden></div>
+      </div>
+    </section>
+
+    <!-- LỚP PHỦ KÍCH HOẠT MD VIRAL GATE -->
+    <div id="md-gate-overlay" class="md-gate-overlay" hidden>
+      <div class="md-gate-modal" role="dialog" aria-modal="true" aria-labelledby="md-gate-title">
+        <div class="md-gate-header">
+          <div>
+            <span class="md-gate-tag">BẢN QUYỀN CỘNG ĐỒNG · MIỄN PHÍ 100%</span>
+            <h2 id="md-gate-title" class="md-gate-title">Kích hoạt MD Motion Control</h2>
+            <p class="md-gate-desc">Hoàn thành 2 bước tương tác nhanh dưới đây để mở khóa toàn bộ tính năng vĩnh viễn trên thiết bị này.</p>
+          </div>
+          <button type="button" id="gate-close-btn" class="md-gate-close" title="Đóng" hidden>✕</button>
+        </div>
+
+        <!-- Hộp Mã Kích hoạt của máy -->
+        <div class="md-gate-code-box">
+          <div class="md-gate-code-info">
+            <span class="md-gate-code-label">Mã kích hoạt định danh máy của bạn:</span>
+            <strong id="gate-code-val" class="md-gate-code-val">MDMC_------</strong>
+          </div>
+          <button type="button" id="gate-copy-btn" class="mc-btn mc-btn--gold mc-btn--sm">📋 Sao chép mã</button>
+        </div>
+
+        <!-- 3 Bước Kích hoạt -->
+        <div class="md-gate-steps">
+          <div class="md-gate-step">
+            <div class="md-gate-step-main">
+              <button type="button" id="gate-fb-btn" class="mc-btn mc-btn--secondary mc-btn--full">
+                1. Mở bài viết Facebook (Bình luận mã &amp; Chia sẻ)
+              </button>
+              <span id="gate-fb-status" class="md-gate-step-status">Chưa mở</span>
+            </div>
+            <p class="md-gate-step-note">Dán mã kích hoạt của bạn vào phần bình luận bài viết Facebook ở chế độ Công khai.</p>
+          </div>
+
+          <div class="md-gate-step">
+            <div class="md-gate-step-main">
+              <button type="button" id="gate-zalo-btn" class="mc-btn mc-btn--secondary mc-btn--full">
+                2. Tham gia Nhóm Zalo (Chỉ cần bấm tham gia, không cần cmt)
+              </button>
+              <span id="gate-zalo-status" class="md-gate-step-status">Chưa tham gia</span>
+            </div>
+            <p class="md-gate-step-note">Tham gia nhóm Zalo cộng đồng để nhận thông báo cập nhật và hỗ trợ kỹ thuật.</p>
+          </div>
+
+          <div class="md-gate-step md-gate-step--verify">
+            <button type="button" id="gate-check-btn" class="mc-btn mc-btn--gold mc-btn--lg mc-btn--full">
+              3. Tôi đã làm xong — Tự động quét bình luận FB &amp; Mở khóa
+            </button>
+            <p id="gate-msg" class="md-gate-msg"></p>
+          </div>
+        </div>
+
+        <!-- Mở rộng: Kích hoạt bằng Mã VIP & Cấu hình Link -->
+        <details class="md-gate-details">
+          <summary>Tùy chọn nâng cao: Nhập mã VIP hoặc Cấu hình đường dẫn</summary>
+          <div class="md-gate-details-body">
+            <div class="mc-field">
+              <label class="mc-label" for="gate-vip-input">Kích hoạt nhanh bằng Mã VIP / Master Key</label>
+              <div class="md-gate-inline">
+                <input type="text" id="gate-vip-input" class="mc-input" placeholder="Nhập mã MDVIP_XXXXXX hoặc MDMC2..." />
+                <button type="button" id="gate-vip-btn" class="mc-btn mc-btn--gold mc-btn--sm">Kích hoạt VIP</button>
+              </div>
+            </div>
+
+            <div class="mc-field-grid" style="margin-top: 8px;">
+              <div class="mc-field">
+                <label class="mc-label" for="gate-cfg-fb">Link bài viết Facebook</label>
+                <input type="url" id="gate-cfg-fb" class="mc-input" placeholder="https://www.facebook.com/..." />
+              </div>
+              <div class="mc-field">
+                <label class="mc-label" for="gate-cfg-zalo">Link nhóm Zalo</label>
+                <input type="url" id="gate-cfg-zalo" class="mc-input" placeholder="https://zalo.me/g/..." />
+              </div>
+            </div>
+            <div style="margin-top: 8px; display: flex; justify-content: flex-end;">
+              <button type="button" id="gate-cfg-save" class="mc-btn mc-btn--secondary mc-btn--sm">Lưu cấu hình</button>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <div id="backdrop" class="cv-res-backdrop" hidden></div>
+    <div id="pop" class="cv-pop" hidden></div>
+    <script type="module" src="renderer.js"></script>
+    <script type="module" src="motion-ui.js"></script>
+  </body>
+</html>

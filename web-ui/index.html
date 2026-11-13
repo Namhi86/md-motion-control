@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="fs-web-version" content="2026-11-08.2" />
+    <title>MD MEDIA — AI Video &amp; Motion Studio</title>
+    <link rel="stylesheet" href="styles/ui.css" />
+    <link rel="stylesheet" href="styles/history.css" />
+    <link rel="stylesheet" href="styles/setup.css" />
+    <link rel="stylesheet" href="styles/setup-side.css" />
+    <link rel="stylesheet" href="styles/promo.css" />
+    <link rel="stylesheet" href="styles/queue.css" />
+    <link rel="stylesheet" href="styles/proxy.css" />
+    <link rel="stylesheet" href="styles/elements.css" />
+    <link rel="stylesheet" href="styles/detail.css" />
+    <link rel="stylesheet" href="styles/analyze.css" />
+    <link rel="stylesheet" href="styles/motion.css" />
+    <link rel="stylesheet" href="styles/admin.css" />
+    <link rel="stylesheet" href="styles/skills.css" />
+    <link rel="stylesheet" href="styles/guide.css" />
+    <link rel="stylesheet" href="styles/guide-tour.css" />
+    <link rel="stylesheet" href="styles/whats-new.css" />
+    <link rel="stylesheet" href="styles/prompt-cards.css" />
+    <link rel="stylesheet" href="styles/library.css" />
+    <link rel="stylesheet" href="styles/live-stage.css" />
+  </head>
+  <body data-auth="gate">
+    <header class="qm-header">
+      <div class="qm-logo md-brand">
+        <span class="md-brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none">
+            <path d="M4 6.5C4 5.12 5.12 4 6.5 4h11C18.88 4 20 5.12 20 6.5v11c0 1.38-1.12 2.5-2.5 2.5h-11C5.12 20 4 18.88 4 17.5v-11Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M9.5 8.5 16 12l-6.5 3.5v-7Z" fill="currentColor"/>
+          </svg>
+        </span>
+        <div class="md-brand-text">
+          <div class="md-brand-row">
+            <span class="md-brand-name">MD MEDIA</span>
+            <span id="md-ver-pill" class="md-ver-pill">v2.5.1 PRO</span>
+          </div>
+          <span class="md-brand-sub">AI VIDEO &amp; MOTION STUDIO <span id="app-version" class="qm-version" hidden></span></span>
+        </div>
+      </div>
+      <nav class="qm-nav">
+        <button type="button" id="nav-motion" class="nav-link nav-link--on" data-i18n>Motion control</button>
+        <button type="button" id="nav-create" class="nav-link" data-i18n>Tạo video</button>
+        <button type="button" id="nav-library" class="nav-link" title="Thư viện video đã tạo &amp; hàng đợi" data-i18n data-i18n-attr="title">Thư viện <span id="lib-nav-badge" class="nav-badge">0</span></button>
+        <button type="button" id="nav-image" class="nav-link" data-i18n hidden style="display:none!important">Tạo ảnh</button>
+        <button type="button" id="nav-analyze" class="nav-link" data-i18n hidden style="display:none!important">Phân tích video</button>
+        <button type="button" id="nav-studio" class="nav-link" data-i18n hidden style="display:none!important">Bàn sáng tạo</button>
+        <button type="button" id="nav-voice" class="nav-link" data-i18n hidden style="display:none!important">Giọng nói</button>
+        <button type="button" id="nav-skills" class="nav-link" data-i18n hidden style="display:none!important">Kho skill</button>
+        <button type="button" id="nav-setup" class="nav-link" data-i18n>Setup tài khoản <span id="nav-badge" class="nav-badge nav-badge--zero">0</span></button>
+      </nav>
+      <div class="md-update-box" style="display:flex;align-items:center;gap:8px;">
+        <button type="button" id="md-license-btn" class="md-update-btn" title="Xem Mã máy (HWID) &amp; Kích hoạt Key bản quyền MD Motion Control" style="border-color:rgba(16,185,129,0.45);background:rgba(16,185,129,0.12);color:#6ee7b7;">
+          <span>🔑</span>
+          <span id="md-license-btn-label">Bản quyền</span>
+        </button>
+        <button type="button" id="md-update-btn" class="md-update-btn" title="Kiểm tra &amp; cập nhật phiên bản mới nhất">
+          <span class="md-update-dot"></span>
+          <span>🔄 Cập nhật</span>
+        </button>
+      </div>
+      <button type="button" id="nav-guide" class="fs-user-link" title="Hướng dẫn" aria-label="Hướng dẫn" data-i18n-attr="title,aria-label" hidden style="display:none!important"><span class="guide-btn-full" data-i18n>Hướng dẫn</span><span class="guide-btn-short" aria-hidden="true">?</span></button>
+      <div id="auth-user" class="fs-user" hidden>
+        <button type="button" id="nav-admin" class="fs-user-link" hidden>Admin</button>
+        <span id="auth-email" class="fs-user-email"></span>
+        <button type="button" id="lang-btn" class="fs-lang" data-lang-toggle>EN</button>
+        <button type="button" id="auth-logout" class="fs-user-out" data-i18n>Đăng xuất</button>
+      </div>
+    </header>
+    <div id="start-error" class="fs-start-error" role="alert" hidden>
+      <span data-i18n>Không mở được giao diện của app. Bấm "Tải lại" để thử lại.</span>
+      <button type="button" id="start-reload" class="fs-user-out" data-i18n>Tải lại</button>
+    </div>
+    <main id="login" class="fs-login" hidden>
+      <button type="button" id="login-lang" class="fs-lang fs-lang--corner" data-lang-toggle>EN</button>
+      <div class="fs-login-card">
+        <div class="md-brand md-brand--center">
+          <span class="md-brand-icon" aria-hidden="true">MD</span>
+          <div class="md-brand-text">
+            <span class="md-brand-name">MD MEDIA</span>
+            <span class="md-brand-sub">AI VIDEO &amp; MOTION STUDIO · v2.5.1</span>
+          </div>
+        </div>
+        <p class="fs-login-sub" data-i18n>Tạo video AI Google Flow (Veo) &amp; Motion Control chuyên nghiệp</p>
+        <ul class="fs-login-chips">
+          <li data-i18n>Nhiều luồng</li>
+          <li data-i18n>Tự lưu video</li>
+          <li data-i18n>Proxy riêng từng acc</li>
+        </ul>
+        <div id="login-idle">
+          <button type="button" id="login-google" class="fs-login-btn">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.4h6.5a5.6 5.6 0 0 1-2.4 3.6v3h3.9c2.2-2.1 3.5-5.1 3.5-8.7Z" /><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-2.9l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-5H1.3v3.1A12 12 0 0 0 12 24Z" /><path fill="#FBBC05" d="M5.3 14.3a7.2 7.2 0 0 1 0-4.6V6.6h-4a12 12 0 0 0 0 10.8l4-3.1Z" /><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.6l4 3.1c.9-2.9 3.6-4.9 6.7-4.9Z" /></svg>
+            <span id="login-google-label" data-i18n>Đăng nhập bằng Google</span>
+          </button>
+          <p id="login-error" class="fs-login-error" role="alert"></p>
+          <p class="fs-login-note" data-i18n>Dùng tài khoản Google để bắt đầu.</p>
+        </div>
+        <div id="login-pending" class="fs-login-pending" hidden>
+          <span class="fs-login-spin" aria-hidden="true"></span>
+          <p class="fs-login-wait" data-i18n>Đang chờ bạn đăng nhập trong trình duyệt…</p>
+          <p class="fs-login-hint" data-i18n>Trình duyệt đã mở trang đăng nhập Google. Đăng nhập xong thì quay lại đây.</p>
+          <p class="fs-login-hint" data-i18n>Nếu trình duyệt báo lỗi hoặc chưa được mở quyền, bấm Huỷ rồi thử lại sau.</p>
+          <button type="button" id="login-cancel" class="fs-login-cancel" data-i18n>Huỷ</button>
+        </div>
+      </div>
+    </main>
+    <main id="gate" class="fs-login fs-unlock-screen" data-mode="loading">
+      <div class="md-gate-dragbar" aria-hidden="true"></div>
+      <button type="button" id="gate-lang" class="fs-lang fs-lang--corner" data-lang-toggle style="top:54px;">EN</button>
+      <div class="fs-login-card fs-unlock-card md-gate-license-card">
+        <div class="md-up-head" style="padding:20px 24px 16px;text-align:left;">
+          <div class="md-up-brand">
+            <span class="md-brand-icon" style="width:42px;height:42px;font-size:20px;border-radius:12px;">🔑</span>
+            <div>
+              <h1 class="md-up-title" style="font-size:18px;margin:0;" data-i18n>Bản Quyền &amp; Mã Máy — MD Motion Control</h1>
+              <p class="md-up-sub" style="margin:3px 0 0;font-size:12.5px;">Hệ thống quản lý bản quyền tập trung MD License Center (Ed25519 V2)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- KHỐI KÍCH HOẠT BẰNG KEY BẢN QUYỀN (MD LICENSE CENTER / WEB) -->
+        <div id="gate-vip-box" class="md-up-body" style="padding:20px 24px 22px;display:flex;flex-direction:column;gap:14px;text-align:left;">
+          <div style="padding:14px 16px;border-radius:13px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.38);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+            <div>
+              <div style="font-size:11px;color:#94a3b8;text-transform:uppercase;font-weight:700;letter-spacing:0.04em;margin-bottom:3px;">Mã máy (HWID) của thiết bị này:</div>
+              <code id="gate-hwid" style="font-size:17px;font-weight:800;color:#34d399;font-family:monospace;letter-spacing:0.03em;">MDMC-XXXX-XXXX-XXXX</code>
+            </div>
+            <button type="button" id="gate-copy-hwid" class="md-up-btn" style="height:36px;padding:0 14px;font-size:12.5px;border-color:rgba(16,185,129,0.45);background:rgba(16,185,129,0.18);color:#ecfdf5;font-weight:700;">📋 Sao chép Mã máy</button>
+          </div>
+
+          <div style="padding:12px 16px;border-radius:13px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);font-size:13px;line-height:1.75;color:#e2e8f0;">
+            <div><strong>Trạng thái:</strong> <span id="gate-status-val" style="color:#fbbf24;font-weight:700;">🔒 Chưa kích hoạt bản quyền</span></div>
+            <div><strong>Thời hạn sử dụng:</strong> <span id="gate-exp-val" style="color:#94a3b8;">Vui lòng nhập Key để mở khóa công cụ</span></div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <label for="gate-vip-input" style="font-size:13px;font-weight:700;color:#f1f5f9;">Nhập Mã Kích Hoạt Bản Quyền (MDMC2....):</label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input type="text" id="gate-vip-input" placeholder="Dán mã MDMC2.... vào đây" style="flex:1;height:42px;padding:0 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.16);background:rgba(9,13,22,0.92);color:#f8fafc;font-family:monospace;font-size:13px;outline:none;" />
+              <button type="button" id="gate-vip-btn" class="md-up-btn md-up-btn--primary" style="height:42px;padding:0 18px;font-size:13.5px;font-weight:800;white-space:nowrap;cursor:pointer;">🔑 Kích hoạt Key</button>
+            </div>
+            <p id="gate-vip-msg" style="margin:2px 0 0;font-size:12.5px;font-weight:600;color:#cbd5e1;" hidden></p>
+            <div style="font-size:12px;color:#94a3b8;line-height:1.5;margin-top:2px;">
+              💡 Gửi Mã máy <strong id="gate-hwid-inline" style="color:#e2e8f0;">MDMC-XXXX-XXXX-XXXX</strong> cho Admin hoặc nhập trên <strong style="color:#fbbf24;">mdtool.io.vn</strong> để nhận Key tự động.
+            </div>
+          </div>
+
+          <details class="md-gate-viral-details" style="margin-top:4px;border-top:1px solid rgba(255,255,255,0.08);padding-top:12px;">
+            <summary style="cursor:pointer;font-size:12.5px;font-weight:700;color:#94a3b8;user-select:none;list-style:none;display:flex;align-items:center;justify-content:space-between;">
+              <span>🎁 Hoặc mở khóa trải nghiệm Cộng đồng miễn phí (Làm nhiệm vụ Like &amp; Share)</span>
+              <span style="font-size:11px;opacity:0.8;">▾</span>
+            </summary>
+            <div style="margin-top:12px;">
+              <p id="gate-notice" class="fs-unlock-notice" role="status" data-tone="wait" data-i18n style="margin-bottom:12px;font-size:13px;">Đang tải…</p>
+              <ol class="fs-unlock-steps" style="gap:10px;margin-bottom:14px;">
+                <li class="fs-unlock-step">
+                  <span class="fs-unlock-num" aria-hidden="true">1</span>
+                  <div class="fs-unlock-body">
+                    <p class="fs-unlock-text" data-i18n style="font-size:13.5px;">Mở bài viết và bấm Like</p>
+                    <div class="fs-unlock-row">
+                      <button type="button" id="gate-open" class="fs-unlock-mini" data-i18n>Mở bài viết ↗</button>
+                    </div>
+                  </div>
+                </li>
+                <li class="fs-unlock-step">
+                  <span class="fs-unlock-num" aria-hidden="true">2</span>
+                  <div class="fs-unlock-body">
+                    <p class="fs-unlock-text" data-i18n style="font-size:13.5px;">Sao chép mã của bạn</p>
+                    <div class="fs-unlock-row">
+                      <code id="gate-code" class="fs-unlock-code" style="font-size:16px;"></code>
+                      <button type="button" id="gate-copy" class="fs-unlock-mini" data-i18n>Sao chép</button>
+                    </div>
+                  </div>
+                </li>
+                <li class="fs-unlock-step">
+                  <span class="fs-unlock-num" aria-hidden="true">3</span>
+                  <div class="fs-unlock-body">
+                    <p class="fs-unlock-text" data-i18n style="font-size:13.5px;">Comment mã vào bài viết (bài đã mở ở bước 1)</p>
+                  </div>
+                </li>
+                <li class="fs-unlock-step">
+                  <span class="fs-unlock-num" aria-hidden="true">4</span>
+                  <div class="fs-unlock-body">
+                    <p class="fs-unlock-text" data-i18n style="font-size:13.5px;">Share bài viết <strong data-i18n>CÔNG KHAI</strong> lên trang cá nhân (không share vào nhóm hoặc story)</p>
+                  </div>
+                </li>
+                <li class="fs-unlock-step">
+                  <span class="fs-unlock-num" aria-hidden="true">5</span>
+                  <div class="fs-unlock-body">
+                    <p class="fs-unlock-text" data-i18n style="font-size:13.5px;">Tham gia nhóm Zalo cộng đồng (chỉ cần bấm tham gia, không cần cmt)</p>
+                    <div class="fs-unlock-row">
+                      <button type="button" id="gate-zalo" class="fs-unlock-mini" data-i18n>Tham gia nhóm Zalo ↗</button>
+                    </div>
+                  </div>
+                </li>
+              </ol>
+              <button type="button" id="gate-done" class="fs-login-btn" data-i18n disabled>Tôi đã làm xong ✓</button>
+              <p id="gate-ack" class="fs-unlock-ack" role="status"></p>
+              <p id="gate-tip" class="fs-unlock-tip" hidden></p>
+              <button type="button" id="gate-retry" class="fs-unlock-link" data-i18n hidden>Thử lại</button>
+              <p class="fs-unlock-foot" style="display:none;"><span id="gate-email"></span><button type="button" id="gate-logout" class="fs-unlock-link" data-i18n>Đăng xuất</button></p>
+            </div>
+          </details>
+          <textarea id="gate-clip" class="fs-unlock-clip" tabindex="-1" aria-hidden="true" readonly></textarea>
+        </div>
+      </div>
+    </main>
+    <div class="cv-page" id="view-create">
+      <div class="cv-col">
+      <aside class="cv-left">
+        <div class="cv-subtabs"><button type="button" id="subtab" class="cv-subtab cv-subtab--on" data-i18n>Tạo Video</button></div>
+        <form class="cv-form">
+          <div class="cv-scroll">
+            <div class="cv-mcard">
+              <div class="cv-mcard-cap">
+                <p class="cv-mcard-title" id="card-title">Google Flow (Veo)</p>
+                <p class="cv-mcard-sub" id="card-sub" data-i18n>Tạo video AI có tiếng bằng Veo trên Google Flow</p>
+              </div>
+            </div>
+
+            <div id="refs"></div>
+            <div id="muse-ref" hidden style="display:none!important"></div>
+            <div id="nano-ref" hidden style="display:none!important"></div>
+            <div id="skill-row" class="cv-skill-row" hidden style="display:none!important"></div>
+
+            <div class="cv-prompt">
+              <button type="button" id="guide-help" class="guide-help" title="Hướng dẫn tạo video" aria-label="Hướng dẫn tạo video" aria-haspopup="dialog" data-i18n-attr="title,aria-label" hidden>?</button>
+              <p class="cv-prompt-label" data-i18n>Mô tả video</p>
+              <textarea id="prompt" class="cv-prompt-ta" placeholder="Mô tả cảnh quay…" data-i18n-attr="placeholder">A red apple sitting on a wooden table, slow camera push-in, natural daylight.</textarea>
+              <div id="prompt-editor" class="cv-prompt-ed" contenteditable="plaintext-only" role="textbox" aria-multiline="true" aria-autocomplete="list" aria-controls="prompt-sugg" aria-expanded="false" aria-label="Mô tả video" spellcheck="false" data-placeholder="Mô tả cảnh quay… Gõ @ để nhắc một phần tử" data-i18n-attr="aria-label,data-placeholder" hidden></div>
+              <div id="prompt-sugg" class="cv-sugg" role="listbox" hidden></div>
+              <p id="prompt-limit" class="cv-prompt-limit" role="alert" hidden></p>
+              <div class="cv-prompt-tools"><label class="cv-import" for="import-file" data-i18n>Nhập tệp .txt / .csv</label><input id="import-file" type="file" accept=".txt,.csv" hidden /><span id="prompt-count" class="cv-prompt-count"></span></div>
+              <div id="prompt-cards" class="cv-pc" hidden></div>
+              <p id="prompt-hint" class="cv-prompt-hint" hidden></p>
+              <div id="muse-guide" class="cv-muse-guide" hidden></div>
+            </div>
+
+            <button type="button" id="model-btn" class="cv-frow">
+              <span class="cv-frow-text">
+                <span class="cv-frow-label">Model</span>
+                <span class="cv-frow-value" id="model-val">—</span>
+              </span>
+              <svg class="cv-frow-chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6" /></svg>
+            </button>
+
+            <div class="cv-controls-row">
+              <button type="button" id="dur-btn" class="cv-pill" aria-label="Thời lượng" data-i18n-attr="aria-label">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 7.75V12L14.75 14.75M21.25 12C21.25 17.1086 17.1086 21.25 12 21.25C6.89137 21.25 2.75 17.1086 2.75 12C2.75 6.89137 6.89137 2.75 12 2.75C17.1086 2.75 21.25 6.89137 21.25 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                <span id="dur-val">10s</span>
+              </button>
+              <button type="button" id="ratio-btn" class="cv-pill" aria-label="Tỷ lệ khung hình" data-i18n-attr="aria-label">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M4.75 3.75C4.75 3.19772 5.19772 2.75 5.75 2.75H18.25C18.8023 2.75 19.25 3.19772 19.25 3.75V20.25C19.25 20.8023 18.8023 21.25 18.25 21.25H5.75C5.19771 21.25 4.75 20.8023 4.75 20.25V3.75Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" /></svg>
+                <span id="ratio-val">9:16</span>
+              </button>
+              <button type="button" id="mode-btn" class="cv-pill" aria-label="Chế độ Dola" data-i18n-attr="aria-label" hidden>
+                <svg viewBox="0 0 24 24" fill="none"><path d="M13 2.75 4.75 13.25H12L11 21.25l8.25-10.5H12L13 2.75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                <span id="mode-val" data-i18n>Nhanh + tiếng</span>
+              </button>
+            </div>
+
+            <div id="mount-queue-settings" class="qs"></div>
+            <div id="mount-save-dir"></div>
+          </div>
+
+          <div class="cv-genwrap">
+            <button type="button" id="generate" class="cv-gen">
+              <span id="gen-label" data-i18n>Tạo video</span>
+              <svg id="gen-icon" width="20" height="20" viewBox="0 0 20 20"><path d="M11.8525 4.21651L11.7221 3.2387C11.6906 3.00226 11.4889 2.82568 11.2504 2.82568C11.0118 2.82568 10.8102 3.00226 10.7786 3.23869L10.6483 4.21651C10.2658 7.0847 8.00939 9.34115 5.14119 9.72358L4.16338 9.85396C3.92694 9.88549 3.75037 10.0872 3.75037 10.3257C3.75037 10.5642 3.92694 10.7659 4.16338 10.7974L5.14119 10.9278C8.00938 11.3102 10.2658 13.5667 10.6483 16.4349L10.7786 17.4127C10.8102 17.6491 11.0118 17.8257 11.2504 17.8257C11.4889 17.8257 11.6906 17.6491 11.7221 17.4127L11.8525 16.4349C12.2349 13.5667 14.4913 11.3102 17.3595 10.9278L18.3374 10.7974C18.5738 10.7659 18.7504 10.5642 18.7504 10.3257C18.7504 10.0872 18.5738 9.88549 18.3374 9.85396L17.3595 9.72358C14.4913 9.34115 12.2349 7.0847 11.8525 4.21651Z" fill="currentColor" /></svg>
+            </button>
+            <p id="warn" class="cv-warn"></p>
+          </div>
+        </form>
+      </aside>
+      </div>
+
+      <section id="cv-stage" class="cv-stage"></section>
+
+      <section class="cv-main">
+        <div class="cv-maintabs">
+          <button type="button" id="tab-hist" class="cv-mtab cv-mtab--on" data-i18n>🎬 Thư viện Video <span id="hist-badge" class="cv-mtab-badge">0</span></button>
+          <div id="mount-history-filters" class="cv-tabs-stats"></div>
+          <div class="cv-tabs-actions">
+            <button type="button" id="lib-open-folder" class="lib-head-btn" title="Mở thư mục lưu video trên máy tính">📂 Mở thư mục lưu</button>
+            <button type="button" id="lib-go-create" class="lib-head-btn lib-head-btn--create">+ Tạo video mới</button>
+            <div id="mount-history-view"></div>
+            <div id="mount-queue-actions" class="qt-actions"></div>
+          </div>
+        </div>
+        <div id="mount-queue"></div>
+        <div id="mount-history-bar" class="cvr-bar" hidden></div>
+        <div class="cv-main-body">
+          <div id="history"><p class="cv-empty" id="hist-empty" data-i18n>Chưa có video nào trong Thư viện.<br />Bấm "+ Tạo video mới" để bắt đầu tạo video AI.</p></div>
+        </div>
+      </section>
+    </div>
+
+    <section id="view-analyze" hidden></section>
+    <section id="view-studio" hidden></section>
+    <section id="view-voice" hidden></section>
+    <section id="view-motion" hidden></section>
+    <section id="view-admin" hidden></section>
+    <section id="view-skills" hidden></section>
+
+    <section class="su-page" id="view-setup" hidden>
+      <div class="su-wrap">
+        <h1 class="su-title" data-i18n>Setup tài khoản</h1>
+        <div class="su-body">
+          <div class="su-side" id="su-side" role="navigation" aria-label="Setup tài khoản" data-i18n-attr="aria-label"></div>
+          <div class="su-main">
+            <div id="su-accounts" class="su-wrap-in">
+              <div class="su-head">
+                <div class="su-head-text">
+                  <h2 class="su-page-title" id="su-table-title"></h2>
+                  <p class="su-plat-desc" id="su-plat-desc"></p>
+                </div>
+                <button type="button" id="su-reset-all" class="stp-btn stp-btn--sm" title="Đưa mọi acc của danh sách này (trừ acc đang chạy việc) về Sẵn sàng ngay" data-i18n data-i18n-attr="title" hidden>Đặt lại tất cả</button>
+              </div>
+              <div class="su-tools">
+                <div class="su-chips" id="su-chips" role="group" aria-label="Lọc theo trạng thái" data-i18n-attr="aria-label"></div>
+                <input type="search" id="su-search" class="su-search" placeholder="Tìm acc, proxy, ghi chú" aria-label="Tìm acc, proxy, ghi chú" data-i18n-attr="placeholder,aria-label" autocomplete="off" spellcheck="false" />
+              </div>
+              <section class="su-add" id="su-add-box">
+                <h3 class="su-add-title" id="su-add-toggle" data-i18n>Thêm tài khoản</h3>
+                <div class="su-add-body" id="su-add-body">
+                  <div class="su-add-pick" id="su-add-pick"><span class="su-add-lead" data-i18n>Cách thêm:</span><div class="stp-kinds" id="su-add-kinds"></div></div>
+                  <div id="su-add-form">
+                    <textarea id="su-cookies" class="stp-input" spellcheck="false"></textarea>
+                    <div class="stp-actions">
+                      <button type="button" id="su-add" class="stp-btn stp-btn--accent" data-i18n>Thêm vào danh sách</button>
+                      <p id="su-msg" class="stp-msg"></p>
+                    </div>
+                    <p class="stp-hint" id="su-hint"></p>
+                  </div>
+                  <p class="stp-hint su-add-note" id="su-add-note" hidden></p>
+                </div>
+              </section>
+              <div class="stp-card">
+                <div class="stp-card-body stp-card-body--flush" id="su-table"></div>
+              </div>
+            </div>
+            <div id="su-settings" class="su-wrap-in" hidden>
+              <div class="su-head">
+                <div class="su-head-text">
+                  <h2 class="su-page-title" data-i18n>Cửa sổ &amp; trình duyệt</h2>
+                  <p class="su-plat-desc" data-i18n>Áp cho cả app: cửa sổ đăng nhập, kiểu trình duyệt của mỗi acc và số lệnh cùng lúc của acc Muse.</p>
+                </div>
+              </div>
+              <p class="stp-msg stp-msg--row" id="su-set-msg" hidden></p>
+              <div class="su-set-list">
+                <label class="qs-toggle su-show" id="su-show" data-i18n-attr="title" title="Bật: cửa sổ đăng nhập (Facebook, Google, Dola) hiện ra để bạn xem và tự tích captcha. Tắt: chạy ẩn, gặp captcha thì acc báo lỗi captcha. Áp cho các lần đăng nhập sau, ở Seedance và Veo. Cửa sổ đăng nhập Muse tự hiện khi cần bạn gõ mã.">
+                  <span class="qs-toggle-text"><span class="qs-toggle-name" data-i18n>Hiện cửa sổ đăng nhập</span><span class="qs-toggle-desc" data-i18n>Bật để xem quá trình đăng nhập và tự tích captcha; tắt để chạy ẩn. Áp cho Seedance và Veo; cửa sổ Muse tự hiện khi cần gõ mã</span></span>
+                  <input type="checkbox" class="qs-check" id="su-show-box"><span class="qs-sw"><i></i></span>
+                </label>
+                <label class="qs-toggle su-show" id="su-browser" hidden data-i18n-attr="title" title="Bật: mỗi acc dùng một Google Chrome thật của máy (hồ sơ riêng, proxy riêng). Tắt: cửa sổ trong app với vân tay giả riêng cho từng acc. Một công tắc cho cả app; đổi được khi không có acc nào đang chạy hay đăng nhập; áp cho các cửa sổ mở từ giờ.">
+                  <span class="qs-toggle-text"><span class="qs-toggle-name" id="su-browser-name"></span><span class="qs-toggle-desc" id="su-browser-desc"></span></span>
+                  <input type="checkbox" class="qs-check" id="su-browser-box"><span class="qs-sw"><i></i></span>
+                </label>
+                <p class="stp-msg su-set-sub" id="su-browser-hint" hidden></p>
+                <div class="su-muse-par" id="su-muse-par" hidden>
+                  <label class="su-muse-par-row" for="su-muse-par-box">
+                    <span class="qs-toggle-text"><span class="qs-toggle-name" id="su-muse-par-name"></span><span class="qs-toggle-desc" id="su-muse-par-help"></span></span>
+                    <input type="number" class="su-muse-par-box" id="su-muse-par-box" min="1" max="20" step="1" inputmode="numeric">
+                  </label>
+                  <p class="stp-msg" id="su-muse-par-msg" hidden></p>
+                </div>
+              </div>
+            </div>
+            <div id="mount-proxies" class="su-wrap-in" hidden></div>
+          </div>
+        </div>
+        <p id="su-diag" class="su-diag" hidden></p>
+      </div>
+    </section>
+
+    <div id="backdrop" class="cv-res-backdrop" hidden></div>
+    <div id="pop" class="cv-pop" hidden></div>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

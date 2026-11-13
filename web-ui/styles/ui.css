@@ -1,0 +1,211 @@
+/* Layout and composer copied from MD Motion Control (website-mdmotion create-video, cv-composer.css + CreateVideoPage.vue).
+   Tokens: bg #0f1113 · panel #131517 · surface #1c1e20 · accent #d1fe17 (lime, as share.mdmotion.local) · text #f7f7f8 · muted #898a8b. */
+* { box-sizing: border-box; }
+body { margin: 0; height: 100vh; background: #0f1113; color: #f7f7f8; overflow: hidden;
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+button { font-family: inherit; }
+.cv-page { display: flex; align-items: flex-start; height: 100%; padding: 16px; gap: 0; }
+
+/* ── Composer trái ── */
+.cv-left { flex: 0 0 384px; width: 384px; display: flex; flex-direction: column; max-height: 100%; overflow: hidden;
+  background: #131517; border: 1px solid rgba(217, 217, 217, 0.04); border-radius: 16px; }
+.cv-subtabs { display: flex; gap: 12px; padding: 12px 16px 0; flex: 0 0 auto; }
+.cv-subtab { background: none; border: none; border-bottom: 2px solid transparent; padding: 0 0 8px; font-size: 14px;
+  font-weight: 500; color: rgba(255, 255, 255, 0.6); cursor: pointer; }
+.cv-subtab--on { color: #fff; border-bottom-color: #fff; }
+.cv-form { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+.cv-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 8px; }
+.cv-scroll > * { flex-shrink: 0; }
+/* Every scrollbar of the app (Setup page, textareas, popovers…). Only ::-webkit-* on purpose: a standard `scrollbar-color` / `scrollbar-width`
+   on * would switch these off in Chromium 121+. Places that hide their bar (.vd-scroll, .el-grid) say `display: none` on their own ::-webkit-scrollbar, which is more specific. */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track, ::-webkit-scrollbar-corner, ::-webkit-resizer { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .14); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(209, 254, 23, .55); }
+
+/* media card */
+.cv-mcard { position: relative; margin: 0 0 8px; border-radius: 12px; overflow: hidden; aspect-ratio: 384 / 92;
+  background: radial-gradient(ellipse 70% 120% at 85% 10%, rgba(209, 254, 23, .28), transparent 60%),
+    linear-gradient(135deg, #2a2230, #15171a 70%); }
+.cv-mcard-cap { position: absolute; left: 0; bottom: 0; width: 100%; padding: 10px 12px 8px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent); }
+.cv-mcard-title { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em; text-transform: uppercase; color: #d1fe17; line-height: 1.1; }
+.cv-mcard-sub { margin: 1px 0 0; font-size: 12.5px; color: rgba(255, 255, 255, 0.75); }
+
+/* reference tray */
+.cv-ref-tray { min-height: 96px; border-radius: 16px; background: #1c1e20; border: 1px dashed rgba(255, 255, 255, 0.16);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; padding: 12px; }
+.cv-ref-tray--empty { flex-direction: column; gap: 0; width: 100%; cursor: pointer; color: inherit; }
+.cv-reference-orb { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; margin-bottom: 6px;
+  background: rgba(255, 255, 255, .04); box-shadow: 0 5px 11px rgba(0, 0, 0, .1), inset 0 -.3px 5.4px rgba(185, 185, 185, .35); color: #898a8b; }
+.cv-ref-label { color: #898a8b; font-size: 14px; line-height: 20px; font-weight: 500; }
+.cv-ref-hint { color: rgba(255, 255, 255, .6); font-size: 12px; line-height: 18px; font-weight: 500; }
+.cv-ref-tile { position: relative; width: 48px; height: 48px; }
+.cv-ref-add, .cv-ref-thumb { width: 48px; height: 48px; border-radius: 12px; overflow: hidden; display: flex; align-items: center;
+  justify-content: center; background: #26282b; border: none; cursor: pointer; color: rgba(255, 255, 255, .7); }
+.cv-ref-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.cv-ref-x { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 50%; border: 0; cursor: pointer;
+  background: rgba(0, 0, 0, .75); color: #fff; font-size: 10px; line-height: 18px; padding: 0; }
+
+/* prompt */
+.cv-prompt { background: #1c1e20; border: 1px solid rgba(217, 217, 217, 0.04); border-radius: 12px; padding: 12px; }
+.cv-prompt-label { margin: 0 0 6px; font-size: 13px; color: #898a8b; }
+.cv-prompt-ta { width: 100%; min-height: 72px; resize: none; background: none; border: none; outline: none; color: #f7f7f8;
+  font-size: 13px; font-family: inherit; line-height: 1.45; }
+.cv-prompt-ta::placeholder { color: #6b6c6d; }
+
+/* row pickers (model, facebook) */
+.cv-frow { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 6px 12px; min-height: 48px;
+  background: #1c1e20; border: none; border-radius: 6px; cursor: pointer; text-align: left; color: #f7f7f8; }
+.cv-frow:hover { background: #23262a; }
+.cv-frow-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.cv-frow-label { font-size: 11px; color: #898a8b; }
+.cv-frow-value { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: #f7f7f8; }
+.cv-frow-value b { color: #d1fe17; font-weight: 600; }
+.cv-frow-note { font-size: 11px; color: #e5837d; }
+.cv-frow-chev { color: #898a8b; flex: 0 0 auto; }
+.cv-controls-row { display: flex; align-items: center; gap: 8px; }
+.cv-controls-row > * { flex: 1 1 0; min-width: 0; }
+.cv-pill { display: flex; align-items: center; gap: 6px; width: 100%; height: 40px; padding: 0 8px; border: 0; border-radius: 6px;
+  background: #1c1e20; color: #f7f7f8; font-size: 14px; cursor: pointer; }
+.cv-pill:hover { background: #292c2f; }
+.cv-pill svg { width: 16px; height: 16px; flex-shrink: 0; }
+.cv-pill svg path { stroke-width: 2px; }
+
+/* generate button */
+.cv-genwrap { padding: 12px 16px 14px; flex: 0 0 auto; }
+.cv-gen { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 48px; font-size: 16px;
+  font-weight: 600; color: #14151a; background: #d1fe17; box-shadow: inset 0 -3px rgba(0, 0, 0, .43); padding-bottom: 2px;
+  border: none; border-radius: 12px; cursor: pointer; transition: filter .15s, transform .05s, opacity .15s; }
+.cv-gen:hover:not(:disabled) { filter: brightness(1.05); }
+.cv-gen:active:not(:disabled) { transform: translateY(1px); }
+.cv-gen:disabled { opacity: .45; cursor: not-allowed; }
+.cv-gen-spin { width: 20px; height: 20px; border: 2.5px solid rgba(20, 21, 26, .3); border-top-color: #14151a; border-radius: 50%; animation: cv-rot .7s linear infinite; }
+@keyframes cv-rot { to { transform: rotate(360deg); } }
+.cv-warn { margin: 8px 0 0; min-height: 16px; font-size: 12px; color: #e5837d; text-align: center; }
+.cv-warn--ok { color: #53c546; }
+
+/* ── Khu chính phải ── */
+.cv-main { flex: 1 1 auto; min-width: 0; align-self: stretch; display: flex; flex-direction: column; margin-left: 8px;
+  border: 1px solid #ffffff1a; border-radius: 20px; overflow: hidden; padding: 0 16px 16px; }
+.cv-maintabs { display: flex; align-items: center; gap: 4px; padding: 8px 0 12px; min-height: 56px; flex: 0 0 auto; }
+.cv-mtab { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 4px 8px; font-size: 12px; font-weight: 600;
+  color: #898a8b; background: none; border: 1px solid transparent; border-radius: 8px; cursor: pointer; white-space: nowrap; }
+.cv-mtab--on { color: #fff; background: #ffffff0d; border-color: #ffffff1a; box-shadow: inset 0 1px 2px #ffffff12; }
+.cv-mtab-badge { display: inline-grid; place-items: center; min-width: 16px; height: 16px; padding: 0 4px; font-size: 10px;
+  font-weight: 700; color: #14151a; background: #d1fe17; border-radius: 999px; }
+.cv-main-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+.cv-empty { margin: 80px auto 0; text-align: center; color: #898a8b; font-size: 14px; line-height: 1.6; }
+[hidden] { display: none !important; }
+
+/* Not tall: the decorative banner goes and the empty reference tray, the prompt box and the gaps shrink: the composer needs every pixel
+   for its settings. */
+@media (max-height: 1100px) {
+  .cv-mcard, .cv-subtabs { display: none; }
+  .cv-scroll { gap: 6px; }
+  .cv-ref-tray { min-height: 52px; padding: 8px 12px; }
+  .cv-reference-orb { display: none; }
+  .cv-prompt-ta { min-height: 56px; }
+}
+
+/* The line under the button takes no room while it has nothing to say. */
+.cv-warn:empty { display: none; }
+
+/* ── "Hãy mở bằng app" (app.js, a browser without the app) ── */
+.fs-gate { height: 100vh; display: grid; place-content: center; gap: 12px; padding: 32px; max-width: 520px; margin: 0 auto; text-align: center; }
+.fs-gate h1 { margin: 0; font-size: 22px; color: #d1fe17; }
+.fs-gate p { margin: 0; font-size: 14px; line-height: 1.5; color: #898a8b; }
+
+/* ── Đăng nhập (auth.js): body[data-auth] = login | pending | gate | main; the app's parts show only on "main" ── */
+body:not([data-auth="main"]) :is(.qm-header, .qm-nav, #view-create, #view-motion, #view-setup, #view-analyze, #view-admin, #view-studio, #view-voice, #view-skills, #md-live-bar, #md-license-modal) { display: none !important; }
+.fs-user { margin-left: auto; display: flex; align-items: center; gap: 12px; font-size: 13px; color: #a8a8a8; min-width: 0; }
+.fs-user-email { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 280px; }
+.fs-user-out { height: 32px; padding: 0 12px; border: 1px solid rgba(255, 255, 255, .12); border-radius: 8px; background: none;
+  color: #f7f7f8; font-size: 13px; cursor: pointer; }
+.fs-user-out:hover { background: rgba(255, 255, 255, .06); }
+/* The VI / EN button (lang-switch.js): the lime outline of .fs-user-link, small. In the header next to the e-mail; on the login and unlock screens
+   (the header is hidden there) it sits in the top right corner of the window. */
+.fs-lang { flex: 0 0 auto; height: 32px; padding: 0 6px; border: 1px solid rgba(209, 254, 23, .35); border-radius: 8px; background: none;
+  color: #d1fe17; font: inherit; font-size: 12px; font-weight: 600; letter-spacing: .04em; cursor: pointer; }
+.fs-lang:hover { background: rgba(209, 254, 23, .1); }
+.fs-lang:focus-visible { outline: 2px solid rgba(209, 254, 23, .6); outline-offset: 2px; }
+.fs-lang--corner { position: fixed; top: 14px; right: 16px; z-index: 2; }
+/* The login screen is laid out like share.mdmotion.local/login: no card, a faint lime grid and glow, the logo, one lime button. */
+body:not([data-auth="main"]) .qm-header { display: none; }
+.fs-login { position: relative; flex: 1 1 auto; display: grid; place-items: center; padding: 32px; overflow: auto; }
+.fs-login::before { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: linear-gradient(rgba(209, 254, 23, .045) 1px, transparent 1px), linear-gradient(90deg, rgba(209, 254, 23, .045) 1px, transparent 1px);
+  background-size: 52px 52px; -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, #000 35%, transparent 100%);
+  mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, #000 35%, transparent 100%); }
+.fs-login::after { content: ""; position: absolute; top: -160px; left: 50%; width: 1100px; height: 620px; transform: translateX(-50%); pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(120, 200, 40, .16) 0%, rgba(209, 254, 23, .05) 38%, transparent 72%); filter: blur(40px); }
+.fs-login-card { position: relative; z-index: 1; width: 100%; max-width: 420px; padding: 24px 0; text-align: center; animation: fs-rise .5s ease-out both; }
+@keyframes fs-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .fs-login-card { animation: none; } }
+.fs-login-logo { display: block; height: 72px; width: auto; max-width: 100%; margin: 0 auto 18px; }
+.fs-login-sub { margin: 0 0 16px; font-size: 15px; line-height: 1.5; color: #898a8b; }
+.fs-login-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 0 0 28px; padding: 0; list-style: none; }
+.fs-login-chips li { padding: 4px 10px; font-size: 12px; font-weight: 500; color: #898a8b; background: rgba(255, 255, 255, .05); border-radius: 999px; }
+.fs-login-chips li:first-child { color: #d1fe17; background: rgba(209, 254, 23, .12); }
+.fs-login-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 48px; padding: 14px; border: 0;
+  border-radius: 12px; background: #d1fe17; color: #14151a; font-size: 15px; font-weight: 600; cursor: pointer; transition: box-shadow .2s, transform .2s; }
+.fs-login-btn:hover:not(:disabled) { box-shadow: 0 0 24px rgba(209, 254, 23, .35); transform: translateY(-1px); }
+.fs-login-btn:focus-visible, .fs-login-qm-link:focus-visible { outline: 2px solid #d1fe17; outline-offset: 2px; }
+.fs-login-btn:disabled { opacity: .4; cursor: not-allowed; }
+.fs-login-error { margin: 12px 0 0; font-size: 13px; line-height: 1.5; color: #e5837d; }
+.fs-login-error:empty { display: none; }
+.fs-login-note { margin: 20px 0 0; font-size: 13px; line-height: 1.5; color: rgba(255, 255, 255, .3); }
+.fs-login-spin { display: inline-block; width: 28px; height: 28px; border: 3px solid rgba(209, 254, 23, .25);
+  border-top-color: #d1fe17; border-radius: 50%; animation: cv-rot .8s linear infinite; }
+.fs-login-wait { margin: 14px 0 6px; font-size: 15px; font-weight: 600; }
+.fs-login-hint { margin: 0 0 18px; font-size: 13px; line-height: 1.5; color: #898a8b; }
+.fs-login-cancel { height: 40px; padding: 0 22px; border: 1px solid rgba(255, 255, 255, .14); border-radius: 10px; background: none;
+  color: #f7f7f8; font-size: 14px; cursor: pointer; }
+.fs-login-cancel:hover { background: rgba(255, 255, 255, .06); }
+.fs-login-qm { margin-top: 36px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, .08); }
+.fs-login-qm-line { margin: 0; font-size: 13px; color: #898a8b; }
+.fs-login-qm-link { padding: 0; border: 0; background: none; color: #d1fe17; font: inherit; font-weight: 700; cursor: pointer; }
+.fs-login-qm-link:hover { text-decoration: underline; }
+.fs-login-qm-desc { margin: 6px 0 0; font-size: 12px; line-height: 1.5; color: rgba(255, 255, 255, .3); }
+.fs-start-error { flex: 0 0 auto; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 10px 20px;
+  font-size: 13px; color: #f7f7f8; background: rgba(229, 131, 125, .16); border-bottom: 1px solid rgba(229, 131, 125, .35); }
+
+/* ── Màn "Mở khoá MD Motion Control" (gate.js): the login card's look, four numbered steps (like, code, comment, share), one lime button; every text is 14px or more ── */
+/* the glow behind the card (.fs-login::after) is wider than a 900px window: clip it sideways, scroll only downwards */
+/* four steps + the answer line + the 20-minute tip: the login screen's 32px top and bottom padding is cut to 16px so the card still fits 900x700 without scrolling */
+.fs-unlock-screen { overflow-x: hidden; padding-block: 16px; }
+.fs-unlock-screen .fs-login-logo { height: 56px; margin-bottom: 12px; }
+.fs-unlock-card { max-width: 460px; padding: 8px 0; }
+.fs-unlock-title { margin: 0 0 6px; font-size: 22px; font-weight: 700; color: #f7f7f8; }
+.fs-unlock-notice { margin: 0 0 18px; font-size: 14px; line-height: 1.5; color: #898a8b; }
+.fs-unlock-notice:empty { display: none; }
+.fs-unlock-notice[data-tone="ok"] { color: #53c546; }
+.fs-unlock-notice[data-tone="bad"] { color: #e5837d; }
+.fs-unlock-steps { display: flex; flex-direction: column; gap: 14px; margin: 0 0 20px; padding: 0; list-style: none; text-align: left; }
+.fs-unlock-step { display: flex; gap: 12px; align-items: flex-start; }
+.fs-unlock-num { flex: 0 0 auto; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; font-size: 14px; font-weight: 700;
+  color: #14151a; background: #d1fe17; }
+.fs-unlock-body { flex: 1 1 auto; min-width: 0; }
+.fs-unlock-text { margin: 4px 0 0; font-size: 15px; line-height: 1.5; color: #f7f7f8; }
+.fs-unlock-text strong { color: #d1fe17; }
+.fs-unlock-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.fs-unlock-code { flex: 1 1 auto; min-width: 0; min-height: 40px; padding: 8px 12px; border: 1px dashed rgba(209, 254, 23, .5); border-radius: 10px;
+  background: rgba(209, 254, 23, .06); color: #d1fe17; font: 700 20px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .04em;
+  text-align: center; user-select: all; overflow-wrap: anywhere; }
+.fs-unlock-mini { flex: 0 0 auto; height: 40px; padding: 0 16px; border: 1px solid rgba(255, 255, 255, .18); border-radius: 10px; background: none;
+  color: #f7f7f8; font-size: 14px; font-weight: 600; cursor: pointer; }
+.fs-unlock-mini:hover:not(:disabled) { background: rgba(255, 255, 255, .07); }
+.fs-unlock-mini:disabled { opacity: .4; cursor: not-allowed; }
+.fs-unlock-mini:focus-visible, .fs-unlock-link:focus-visible { outline: 2px solid #d1fe17; outline-offset: 2px; }
+.fs-unlock-ack { margin: 12px 0 0; font-size: 14px; line-height: 1.5; color: #53c546; }
+.fs-unlock-ack:empty { display: none; }
+.fs-unlock-tip { margin: 12px 0 0; padding: 10px 12px; font-size: 14px; line-height: 1.5; color: #f7f7f8; text-align: left;
+  background: rgba(229, 131, 125, .12); border: 1px solid rgba(229, 131, 125, .35); border-radius: 10px; }
+.fs-unlock-link { padding: 0; border: 0; background: none; color: #d1fe17; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+.fs-unlock-link:hover { text-decoration: underline; }
+.fs-unlock-foot { display: flex; justify-content: center; gap: 12px; margin: 16px 0 0; font-size: 14px; color: #898a8b; }
+.fs-unlock-foot:has(#gate-email:empty) { gap: 0; }
+.fs-unlock-clip { position: fixed; left: -9999px; top: 0; width: 1px; height: 1px; opacity: 0; }
+/* A refusal that ends the road, a failure, or the wait for a campaign: no steps, no button - only the line and (for a failure) "Thử lại". */
+.fs-unlock-screen:is([data-mode="rejected"], [data-mode="fault"], [data-mode="loading"], [data-mode="done"]) :is(.fs-unlock-steps, #gate-done, #gate-ack, #gate-tip) { display: none; }
+.fs-unlock-screen:is([data-mode="rejected"], [data-mode="fault"]) .fs-unlock-notice { margin-bottom: 12px; font-size: 15px; }

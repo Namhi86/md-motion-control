@@ -1,0 +1,19 @@
+# Thư mục phụ thuộc & dữ liệu phiên chạy cục bộ
+node_modules/
+.electron-user-data/
+dist/
+build/
+out/
+release/
+__pycache__/
+*.pyc
+
+# Tệp nhật ký & dữ liệu tạm
+*.log
+*.tmp
+*.asar
+*.rar
+*.zip
+*.part
+.DS_Store
+Thumbs.db

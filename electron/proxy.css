@@ -1,0 +1,16 @@
+/* "Quản lý proxy" screen: built on the .su-* / .stp-* classes of setup.css, popover rows reuse .cv-model-item from history.css. */
+.px-notes { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.6; color: #a8a8a8; }
+.px-notes li + li { margin-top: 4px; }
+.px-ta { min-height: 72px; height: 72px; }
+.px-list { padding: 12px 8px 8px; overflow-x: auto; }
+.px-list > .stp-actions { margin: 0 8px 12px; }
+.px-bar { height: 4px; margin: 0 8px 12px; border-radius: 999px; background: rgba(255, 255, 255, .08); overflow: hidden; }
+.px-bar-fill { height: 100%; width: 0; background: #f0ba2e; transition: width .2s; }
+.px-us { margin-left: 8px; padding: 2px 7px; font-size: 11px; font-weight: 600; color: #e5837d; background: rgba(229, 131, 125, .16);
+  border-radius: 6px; cursor: help; }
+.px-user, .px-err { max-width: 260px; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.px-user { font: 11.5px ui-monospace, monospace; color: #737475; }
+.px-err { font-size: 11.5px; color: #89898b; }
+.px-slow { color: #f0ba2e; }
+.px-opt-desc { display: block; margin-top: 3px; font-size: 12px; font-weight: 400; line-height: 1.4; color: #89898b; }
+.stp-btn:disabled { opacity: .6; cursor: default; }

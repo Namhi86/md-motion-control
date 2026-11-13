@@ -1,0 +1,150 @@
+/* The queue controls: counters and buttons on the tab line, the settings in the composer, the two notes above the list, the
+   prompt-box tools (import + counter) and the popovers they open.
+   Same tokens as ui.css / setup.css: panel #131517, surface #1c1e20, lime #d1fe17, text #f7f7f8, muted #898a8b. */
+/* The tab line: tabs | filter buttons ... list/grid switch, pause. It wraps: the filters take their own line when the window is narrow. */
+.cv-maintabs { flex-wrap: wrap; row-gap: 8px; }
+.cv-tabs-stats { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; margin-left: 14px; }
+.cv-tabs-actions { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+
+/* The two notes (paused / last message) above the list; the box is gone when both are hidden. */
+.qt-notes { display: flex; flex-direction: column; gap: 6px; margin: 0 0 10px; }
+.qt-notes:not(:has(> :not([hidden]))) { display: none; }
+
+/* counters */
+/* the counters of the tab line are the filter buttons of the history */
+.qt-count { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; white-space: nowrap; font: inherit; cursor: pointer;
+  background: #1c1e20; border: 1px solid rgba(217, 217, 217, 0.04); border-radius: 8px; transition: background .15s, border-color .15s; }
+.qt-count:hover { background: #23262a; }
+.qt-count--on, .qt-count--on:hover { background: rgba(209, 254, 23, .1); border-color: rgba(209, 254, 23, .5); }
+.qt-count--on span { color: #f7f7f8; }
+.qt-count:focus-visible, .qt-seg-btn:focus-visible { outline: 2px solid rgba(209, 254, 23, .6); outline-offset: 1px; }
+.qt-count span { font-size: 12px; color: #898a8b; }
+.qt-count b { font-size: 15px; font-weight: 700; color: #f7f7f8; font-variant-numeric: tabular-nums; }
+.qt-count--running.qt-count--hot b { color: #d1fe17; }
+.qt-count--done.qt-count--hot b { color: #53c546; }
+.qt-count--failed.qt-count--hot b { color: #e5837d; }
+
+/* the list / grid switch: two icons in one pill, the pressed one is lit (white, so "Tạo video" stays the only solid lime button) */
+.qt-seg { display: inline-flex; gap: 2px; padding: 2px; background: rgba(255, 255, 255, .06); border-radius: 8px; }
+.qt-seg-btn { display: grid; place-items: center; width: 30px; height: 28px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: #898a8b; cursor: pointer; }
+.qt-seg-btn:hover { color: #f7f7f8; }
+.qt-seg-btn[aria-pressed="true"] { color: #d1fe17; background: rgba(255, 255, 255, .14); }
+
+/* buttons */
+.qt-actions { display: flex; gap: 6px; }
+.qt-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 32px; padding: 0 10px; border: 0; border-radius: 8px;
+  font-size: 12.5px; font-weight: 600; white-space: nowrap; color: #f7f7f8; background: rgba(255, 255, 255, .07); cursor: pointer;
+  transition: background .15s, filter .15s; }
+.qt-btn:hover:not(:disabled) { background: rgba(255, 255, 255, .12); }
+.qt-btn:disabled { opacity: .5; cursor: progress; }
+.qt-btn--accent { color: #14151a; background: #d1fe17; box-shadow: inset 0 -2px rgba(0, 0, 0, .3); }
+.qt-btn--accent:hover:not(:disabled) { background: #d1fe17; filter: brightness(1.06); }
+.qt-btn:focus-visible, .qs-row:focus-visible, .qt-chipbtn:focus-visible { outline: 2px solid rgba(209, 254, 23, .6); outline-offset: 1px; }
+
+/* settings in the composer (under duration + ratio): rows like the Model row, a switch, the machine line */
+.qs-set { display: flex; flex-direction: column; gap: 8px; padding-top: 4px; }
+.qs-title { margin: 0; padding: 0 2px; font-size: 12px; font-weight: 600; letter-spacing: .02em; color: #898a8b; }
+.qs-grid { display: grid; grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr); gap: 8px; } /* the second label is the longer one ("Chia prompt cho tài khoản") */
+.qs-row .cv-frow-value { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.qs-row .cv-frow-text { padding-right: 6px; }
+.qs-row--warn { box-shadow: inset 0 0 0 1px rgba(229, 131, 125, .6); }
+.qs-row--warn .cv-frow-value { color: #e5837d; }
+.qs-toggle { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; min-height: 48px;
+  background: #1c1e20; border-radius: 6px; cursor: pointer; }
+.qs-toggle:hover { background: #23262a; }
+.qs-toggle--disabled, .qs-toggle--disabled:hover { opacity: .55; cursor: not-allowed; background: transparent; }
+.qs-toggle--disabled .qs-sw { cursor: not-allowed; }
+.qs-toggle-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.qs-toggle-name { font-size: 14px; color: #f7f7f8; }
+.qs-toggle-desc { font-size: 11px; line-height: 1.35; color: #898a8b; }
+.qs-check { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+.qs-sw { position: relative; flex: 0 0 auto; width: 34px; height: 18px; border-radius: 999px; background: rgba(255, 255, 255, .14); transition: background .15s; }
+.qs-sw i { position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: transform .15s; }
+.qs-check:checked + .qs-sw { background: #d1fe17; }
+.qs-check:checked + .qs-sw i { transform: translateX(16px); }
+.qs-check:focus-visible + .qs-sw { outline: 2px solid rgba(209, 254, 23, .6); outline-offset: 2px; }
+/* "Lưu video vào": the folder of the tasks added from now on, under the settings; the small button next to it opens the folder */
+.qs-dir { display: flex; gap: 8px; }
+.qs-dir-pick { flex: 1 1 auto; min-width: 0; }
+.qs-dir-pick .cv-frow-value { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; font-size: 13px; }
+.qs-dir-pick .cv-frow-text { min-width: 0; padding-right: 6px; }
+.qs-dir-open { flex: 0 0 auto; display: grid; place-items: center; width: 48px; border: 0; border-radius: 6px; background: #1c1e20; color: #f7f7f8; cursor: pointer; }
+.qs-dir-open:hover:not(:disabled) { background: #23262a; color: #d1fe17; }
+.qs-dir-pick:disabled, .qs-dir-open:disabled { opacity: .5; cursor: progress; }
+.qs-dir-msg { margin: 6px 2px 0; font-size: 12px; line-height: 1.4; color: #e5837d; overflow-wrap: anywhere; }
+.qs-dir-msg:empty { display: none; }
+.qt-msg { margin: 0; padding: 6px 10px; font-size: 12px; line-height: 1.45; color: #c9c9cc; background: rgba(255, 255, 255, .05); border-radius: 8px; overflow-wrap: anywhere; }
+.qt-msg--bad { color: #e5837d; background: rgba(229, 131, 125, .1); }
+.qt-wait { margin: 0; padding: 6px 10px; font-size: 12.5px; font-weight: 600; line-height: 1.45; color: #ffa23d; background: rgba(255, 162, 61, .1); border-radius: 8px; }
+
+/* Not tall: the composer is scrolled and every row counts, so the settings lose their title and the switch its explanation (still in the tooltip). */
+@media (max-height: 1100px) {
+  .qs-title, .qs-toggle-desc { display: none; }
+  .qs-toggle { min-height: 40px; }
+  .qs-set { gap: 6px; padding-top: 0; }
+  .qs-grid { gap: 6px; }
+}
+
+/* Narrower windows. Below ~1400 px the buttons keep only their icon (tooltip and aria-label stay); below ~1130 px the counters take
+   their own line under the tabs instead of squeezing them. */
+@media (max-width: 1400px) {
+  .qt-btn { width: 32px; padding: 0; }
+  .qt-btn span { display: none; }
+}
+@media (max-width: 1130px) {
+  .cv-tabs-stats { order: 3; flex: 1 0 100%; margin-left: 0; }
+}
+
+/* popovers (thread count, distribution, account picker) reuse .cv-pop / .cv-model-item from history.css */
+.qt-opt-desc { display: block; margin-top: 2px; font-size: 12px; font-weight: 400; line-height: 1.4; color: #898a8b; }
+.qt-chips { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin: 6px 4px 2px; }
+.qt-chipbtn { height: 34px; border: 1px solid rgba(255, 255, 255, .08); border-radius: 8px; font-size: 13px; font-weight: 600; color: #f7f7f8;
+  background: #1c1e20; cursor: pointer; }
+.qt-chipbtn:hover { background: #292c2f; }
+.qt-chipbtn--on { color: #d1fe17; border-color: rgba(209, 254, 23, .5); background: rgba(209, 254, 23, .08); }
+/* thread picker (thread-picker.js): the fixed numbers in two rows of four, a box for any other number with "Áp dụng", and its red line */
+.qt-chips--picker { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.qt-num-form { margin: 8px 4px 2px; }
+.qt-num { display: flex; gap: 6px; }
+.qt-num-input { flex: 1 1 auto; min-width: 0; height: 34px; padding: 0 10px; border: 1px solid rgba(255, 255, 255, .08); border-radius: 8px; outline: none;
+  font-size: 13px; color: #f7f7f8; background: #1c1e20; }
+.qt-num-input:focus { border-color: rgba(209, 254, 23, .6); }
+.qt-num-btn { flex: 0 0 auto; height: 34px; padding: 0 12px; border: 0; border-radius: 8px; font-size: 12.5px; font-weight: 600; color: #14151a; background: #d1fe17; cursor: pointer; }
+.qt-num-btn:hover { filter: brightness(1.06); }
+.qt-num-btn:focus-visible { outline: 2px solid rgba(209, 254, 23, .6); outline-offset: 1px; }
+.qt-num-bad { margin: 6px 0 0; font-size: 12px; line-height: 1.4; color: #e5837d; }
+.qt-num-bad:empty { display: none; }
+.cv-pop-note--warn { color: #e5837d; }
+
+/* prompt box tools: import a .txt / .csv, and "N lệnh" */
+.cv-prompt-tools { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; padding-top: 8px;
+  border-top: 1px dashed rgba(255, 255, 255, .08); }
+.cv-import { padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; color: #d1fe17; background: rgba(209, 254, 23, .1); cursor: pointer;
+  transition: background .15s; }
+.cv-import:hover { background: rgba(209, 254, 23, .2); }
+.cv-prompt-count { font-size: 12px; color: #898a8b; font-variant-numeric: tabular-nums; text-align: right; }
+.cv-prompt-count--bad { color: #e5837d; }
+/* the skill row under the reference images (skill-ui.js): a small secondary button, then a chip with the file name and an ✕ */
+.cv-skill-row { display: flex; align-items: center; min-height: 28px; }
+.cv-skill-btn { padding: 4px 10px; border-radius: 6px; border: 1px dashed rgba(255, 255, 255, .2); background: none; font: inherit; font-size: 12px;
+  font-weight: 600; color: #c8c9ca; cursor: pointer; transition: background .15s, color .15s; }
+.cv-skill-btn:hover:not(:disabled) { background: rgba(255, 255, 255, .06); color: #f7f7f8; }
+.cv-skill-btn:disabled { opacity: .5; cursor: default; }
+.cv-skill-chip { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; padding: 3px 4px 3px 10px; border-radius: 6px; background: rgba(209, 254, 23, .1); color: #d1fe17; }
+.cv-skill-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 600; }
+.cv-skill-x { flex: 0 0 auto; width: 18px; height: 18px; padding: 0; border: 0; border-radius: 50%; background: rgba(0, 0, 0, .35); color: #fff; font-size: 10px;
+  line-height: 18px; cursor: pointer; }
+.cv-skill-x:hover { background: rgba(0, 0, 0, .6); }
+/* the "many prompts" line under the counter (muse-ui.js mountPromptHint) */
+.cv-prompt-hint { margin: 6px 0 0; font-size: 10.5px; line-height: 1.4; color: #898a8b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* the heading of a model family in the Model popup (model-popup.js) */
+.cv-pop-group { display: flex; flex-direction: column; gap: 1px; margin: 8px 4px 4px; }
+.cv-pop-group:first-child { margin-top: 2px; }
+.cv-pop-group-name { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #d1fe17; }
+.cv-pop-group-hint { font-size: 11px; line-height: 1.4; color: #898a8b; }
+.cv-pop-note--machine { color: #f7f7f8; }
+/* Muse: how to write a script by seconds, under the prompt box while "Theo prompt" is on */
+.cv-muse-guide { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-top: 8px; padding: 8px 10px; border-radius: 8px;
+  background: rgba(209, 254, 23, .06); border: 1px solid rgba(209, 254, 23, .2); }
+.cv-muse-guide-text { margin: 0; font-size: 12px; line-height: 1.5; color: #f7f7f8; }
+.cv-muse-guide .cv-import { flex: 0 0 auto; border: 0; }
