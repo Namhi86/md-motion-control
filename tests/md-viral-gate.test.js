@@ -44,17 +44,17 @@ test('1. Sinh mã kích hoạt MDMC_XXXXXX cố định theo seed thiết bị',
   assert.match(codeA1, /^MDMC_[0-9A-F]{6}$/);
   assert.equal(codeA1, codeA2);
   assert.notEqual(codeA1, codeB);
-  assert.equal(DEFAULT_FB_POST_URL, 'https://www.facebook.com/share/p/1MDMotionControl/');
+  assert.equal(DEFAULT_FB_POST_URL, 'https://www.facebook.com/share/r/1HYQkzLNXk/');
   assert.equal(DEFAULT_ZALO_GROUP_URL, 'https://zalo.me/g/mdmotioncontrol');
 });
 
-test('2. Chặn gateCheckNow() khi người dùng chưa bấm tham gia nhóm Zalo (zaloClicked === false)', async () => {
+test('2. Tự động mở khóa ngay khi bình luận Mã máy trên bài viết Facebook (không bắt buộc bấm Zalo)', async () => {
   const tmp = createTempGateFile();
   try {
     let scannerCalled = false;
     const gate = createMdViralGate({
       file: tmp.file,
-      deviceSeed: 'seed-zalo-check',
+      deviceSeed: 'seed-direct-fb-check',
       scanner: async () => {
         scannerCalled = true;
         return { found: true };
@@ -62,14 +62,13 @@ test('2. Chặn gateCheckNow() khi người dùng chưa bấm tham gia nhóm Zal
     });
 
     assert.equal(gate.isUnlocked(), false);
-    assert.equal(gate.gateView().zaloClicked, false);
+    assert.equal(gate.gateView().post_url, 'https://www.facebook.com/share/r/1HYQkzLNXk/');
 
     const res = await gate.gateCheckNow();
-    assert.equal(res.ok, false);
-    assert.equal(res.error, 'zalo_not_joined');
-    assert.equal(res.reason, 'zalo_not_joined');
-    assert.equal(gate.isUnlocked(), false);
-    assert.equal(scannerCalled, false);
+    assert.equal(res.ok, true);
+    assert.equal(res.unlocked, true);
+    assert.equal(gate.isUnlocked(), true);
+    assert.equal(scannerCalled, true);
   } finally {
     tmp.cleanup();
   }

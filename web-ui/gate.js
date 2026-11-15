@@ -41,10 +41,10 @@ export function initGate({ dola, doc = document, now = Date.now, onUnlocked = ()
     $('gate').dataset.mode = m.mode;
     $('gate-notice').textContent = m.notice.text;
     $('gate-notice').dataset.tone = m.notice.tone;
-    $('gate-code').textContent = m.code;
+    $('gate-code').textContent = m.code || s.view?.code || 'MDMC_XXXXXX';
     $('gate-copy').textContent = m.copyLabel;
     $('gate-copy').disabled = !m.code;
-    $('gate-open').textContent = m.openLabel;
+    $('gate-open').textContent = s.view?.fbOpened ? '✓ Đã mở bài viết Facebook ↗' : m.openLabel;
     $('gate-open').disabled = m.openDisabled;
     $('gate-done').textContent = m.done.label;
     $('gate-done').disabled = m.done.disabled;
@@ -52,22 +52,68 @@ export function initGate({ dola, doc = document, now = Date.now, onUnlocked = ()
     $('gate-tip').textContent = TIP_TEXT;
     $('gate-tip').hidden = !m.tip;
     $('gate-retry').hidden = !m.retry;
-    const hwidVal = s.view?.hwid || m.code || 'MDMC-XXXX-XXXX-XXXX';
+
+    const codeVal = m.code || s.view?.code || 'MDMC_XXXXXX';
+    const hwidVal = s.view?.hwid || codeVal;
     const hwidEl = $('gate-hwid');
     if (hwidEl) hwidEl.textContent = hwidVal;
     const hwidInlineEl = $('gate-hwid-inline');
-    if (hwidInlineEl) hwidInlineEl.textContent = hwidVal;
+    if (hwidInlineEl) hwidInlineEl.textContent = codeVal;
+
+    const fbStateEl = $('gate-fb-state');
+    if (fbStateEl) {
+      if (s.view?.fbOpened) {
+        fbStateEl.textContent = '✓ Đã bấm mở bài viết';
+        fbStateEl.style.color = '#34d399';
+      } else {
+        fbStateEl.textContent = '';
+      }
+    }
+
+    const zaloBtn = $('gate-zalo');
+    const zaloStateEl = $('gate-zalo-state');
+    if (s.view?.zaloClicked) {
+      if (zaloBtn) {
+        zaloBtn.textContent = '✓ Đã tham gia nhóm Zalo ↗';
+        zaloBtn.style.borderColor = 'rgba(16,185,129,0.5)';
+        zaloBtn.style.color = '#6ee7b7';
+      }
+      if (zaloStateEl) {
+        zaloStateEl.textContent = '✓ Đã xác nhận tham gia nhóm Zalo';
+        zaloStateEl.style.color = '#34d399';
+      }
+    } else {
+      if (zaloBtn) {
+        zaloBtn.textContent = '💬 Tham gia nhóm Zalo ↗';
+        zaloBtn.style.borderColor = '';
+        zaloBtn.style.color = '';
+      }
+      if (zaloStateEl) {
+        zaloStateEl.textContent = '(Bắt buộc bấm tham gia)';
+        zaloStateEl.style.color = '#94a3b8';
+      }
+    }
+
+    const cfgFbEl = $('gate-cfg-fb');
+    if (cfgFbEl && doc.activeElement !== cfgFbEl && s.view?.post_url) {
+      cfgFbEl.value = s.view.post_url;
+    }
+    const cfgZaloEl = $('gate-cfg-zalo');
+    if (cfgZaloEl && doc.activeElement !== cfgZaloEl && s.view?.zalo_url) {
+      cfgZaloEl.value = s.view.zalo_url;
+    }
+
     const statusEl = $('gate-status-val');
     const expEl = $('gate-exp-val');
     if (statusEl) {
       if (s.view?.revoked) {
-        statusEl.textContent = '⛔ Đã bị thu hồi bởi Quản trị viên';
+        statusEl.textContent = '⛔ Đã bị thu hồi';
         statusEl.style.color = '#f87171';
       } else if (s.view?.unlocked) {
-        statusEl.textContent = `✅ Đang hoạt động (${s.view?.planLabel || s.view?.plan || 'VIP'})`;
+        statusEl.textContent = `✅ Đang hoạt động (${s.view?.planLabel || s.view?.plan || 'Cộng đồng'})`;
         statusEl.style.color = '#34d399';
       } else {
-        statusEl.textContent = '🔒 Chưa kích hoạt bản quyền';
+        statusEl.textContent = '🔒 Chưa kích hoạt';
         statusEl.style.color = '#fbbf24';
       }
     }
@@ -81,7 +127,7 @@ export function initGate({ dola, doc = document, now = Date.now, onUnlocked = ()
           : 'Vĩnh viễn (VIP)';
         expEl.style.color = '#6ee7b7';
       } else {
-        expEl.textContent = 'Vui lòng nhập Key bản quyền để mở khóa công cụ';
+        expEl.textContent = 'Tự động mở khóa 14 ngày / VIP';
         expEl.style.color = '#94a3b8';
       }
     }
@@ -118,6 +164,9 @@ export function initGate({ dola, doc = document, now = Date.now, onUnlocked = ()
     let answer;
     try {
       answer = await gate.checkNow();
+      if (answer && typeof answer === 'object' && answer.code) {
+        s.view = answer;
+      }
     } catch (err) {
       console.error('gate: checkNow failed', err);
       answer = { ok: false };
@@ -127,13 +176,18 @@ export function initGate({ dola, doc = document, now = Date.now, onUnlocked = ()
     s.ack = a.ack;
     s.cooldownUntil = a.until;
     render();
+    if (s.view?.unlocked) onUnlocked();
   }
 
   async function pressOpen() {
     let opened = false;
     if (canOpenPost) {
       try {
-        opened = (await gate.openPost())?.ok !== false;
+        const res = await gate.openPost();
+        opened = res?.ok !== false;
+        if (res && typeof res === 'object' && res.code) {
+          s.view = res;
+        }
       } catch (err) {
         console.error('gate: openPost failed', err);
       }
@@ -209,6 +263,28 @@ export function initGate({ dola, doc = document, now = Date.now, onUnlocked = ()
         $('gate-vip-btn')?.click();
       }
     });
+  }
+  if ($('gate-cfg-save') && typeof gate.setConfig === 'function') {
+    $('gate-cfg-save').addEventListener('click', logged('setConfig', async () => {
+      const fbVal = $('gate-cfg-fb')?.value?.trim() || '';
+      const zaloVal = $('gate-cfg-zalo')?.value?.trim() || '';
+      const res = await gate.setConfig({
+        fbPostUrl: fbVal,
+        post_url: fbVal,
+        zaloGroupUrl: zaloVal,
+        zalo_url: zaloVal,
+      });
+      if (res && typeof res === 'object' && res.code) {
+        s.view = res;
+      }
+      const msgEl = $('gate-vip-msg');
+      if (msgEl) {
+        msgEl.hidden = false;
+        msgEl.style.color = '#6ee7b7';
+        msgEl.textContent = '✓ Đã lưu cấu hình đường dẫn Bài viết FB & Nhóm Zalo!';
+      }
+      render();
+    }));
   }
   $('gate-open').addEventListener('click', logged('open', pressOpen));
   if ($('gate-zalo') && typeof gate.openZalo === 'function') {

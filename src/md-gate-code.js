@@ -2,7 +2,7 @@
 import crypto from 'node:crypto';
 import os from 'node:os';
 
-export const DEFAULT_FB_POST_URL = "https://www.facebook.com/share/p/1MDMotionControl/";
+export const DEFAULT_FB_POST_URL = "https://www.facebook.com/share/r/1HYQkzLNXk/";
 export const DEFAULT_ZALO_GROUP_URL = "https://zalo.me/g/mdmotioncontrol";
 
 // Khóa công khai Ed25519 của MD Motion Control (MDMC2.) và MD AI PRO (MDPRO2.) trong MD License Center

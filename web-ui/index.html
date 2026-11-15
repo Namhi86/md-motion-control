@@ -111,99 +111,89 @@
       <div class="md-gate-dragbar" aria-hidden="true"></div>
       <button type="button" id="gate-lang" class="fs-lang fs-lang--corner" data-lang-toggle style="top:54px;">EN</button>
       <div class="fs-login-card fs-unlock-card md-gate-license-card">
-        <div class="md-up-head" style="padding:20px 24px 16px;text-align:left;">
+        <div class="md-up-head" style="padding:18px 24px 14px;text-align:left;">
           <div class="md-up-brand">
             <span class="md-brand-icon" style="width:42px;height:42px;font-size:20px;border-radius:12px;">🔑</span>
             <div>
-              <h1 class="md-up-title" style="font-size:18px;margin:0;" data-i18n>Bản Quyền &amp; Mã Máy — MD Motion Control</h1>
-              <p class="md-up-sub" style="margin:3px 0 0;font-size:12.5px;">Hệ thống quản lý bản quyền tập trung MD License Center (Ed25519 V2)</p>
+              <h1 class="md-up-title" style="font-size:18px;margin:0;" data-i18n>Tự Động Kích Hoạt — MD Motion Control</h1>
+              <p class="md-up-sub" style="margin:3px 0 0;font-size:12.5px;">Comment Mã máy vào bài viết Facebook &amp; Share bài viết để tự động kích hoạt</p>
             </div>
           </div>
         </div>
 
-        <!-- KHỐI KÍCH HOẠT BẰNG KEY BẢN QUYỀN (MD LICENSE CENTER / WEB) -->
-        <div id="gate-vip-box" class="md-up-body" style="padding:20px 24px 22px;display:flex;flex-direction:column;gap:14px;text-align:left;">
-          <div style="padding:14px 16px;border-radius:13px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.38);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <!-- KHỐI TỰ ĐỘNG KÍCH HOẠT QUA NHIỆM VỤ COMMENT + SHARE BÀI VIẾT FACEBOOK (MẶC ĐỊNH CHÍNH) -->
+        <div id="gate-vip-box" class="md-up-body" style="padding:18px 24px 22px;display:flex;flex-direction:column;gap:14px;text-align:left;">
+          <!-- Khung Mã máy nổi bật -->
+          <div style="padding:14px 16px;border-radius:13px;background:rgba(16,185,129,0.11);border:1px solid rgba(16,185,129,0.42);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
             <div>
-              <div style="font-size:11px;color:#94a3b8;text-transform:uppercase;font-weight:700;letter-spacing:0.04em;margin-bottom:3px;">Mã máy (HWID) của thiết bị này:</div>
-              <code id="gate-hwid" style="font-size:17px;font-weight:800;color:#34d399;font-family:monospace;letter-spacing:0.03em;">MDMC-XXXX-XXXX-XXXX</code>
+              <div style="font-size:11px;color:#94a3b8;text-transform:uppercase;font-weight:700;letter-spacing:0.04em;margin-bottom:4px;">Mã máy của bạn (Dùng để Comment vào bài viết FB):</div>
+              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <code id="gate-code" class="fs-unlock-code" style="font-size:19px;font-weight:900;color:#34d399;font-family:monospace;letter-spacing:0.04em;padding:2px 8px;background:rgba(6,78,59,0.45);border-radius:7px;">MDMC_XXXXXX</code>
+                <span id="gate-status-val" style="font-size:12px;color:#fbbf24;font-weight:700;">🔒 Chưa kích hoạt</span>
+              </div>
             </div>
-            <button type="button" id="gate-copy-hwid" class="md-up-btn" style="height:36px;padding:0 14px;font-size:12.5px;border-color:rgba(16,185,129,0.45);background:rgba(16,185,129,0.18);color:#ecfdf5;font-weight:700;">📋 Sao chép Mã máy</button>
+            <button type="button" id="gate-copy" class="md-up-btn" data-i18n style="height:36px;padding:0 15px;font-size:12.5px;border-color:rgba(16,185,129,0.5);background:rgba(16,185,129,0.22);color:#ecfdf5;font-weight:800;cursor:pointer;">📋 Sao chép Mã máy</button>
           </div>
 
-          <div style="padding:12px 16px;border-radius:13px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);font-size:13px;line-height:1.75;color:#e2e8f0;">
-            <div><strong>Trạng thái:</strong> <span id="gate-status-val" style="color:#fbbf24;font-weight:700;">🔒 Chưa kích hoạt bản quyền</span></div>
-            <div><strong>Thời hạn sử dụng:</strong> <span id="gate-exp-val" style="color:#94a3b8;">Vui lòng nhập Key để mở khóa công cụ</span></div>
-          </div>
+          <p id="gate-notice" class="fs-unlock-notice" role="status" data-tone="wait" data-i18n style="margin:0;font-size:12.5px;">Hoàn thành 3 bước dưới đây rồi bấm "Tôi đã làm xong — Tự động kích hoạt ✓"</p>
 
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <label for="gate-vip-input" style="font-size:13px;font-weight:700;color:#f1f5f9;">Nhập Mã Kích Hoạt Bản Quyền (MDMC2....):</label>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <input type="text" id="gate-vip-input" placeholder="Dán mã MDMC2.... vào đây" style="flex:1;height:42px;padding:0 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.16);background:rgba(9,13,22,0.92);color:#f8fafc;font-family:monospace;font-size:13px;outline:none;" />
-              <button type="button" id="gate-vip-btn" class="md-up-btn md-up-btn--primary" style="height:42px;padding:0 18px;font-size:13.5px;font-weight:800;white-space:nowrap;cursor:pointer;">🔑 Kích hoạt Key</button>
-            </div>
-            <p id="gate-vip-msg" style="margin:2px 0 0;font-size:12.5px;font-weight:600;color:#cbd5e1;" hidden></p>
-            <div style="font-size:12px;color:#94a3b8;line-height:1.5;margin-top:2px;">
-              💡 Gửi Mã máy <strong id="gate-hwid-inline" style="color:#e2e8f0;">MDMC-XXXX-XXXX-XXXX</strong> cho Admin hoặc nhập trên <strong style="color:#fbbf24;">mdtool.io.vn</strong> để nhận Key tự động.
-            </div>
-          </div>
+          <!-- Danh sách 3 bước kích hoạt trực tiếp -->
+          <ol class="fs-unlock-steps" style="gap:11px;margin:0;">
+            <li class="fs-unlock-step">
+              <span class="fs-unlock-num" aria-hidden="true">1</span>
+              <div class="fs-unlock-body">
+                <p class="fs-unlock-text" data-i18n style="font-size:13.5px;">Sao chép <strong>Mã máy</strong> ở trên, sau đó bấm mở bài viết Facebook và thả <strong>Like</strong></p>
+                <div class="fs-unlock-row" style="margin-top:6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                  <button type="button" id="gate-open" class="fs-unlock-mini" data-i18n style="font-weight:700;cursor:pointer;">📘 Mở bài viết Facebook ↗</button>
+                  <span id="gate-fb-state" style="font-size:12px;color:#94a3b8;font-weight:600;"></span>
+                </div>
+              </div>
+            </li>
+            <li class="fs-unlock-step">
+              <span class="fs-unlock-num" aria-hidden="true">2</span>
+              <div class="fs-unlock-body">
+                <p class="fs-unlock-text" data-i18n style="font-size:13.5px;"><strong>Comment Mã máy</strong> của bạn (<strong id="gate-hwid-inline" style="color:#34d399;font-family:monospace;">MDMC_XXXXXX</strong>) vào bài viết Facebook vừa mở</p>
+              </div>
+            </li>
+            <li class="fs-unlock-step">
+              <span class="fs-unlock-num" aria-hidden="true">3</span>
+              <div class="fs-unlock-body">
+                <p class="fs-unlock-text" data-i18n style="font-size:13.5px;"><strong>Share bài viết Facebook</strong> ở chế độ <strong data-i18n style="color:#fbbf24;">CÔNG KHAI</strong> lên trang cá nhân (không share vào nhóm hoặc story)</p>
+              </div>
+            </li>
+          </ol>
+          <button type="button" id="gate-zalo" hidden style="display:none;"></button>
+          <span id="gate-zalo-state" hidden style="display:none;"></span>
 
-          <details class="md-gate-viral-details" style="margin-top:4px;border-top:1px solid rgba(255,255,255,0.08);padding-top:12px;">
-            <summary style="cursor:pointer;font-size:12.5px;font-weight:700;color:#94a3b8;user-select:none;list-style:none;display:flex;align-items:center;justify-content:space-between;">
-              <span>🎁 Hoặc mở khóa trải nghiệm Cộng đồng miễn phí (Làm nhiệm vụ Like &amp; Share)</span>
+          <button type="button" id="gate-done" class="fs-login-btn" data-i18n disabled style="height:44px;font-size:14px;font-weight:800;margin-top:2px;cursor:pointer;">⚡ Tôi đã làm xong — Tự động kích hoạt ✓</button>
+          <p id="gate-ack" class="fs-unlock-ack" role="status" style="margin:0;font-size:12.5px;font-weight:600;"></p>
+          <p id="gate-tip" class="fs-unlock-tip" hidden style="margin:0;font-size:12px;"></p>
+          <button type="button" id="gate-retry" class="fs-unlock-link" data-i18n hidden>Thử lại</button>
+
+          <!-- Mục mở rộng dành cho Key VIP -->
+          <details class="md-gate-viral-details" style="margin-top:4px;border-top:1px solid rgba(255,255,255,0.08);padding-top:10px;">
+            <summary style="cursor:pointer;font-size:12px;font-weight:700;color:#94a3b8;user-select:none;list-style:none;display:flex;align-items:center;justify-content:space-between;">
+              <span>🔑 Đã có Key VIP hoặc Cấu hình đường dẫn Bài viết FB</span>
               <span style="font-size:11px;opacity:0.8;">▾</span>
             </summary>
-            <div style="margin-top:12px;">
-              <p id="gate-notice" class="fs-unlock-notice" role="status" data-tone="wait" data-i18n style="margin-bottom:12px;font-size:13px;">Đang tải…</p>
-              <ol class="fs-unlock-steps" style="gap:10px;margin-bottom:14px;">
-                <li class="fs-unlock-step">
-                  <span class="fs-unlock-num" aria-hidden="true">1</span>
-                  <div class="fs-unlock-body">
-                    <p class="fs-unlock-text" data-i18n style="font-size:13.5px;">Mở bài viết và bấm Like</p>
-                    <div class="fs-unlock-row">
-                      <button type="button" id="gate-open" class="fs-unlock-mini" data-i18n>Mở bài viết ↗</button>
-                    </div>
-                  </div>
-                </li>
-                <li class="fs-unlock-step">
-                  <span class="fs-unlock-num" aria-hidden="true">2</span>
-                  <div class="fs-unlock-body">
-                    <p class="fs-unlock-text" data-i18n style="font-size:13.5px;">Sao chép mã của bạn</p>
-                    <div class="fs-unlock-row">
-                      <code id="gate-code" class="fs-unlock-code" style="font-size:16px;"></code>
-                      <button type="button" id="gate-copy" class="fs-unlock-mini" data-i18n>Sao chép</button>
-                    </div>
-                  </div>
-                </li>
-                <li class="fs-unlock-step">
-                  <span class="fs-unlock-num" aria-hidden="true">3</span>
-                  <div class="fs-unlock-body">
-                    <p class="fs-unlock-text" data-i18n style="font-size:13.5px;">Comment mã vào bài viết (bài đã mở ở bước 1)</p>
-                  </div>
-                </li>
-                <li class="fs-unlock-step">
-                  <span class="fs-unlock-num" aria-hidden="true">4</span>
-                  <div class="fs-unlock-body">
-                    <p class="fs-unlock-text" data-i18n style="font-size:13.5px;">Share bài viết <strong data-i18n>CÔNG KHAI</strong> lên trang cá nhân (không share vào nhóm hoặc story)</p>
-                  </div>
-                </li>
-                <li class="fs-unlock-step">
-                  <span class="fs-unlock-num" aria-hidden="true">5</span>
-                  <div class="fs-unlock-body">
-                    <p class="fs-unlock-text" data-i18n style="font-size:13.5px;">Tham gia nhóm Zalo cộng đồng (chỉ cần bấm tham gia, không cần cmt)</p>
-                    <div class="fs-unlock-row">
-                      <button type="button" id="gate-zalo" class="fs-unlock-mini" data-i18n>Tham gia nhóm Zalo ↗</button>
-                    </div>
-                  </div>
-                </li>
-              </ol>
-              <button type="button" id="gate-done" class="fs-login-btn" data-i18n disabled>Tôi đã làm xong ✓</button>
-              <p id="gate-ack" class="fs-unlock-ack" role="status"></p>
-              <p id="gate-tip" class="fs-unlock-tip" hidden></p>
-              <button type="button" id="gate-retry" class="fs-unlock-link" data-i18n hidden>Thử lại</button>
-              <p class="fs-unlock-foot" style="display:none;"><span id="gate-email"></span><button type="button" id="gate-logout" class="fs-unlock-link" data-i18n>Đăng xuất</button></p>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:8px 12px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);font-size:12px;">
+                <div>HWID: <code id="gate-hwid" style="color:#6ee7b7;font-weight:700;">MDMC-XXXX-XXXX-XXXX</code> · <span id="gate-exp-val" style="color:#94a3b8;">14 ngày / VIP</span></div>
+                <button type="button" id="gate-copy-hwid" class="md-up-btn" style="height:28px;padding:0 10px;font-size:11.5px;">📋 Chép HWID</button>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input type="text" id="gate-vip-input" placeholder="Nhập Key VIP (MDMC2.... hoặc MDVIP_....) nếu có" style="flex:1;height:36px;padding:0 12px;border-radius:9px;border:1px solid rgba(255,255,255,0.16);background:rgba(9,13,22,0.92);color:#f8fafc;font-family:monospace;font-size:12px;outline:none;" />
+                <button type="button" id="gate-vip-btn" class="md-up-btn md-up-btn--primary" style="height:36px;padding:0 14px;font-size:12px;font-weight:800;white-space:nowrap;cursor:pointer;">🔑 Kích hoạt VIP</button>
+              </div>
+              <p id="gate-vip-msg" style="margin:0;font-size:12px;font-weight:600;color:#cbd5e1;" hidden></p>
+              <div style="display:flex;gap:6px;align-items:center;padding-top:4px;border-top:1px dashed rgba(255,255,255,0.08);">
+                <input type="url" id="gate-cfg-fb" placeholder="Link bài viết Facebook..." style="flex:1;height:32px;padding:0 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:rgba(9,13,22,0.85);color:#cbd5e1;font-size:11.5px;outline:none;" />
+                <input type="url" id="gate-cfg-zalo" hidden style="display:none;" />
+                <button type="button" id="gate-cfg-save" class="md-up-btn" style="height:32px;padding:0 11px;font-size:11.5px;white-space:nowrap;cursor:pointer;">💾 Lưu Link FB</button>
+              </div>
             </div>
           </details>
+          <p class="fs-unlock-foot" style="display:none;"><span id="gate-email"></span><button type="button" id="gate-logout" class="fs-unlock-link" data-i18n>Đăng xuất</button></p>
           <textarea id="gate-clip" class="fs-unlock-clip" tabindex="-1" aria-hidden="true" readonly></textarea>
         </div>
       </div>

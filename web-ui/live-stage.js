@@ -1033,58 +1033,80 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
     try {
       st = (await window.dola?.gate?.state?.()) || {};
     } catch {}
-    const hwid = st.hwid || st.code || 'MDMC-XXXX-XXXX-XXXX';
+    const code = st.code || 'MDMC_XXXXXX';
+    const hwid = st.hwid || code;
     const expStr = st.expiresAt
       ? `${new Date(st.expiresAt).toLocaleDateString('vi-VN')} (còn ${Math.max(0, Math.ceil((st.expiresAt - Date.now()) / 86400000))} ngày)`
       : st.unlocked
         ? 'Vĩnh viễn (VIP)'
-        : 'Chưa kích hoạt';
+        : 'Chưa kích hoạt (Tự động mở khóa 14 ngày khi hoàn thành nhiệm vụ)';
     const statusText = st.unlocked
-      ? `✅ Đang hoạt động (${st.planLabel || st.plan || 'VIP'})`
+      ? `✅ Đang hoạt động (${st.planLabel || st.plan || (st.unlockMethod === 'viral' ? 'Bản quyền Cộng đồng (FB Share)' : 'VIP')})`
       : '🔒 Chưa kích hoạt hoặc đã hết hạn';
 
     const modal = document.createElement('div');
     modal.id = 'md-license-modal';
     modal.className = 'md-up-backdrop';
     modal.innerHTML = `
-      <div class="md-up-dialog" role="dialog" aria-modal="true" style="width:min(540px, 94vw);">
+      <div class="md-up-dialog" role="dialog" aria-modal="true" style="width:min(560px, 95vw);">
         <div class="md-up-head">
           <div class="md-up-brand">
             <span class="md-brand-icon" style="font-size:18px;">🔑</span>
             <div>
-              <h3 class="md-up-title">Bản Quyền &amp; Mã Máy — MD Motion Control</h3>
-              <p class="md-up-sub">Hệ thống quản lý bản quyền tập trung MD License Center (Ed25519 V2)</p>
+              <h3 class="md-up-title">Kích Hoạt &amp; Bản Quyền — MD Motion Control</h3>
+              <p class="md-up-sub">Comment Mã máy vào bài viết Facebook &amp; Share bài viết để tự động kích hoạt</p>
             </div>
           </div>
           <button type="button" class="md-up-close" id="md-lic-close" aria-label="Đóng">✕</button>
         </div>
-        <div class="md-up-body" style="display:flex;flex-direction:column;gap:14px;">
-          <div style="padding:13px 16px;border-radius:13px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.38);display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <div class="md-up-body" style="display:flex;flex-direction:column;gap:12px;">
+          <!-- Khung Mã máy để Comment FB -->
+          <div style="padding:12px 15px;border-radius:13px;background:rgba(16,185,129,0.11);border:1px solid rgba(16,185,129,0.4);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
             <div>
-              <div style="font-size:11px;color:#94a3b8;text-transform:uppercase;font-weight:700;margin-bottom:3px;">Mã máy (HWID) của thiết bị này:</div>
-              <code id="md-lic-hwid-val" style="font-size:16.5px;font-weight:800;color:#34d399;font-family:monospace;letter-spacing:0.03em;">${hwid}</code>
+              <div style="font-size:11px;color:#94a3b8;text-transform:uppercase;font-weight:700;margin-bottom:3px;">Mã máy của bạn (Dùng để Comment vào bài viết FB):</div>
+              <code id="md-lic-hwid-val" style="font-size:18px;font-weight:900;color:#34d399;font-family:monospace;letter-spacing:0.04em;">${code}</code>
             </div>
-            <button type="button" class="md-up-btn" id="md-lic-copy-hwid" style="height:34px;padding:0 13px;font-size:12px;border-color:rgba(16,185,129,0.45);background:rgba(16,185,129,0.16);color:#ecfdf5;">📋 Sao chép Mã máy</button>
+            <button type="button" class="md-up-btn" id="md-lic-copy-hwid" style="height:34px;padding:0 14px;font-size:12px;border-color:rgba(16,185,129,0.48);background:rgba(16,185,129,0.2);color:#ecfdf5;font-weight:800;">📋 Sao chép Mã máy</button>
           </div>
 
-          <div style="padding:12px 16px;border-radius:13px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);font-size:13px;line-height:1.75;color:#e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <!-- Trạng thái kích hoạt -->
+          <div style="padding:11px 15px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);font-size:12.5px;line-height:1.7;color:#e2e8f0;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
             <div>
               <div><strong>Trạng thái:</strong> <span id="md-lic-status-val">${statusText}</span></div>
               <div><strong>Thời hạn sử dụng:</strong> <span id="md-lic-exp-val">${expStr}</span></div>
             </div>
-            <button type="button" class="md-up-btn" id="md-lic-deactivate-btn" style="height:32px;padding:0 12px;font-size:11.5px;border-color:rgba(248,113,113,0.4);background:rgba(248,113,113,0.12);color:#fca5a5;">🔒 Khóa máy / Gỡ Key</button>
+            <button type="button" class="md-up-btn" id="md-lic-deactivate-btn" style="height:32px;padding:0 12px;font-size:11.5px;border-color:rgba(248,113,113,0.4);background:rgba(248,113,113,0.12);color:#fca5a5;">🔒 Khóa máy / Kiểm tra lại</button>
           </div>
 
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <label style="font-size:12.5px;font-weight:700;color:#cbd5e1;">Nhập / Đổi Mã Kích Hoạt Bản Quyền (MDMC2....):</label>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <input type="text" id="md-lic-key-input" placeholder="Dán mã MDMC2.... vào đây" style="flex:1;height:40px;padding:0 13px;border-radius:10px;border:1px solid rgba(255,255,255,0.16);background:rgba(9,13,22,0.92);color:#f8fafc;font-family:monospace;font-size:12.5px;outline:none;" />
-              <button type="button" class="md-up-btn md-up-btn--primary" id="md-lic-activate-btn" style="height:40px;padding:0 16px;white-space:nowrap;">🔑 Kích hoạt Key</button>
+          <!-- Các bước nhiệm vụ Facebook -->
+          <div style="padding:12px 15px;border-radius:12px;background:rgba(15,23,42,0.65);border:1px solid rgba(255,255,255,0.09);display:flex;flex-direction:column;gap:9px;font-size:12.5px;color:#e2e8f0;">
+            <div style="font-weight:800;color:#fde68a;font-size:13px;">📌 Các bước tự động kích hoạt bản quyền:</div>
+            <div><strong>Bước 1:</strong> Sao chép Mã máy <code style="color:#34d399;font-weight:800;">${code}</code>, mở bài viết Facebook và bấm <strong>Like</strong>.</div>
+            <div><strong>Bước 2:</strong> <strong>Comment Mã máy</strong> (<code style="color:#34d399;font-weight:800;">${code}</code>) vào bài viết Facebook.</div>
+            <div><strong>Bước 3:</strong> <strong>Share bài viết ở chế độ CÔNG KHAI</strong> lên trang cá nhân rồi bấm nút kích hoạt bên dưới.</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
+              <button type="button" class="md-up-btn" id="md-lic-open-fb" style="height:34px;padding:0 14px;font-size:12px;font-weight:700;">📘 Mở bài viết Facebook ↗</button>
+              <button type="button" class="md-up-btn md-up-btn--primary" id="md-lic-check-viral" style="height:34px;padding:0 15px;font-size:12px;font-weight:800;margin-left:auto;">⚡ Tôi đã làm xong — Tự kích hoạt ✓</button>
             </div>
-            <div id="md-lic-msg" style="font-size:12px;min-height:18px;color:#94a3b8;line-height:1.45;">
-              💡 Gửi Mã máy <strong>${hwid}</strong> cho Admin hoặc nhập trên <strong>mdtool.io.vn</strong> để nhận Key tự động.
+            <div id="md-lic-msg" style="font-size:12px;min-height:18px;color:#94a3b8;line-height:1.45;margin-top:2px;">
+              ${st.note || '💡 Hoàn thành Comment Mã máy vào bài viết Facebook & Share bài viết Công khai để hệ thống tự mở khóa.'}
             </div>
           </div>
+
+          <!-- Tùy chọn nâng cao: Key VIP & Cấu hình Link FB -->
+          <details style="border-top:1px solid rgba(255,255,255,0.08);padding-top:9px;">
+            <summary style="cursor:pointer;font-size:12px;font-weight:700;color:#94a3b8;user-select:none;">⚙️ Tùy chọn nâng cao: Nhập Key VIP hoặc Cấu hình Link FB</summary>
+            <div style="margin-top:9px;display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input type="text" id="md-lic-key-input" placeholder="Nhập mã VIP (MDMC2.... hoặc MDVIP_....) cho HWID ${hwid}" style="flex:1;height:36px;padding:0 12px;border-radius:9px;border:1px solid rgba(255,255,255,0.16);background:rgba(9,13,22,0.92);color:#f8fafc;font-family:monospace;font-size:12px;outline:none;" />
+                <button type="button" class="md-up-btn md-up-btn--primary" id="md-lic-activate-btn" style="height:36px;padding:0 14px;font-size:12px;white-space:nowrap;">🔑 Kích hoạt VIP</button>
+              </div>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <input type="url" id="md-lic-cfg-fb" value="${st.post_url || ''}" placeholder="Link bài viết Facebook..." style="flex:1;height:32px;padding:0 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:rgba(9,13,22,0.85);color:#cbd5e1;font-size:11.5px;outline:none;" />
+                <button type="button" class="md-up-btn" id="md-lic-cfg-save" style="height:32px;padding:0 11px;font-size:11.5px;white-space:nowrap;">💾 Lưu Link FB</button>
+              </div>
+            </div>
+          </details>
         </div>
       </div>
     `;
@@ -1096,10 +1118,10 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
     document.getElementById('md-lic-copy-hwid')?.addEventListener('click', async () => {
       const btn = document.getElementById('md-lic-copy-hwid');
       try {
-        await navigator.clipboard.writeText(hwid);
+        await navigator.clipboard.writeText(code);
       } catch {
         const ta = document.createElement('textarea');
-        ta.value = hwid;
+        ta.value = code;
         document.body.appendChild(ta);
         ta.select();
         document.execCommand('copy');
@@ -1111,6 +1133,64 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
       }
     });
 
+    document.getElementById('md-lic-open-fb')?.addEventListener('click', async () => {
+      const btn = document.getElementById('md-lic-open-fb');
+      try {
+        await window.dola?.gate?.openPost?.();
+        if (btn) btn.textContent = '✓ Đã mở bài viết FB ↗';
+      } catch {}
+    });
+
+    document.getElementById('md-lic-check-viral')?.addEventListener('click', async () => {
+      const btn = document.getElementById('md-lic-check-viral');
+      const msg = document.getElementById('md-lic-msg');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '⏳ Đang kiểm tra bình luận trên bài viết FB...';
+      }
+      try {
+        const res = await window.dola?.gate?.checkNow?.();
+        if (res?.ok && res?.unlocked) {
+          if (msg) {
+            msg.style.color = '#6ee7b7';
+            msg.textContent = res.note || '🎉 Đã xác thực bình luận Mã máy trên bài viết Facebook thành công!';
+          }
+          const stVal = document.getElementById('md-lic-status-val');
+          const expVal = document.getElementById('md-lic-exp-val');
+          if (stVal) stVal.textContent = `✅ Đang hoạt động (${res.planLabel || 'Bản quyền Cộng đồng (FB Share)'})`;
+          if (expVal && res.expiresAt) {
+            expVal.textContent = `${new Date(res.expiresAt).toLocaleDateString('vi-VN')} (còn ${Math.max(0, Math.ceil((res.expiresAt - Date.now()) / 86400000))} ngày)`;
+          }
+          refreshHeaderLicenseBadge();
+        } else {
+          if (msg) {
+            msg.style.color = '#fca5a5';
+            msg.textContent = '⚠️ ' + (res?.note || 'Chưa tìm thấy bình luận chứa Mã máy trên bài viết Facebook. Hãy bình luận đúng Mã máy & Share bài viết Công khai rồi thử lại.');
+          }
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '⚡ Tôi đã làm xong — Tự kích hoạt ✓';
+        }
+      }
+    });
+
+    document.getElementById('md-lic-cfg-save')?.addEventListener('click', async () => {
+      const fbVal = document.getElementById('md-lic-cfg-fb')?.value?.trim() || '';
+      const msg = document.getElementById('md-lic-msg');
+      try {
+        await window.dola?.gate?.setConfig?.({
+          fbPostUrl: fbVal,
+          post_url: fbVal,
+        });
+        if (msg) {
+          msg.style.color = '#6ee7b7';
+          msg.textContent = '✓ Đã lưu cấu hình đường dẫn Bài viết Facebook!';
+        }
+      } catch {}
+    });
+
     document.getElementById('md-lic-activate-btn')?.addEventListener('click', async () => {
       const inp = document.getElementById('md-lic-key-input');
       const msg = document.getElementById('md-lic-msg');
@@ -1119,7 +1199,7 @@ export function initLiveStage({ onOpenLibrary, onOpenCreate, onOpenSaveDir } = {
       if (!rawKey) {
         if (msg) {
           msg.style.color = '#fca5a5';
-          msg.textContent = '⚠️ Vui lòng dán mã kích hoạt bản quyền (MDMC2....) vào ô trên.';
+          msg.textContent = '⚠️ Vui lòng dán mã kích hoạt VIP vào ô trên.';
         }
         return;
       }

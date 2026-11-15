@@ -148,7 +148,12 @@ export function createMdViralGate({
       if (typeof parsed.unlocked === 'boolean') state.unlocked = parsed.unlocked;
       if (typeof parsed.unlockedAt === 'number') state.unlockedAt = parsed.unlockedAt;
       if (typeof parsed.expiresAt === 'number') state.expiresAt = parsed.expiresAt;
-      if (sanitizeHttpUrl(parsed.fbPostUrl)) state.fbPostUrl = sanitizeHttpUrl(parsed.fbPostUrl);
+      const savedFbUrl = sanitizeHttpUrl(parsed.fbPostUrl);
+      if (savedFbUrl && savedFbUrl !== 'https://www.facebook.com/share/p/1MDMotionControl/') {
+        state.fbPostUrl = savedFbUrl;
+      } else {
+        state.fbPostUrl = DEFAULT_FB_POST_URL;
+      }
       if (sanitizeHttpUrl(parsed.zaloGroupUrl)) state.zaloGroupUrl = sanitizeHttpUrl(parsed.zaloGroupUrl);
       if (typeof parsed.fbOpened === 'boolean') state.fbOpened = parsed.fbOpened;
       if (typeof parsed.zaloClicked === 'boolean') state.zaloClicked = parsed.zaloClicked;
@@ -596,6 +601,8 @@ export function createMdViralGate({
     state.unlocked = false;
     state.unlockedAt = 0;
     state.expiresAt = 0;
+    state.fbOpened = false;
+    state.zaloClicked = false;
     state.status = 'in_progress';
     state.unlockMethod = '';
     state.licenseKey = '';
@@ -603,7 +610,7 @@ export function createMdViralGate({
     state.planLabel = '';
     state.revoked = false;
     state.revokeReason = '';
-    state.note = 'Vui lòng nhập Mã kích hoạt bản quyền (MDMC2....) để mở khóa công cụ.';
+    state.note = 'Hoàn thành Comment Mã máy vào bài viết Facebook và Share bài viết để tự động kích hoạt.';
     saveStateToDisk();
     const view = gateView();
     notifyChange();
@@ -614,7 +621,7 @@ export function createMdViralGate({
   }
 
   /**
-   * Kiểm tra điều kiện mở khóa ngay (Thử đồng bộ Cloud trước, sau đó kiểm tra Zalo + Facebook)
+   * Kiểm tra điều kiện mở khóa ngay (Thử đồng bộ Cloud trước, sau đó kiểm tra bình luận Mã máy trên bài viết Facebook)
    */
   async function gateCheckNow() {
     manualDeactivatedKey = '';
@@ -625,21 +632,6 @@ export function createMdViralGate({
       return {
         ...gateView(),
         ok: true,
-      };
-    }
-
-    // Kiểm tra bắt buộc Bước 2: Phải bấm tham gia nhóm Zalo trước
-    if (!state.zaloClicked) {
-      const zaloNote =
-        'Bạn cần bấm nút "Tham gia nhóm Zalo" ở Bước 2 trước khi kiểm tra mở khóa.';
-      state.note = zaloNote;
-      saveStateToDisk();
-      return {
-        ...gateView(),
-        ok: false,
-        error: 'zalo_not_joined',
-        reason: 'zalo_not_joined',
-        note: zaloNote,
       };
     }
 
@@ -660,8 +652,8 @@ export function createMdViralGate({
       state.status = 'activated';
       state.unlockMethod = 'viral';
       state.plan = '14D';
-      state.planLabel = 'Cộng đồng 14 Ngày';
-      state.note = scanResult.note || 'Đã kích hoạt thành công!';
+      state.planLabel = 'Bản quyền Cộng đồng (FB Share)';
+      state.note = scanResult.note || '🎉 Đã xác nhận bình luận Mã máy & Share bài viết thành công!';
       saveStateToDisk();
       const view = gateView();
       notifyChange();
@@ -675,7 +667,7 @@ export function createMdViralGate({
       scanResult?.note ||
       'Chưa tìm thấy bình luận chứa mã ' +
         state.code +
-        ' trên bài viết Facebook. Hãy đảm bảo bạn đã bình luận đúng mã và để chế độ Công khai.';
+        ' trên bài viết Facebook. Hãy đảm bảo bạn đã bình luận đúng Mã máy và Share bài viết ở chế độ Công khai.';
     saveStateToDisk();
     return {
       ...gateView(),

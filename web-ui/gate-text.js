@@ -11,7 +11,7 @@ export const BUSY_LABEL = t('Đang kiểm tra… (có thể mất tới 1–2 ph
 
 const MAX_COOLDOWN_S = 3600;
 const TRY_AGAIN = t('Thử lại sau ít phút.');
-const DONE_LABEL = t('Tôi đã làm xong ✓');
+const DONE_LABEL = t('⚡ Tôi đã làm xong — Tự động kích hoạt ✓');
 
 // A rejection that ends the road for this account: the steps are hidden (nothing the person does here changes it).
 const TERMINAL = {
@@ -27,9 +27,9 @@ const FAULTS = {
 };
 const ACKS = {
   ok: t('Đã kiểm tra. Hệ thống sẽ tự kiểm lại sau vài phút nếu chưa thấy.'),
-  not_found: t('Chưa thấy comment mã này trên bài viết Facebook. Hãy comment đúng mã ở chế độ Công khai (bước 3), rồi bấm lại.'),
-  zalo_not_joined: t('Bạn cần bấm nút "Tham gia nhóm Zalo ↗" ở bước 5 trước khi bấm Tôi đã làm xong.'),
-  not_shared: t('Đã thấy comment, nhưng chưa thấy bài share. Hãy share CÔNG KHAI lên trang cá nhân (bước 4), rồi bấm lại.'),
+  not_found: t('⚠️ Chưa thấy bình luận Mã máy trên bài viết Facebook. Hãy bình luận đúng Mã máy ở chế độ Công khai (Bước 2) & Share bài viết (Bước 3), rồi bấm lại.'),
+  zalo_not_joined: t('⚠️ Bạn cần bấm nút "💬 Tham gia nhóm Zalo ↗" ở Bước 4 trước khi bấm Tự động kích hoạt.'),
+  not_shared: t('Đã thấy comment, nhưng chưa thấy bài share. Hãy share CÔNG KHAI lên trang cá nhân (Bước 3), rồi bấm lại.'),
   waiting: t('Hệ thống vẫn đang kiểm tra ở nền, thường xong sau vài phút. Bạn không cần bấm lại ngay.'),
   cooldown: t('Bạn bấm hơi nhiều lần. Hãy đợi một chút rồi bấm lại.'),
   network: `${t('Không kết nối được máy chủ.')} ${TRY_AGAIN}`,
@@ -44,9 +44,14 @@ export function statusLine(view) {
   switch (view?.status) {
     case 'commented': return { tone: 'ok', text: t('✓ Đã thấy comment — còn bước share') };
     case 'completed': return { tone: 'ok', text: t('Đang mở khoá…') };
-    case 'activated': return { tone: 'ok', text: t('Đã mở khoá') };
-    case 'rejected': return { tone: 'bad', text: TERMINAL[view.reject_reason] || REJECT_OTHER };
-    default: return { tone: 'wait', text: t('Chưa thấy comment') };
+    case 'activated': return { tone: 'ok', text: t('✓ Đã kích hoạt thành công') };
+    case 'rejected': return { tone: 'bad', text: TERMINAL[view.reject_reason] || view.reject_reason || REJECT_OTHER };
+    default: {
+      if (view?.fbOpened) {
+        return { tone: 'ok', text: t('✓ Đã mở bài viết FB — Hãy Comment Mã máy + Share bài viết rồi bấm nút kích hoạt bên dưới') };
+      }
+      return { tone: 'wait', text: t('Hoàn thành 3 bước dưới đây (Comment mã máy vào bài viết + Share bài viết FB) để tự động kích hoạt') };
+    }
   }
 }
 
@@ -81,7 +86,7 @@ export function gateModel(s) {
   const view = s.view;
   const fault = s.fault || (view?.error === 'network' ? 'network' : '');
   const base = {
-    notice: { tone: 'wait', text: '' }, code: view?.code || '', copyLabel: t('Sao chép'), openLabel: s.canOpenPost ? t('Mở bài viết ↗') : t('Sao chép liên kết bài viết'),
+    notice: { tone: 'wait', text: '' }, code: view?.code || '', copyLabel: t('📋 Sao chép Mã máy'), openLabel: s.canOpenPost ? t('📘 Mở bài viết Facebook ↗') : t('Sao chép liên kết bài viết'),
     openDisabled: !view?.post_url, done: { label: DONE_LABEL, disabled: true }, ack: '', tip: false, retry: false,
   };
   if (fault) return { ...base, mode: 'fault', notice: FAULTS[fault] || FAULTS.other, retry: fault !== 'no_campaign' };
@@ -92,7 +97,7 @@ export function gateModel(s) {
   const left = cooldownLeft(s.cooldownUntil, s.now);
   let copyLabel = base.copyLabel;
   let openLabel = base.openLabel;
-  if (s.copy?.of === 'code') copyLabel = s.copy.ok ? t('Đã sao chép ✓') : t('Bôi đen mã để chép');
+  if (s.copy?.of === 'code') copyLabel = s.copy.ok ? t('✓ Đã sao chép Mã máy') : t('Bôi đen mã để chép');
   if (s.copy?.of === 'link') openLabel = s.copy.ok ? t('Đã sao chép liên kết ✓') : t('Không sao chép được');
   return {
     ...base, mode: 'steps', notice: statusLine(view), copyLabel, openLabel,
