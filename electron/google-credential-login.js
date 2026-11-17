@@ -335,10 +335,12 @@ export async function loginWithGoogle(
   let lastScreen = '';
   try {
     await setSessionProxy(targetSession, account.proxy);
-    await removeCookies(
-      targetSession,
-      await cookiesOfSite(targetSession, 'google.com')
-    );
+    // Không xóa cookie google.com hiện có của profile để giữ phiên Gmail và thiết bị tin cậy (tránh bị out mail)
+    if (await hasSid(targetSession).catch(() => false)) {
+      await targetSession.cookies.flushStore?.().catch(() => {});
+      log('đã có phiên đăng nhập Google sẵn trong profile');
+      return { ok: true };
+    }
     win = useChrome
       ? targetSession.newWindow(CHROME_SIZES.login)
       : new BrowserWindow({
@@ -389,6 +391,8 @@ export async function loginWithGoogle(
             (await hasSid(targetSession))
         )
       ) {
+        await load(win, 'https://flow.google.com/?pli=1&hl=en');
+        await sleep(2500);
         await targetSession.cookies.flushStore().catch(() => {});
         log('đã đăng nhập Google');
         return { ok: true };

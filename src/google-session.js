@@ -63,16 +63,20 @@ export const removeUrlOf = (cookie) =>
   'https://' + hostOf(cookie) + (cookie.path || '/');
 
 export function setDetailsOf(cookie) {
+  const name = String(cookie?.name ?? '');
+  const isHostPrefix = name.startsWith('__Host-');
+  const isSecurePrefix = name.startsWith('__Secure-');
+  const sameSite = cookie?.sameSite || 'unspecified';
   const details = {
     url: removeUrlOf(cookie),
-    name: cookie.name,
+    name,
     value: cookie.value,
-    path: cookie.path || '/',
-    secure: Boolean(cookie.secure),
+    path: isHostPrefix ? '/' : cookie.path || '/',
+    secure: isHostPrefix || isSecurePrefix || sameSite === 'no_restriction' ? true : Boolean(cookie.secure),
     httpOnly: Boolean(cookie.httpOnly),
-    sameSite: cookie.sameSite || 'unspecified',
+    sameSite,
   };
-  if (!cookie.hostOnly && String(cookie.domain).startsWith('.')) {
+  if (!isHostPrefix && !cookie.hostOnly && String(cookie.domain).startsWith('.')) {
     details.domain = cookie.domain;
   }
   if (Number.isFinite(cookie.expirationDate) && cookie.expirationDate > 0) {
@@ -88,7 +92,8 @@ export const TS_ROTATE_CAP_MS = 25000;
 export const TS_POLL_MS = 1000;
 export const TS_SWITCH_MS = 8000;
 export const TOKEN_ROTATE_URLS = [
-  'https://flow.google.com/?hl=en',
+  'https://flow.google.com/?pli=1&hl=en',
+  'https://labs.google/fx/tools/flow',
   'https://accounts.google.com/RotateCookiesPage?origin=https://flow.google.com',
 ];
 

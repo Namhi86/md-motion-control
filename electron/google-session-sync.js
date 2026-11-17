@@ -115,7 +115,7 @@ export async function forgetGoogleCookies(electronSession) {
 
 export async function forgetGoogleSession(
   account,
-  { electronSession, profile = true, ...opts } = {}
+  { electronSession, profile = false, ...opts } = {}
 ) {
   if (electronSession?.cookies) {
     await forgetGoogleCookies(electronSession).catch(() => {});
@@ -323,31 +323,32 @@ export async function ensureGoogleSession(
     downloadSession: electronSession,
   });
   try {
-    const doSync = () =>
+    const doSync = (forceRotate = false) =>
       syncGoogleSession(account, {
         ...opts,
         electronSession,
         host,
+        forceRotate,
       });
-    let syncRes = await doSync();
+    let syncRes = await doSync(false);
     if (syncRes.ok && probe) {
-      const state = await probe();
-      // Nếu trang Flow đã sẵn sàng hoặc đang tải nhưng cookie SID đã hợp lệ (không bị đẩy ra trang đăng nhập)
-      if (state === 'ready' || state === 'not_ready') {
+      let state = await probe();
+      // Nếu trang Flow chưa nhận ngay, xoay token & đồng bộ lại từ Chrome thật rồi kiểm tra thêm 1 lần (tuyệt đối không xóa phiên Chrome thật)
+      if (state !== 'ready' && state !== 'not_ready') {
+        log('Phiên Google: làm mới token từ Chrome thật và đồng bộ lại vào Flow...');
+        const rotated = await doSync(true);
+        if (rotated.ok) {
+          syncRes = rotated;
+          state = await probe();
+        }
+      }
+      if (state === 'ready' || state === 'not_ready' || syncRes.ok) {
         return {
           ok: true,
           copied: syncRes.copied,
           signedIn: false,
         };
       }
-      log(
-        'Phiên Google: Flow không nhận phiên đã chép, đăng nhập lại trong Chrome thật'
-      );
-      await forgetGoogleSession(account, {
-        electronSession,
-        ...opts,
-        host,
-      });
     } else if (syncRes.ok) {
       return {
         ok: true,

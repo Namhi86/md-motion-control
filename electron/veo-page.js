@@ -27,14 +27,14 @@ const FIRST_RUN_BOX =
   /experience and shape ai tools|review our privacy policy|nano banana|what.s new|changelog|terms of service|welcome to flow/i;
 
 const DIALOG_BUTTON = findExpr(
-  `(/^(next|continue|got it|agree|i agree|accept|create with flow|tạo bằng flow|get started|bắt đầu)$/i.test(t)) && (e.tagName === 'BUTTON' || e.tagName === 'A' || e.getAttribute('role') === 'button') && !e.disabled && (() => {
-    if (/^(create with flow|tạo bằng flow|get started|bắt đầu)$/i.test(t)) return true;
+  `((/^(next|continue|tiếp tục|got it|agree|i agree|accept|create with flow|tạo bằng flow|get started|bắt đầu|sign in|đăng nhập)$/i.test(t) && (e.tagName === 'BUTTON' || e.tagName === 'A' || e.getAttribute('role') === 'button') && !e.disabled && (() => {
+    if (/^(create with flow|tạo bằng flow|get started|bắt đầu|sign in|đăng nhập|continue|tiếp tục)$/i.test(t)) return true;
     for (let a = e.parentElement; a && a !== document.body; a = a.parentElement) {
       const x = (a.innerText || '');
       if (x.length < 4000 && ${FIRST_RUN_BOX}.test(x)) return true;
     }
     return false;
-  })()`
+  })()) || (location.hostname === 'accounts.google.com' && (e.hasAttribute('data-identifier') || e.hasAttribute('data-email')) && !/use another account|sử dụng tài khoản khác/i.test(t)))`
 );
 
 const SCROLL_DIALOGS = `(() => {

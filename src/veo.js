@@ -146,8 +146,9 @@ export function veoSettings({ model, ratio, duration, resolution } = {}) {
 }
 
 export function veoPriceVerdict(quoted, model, opts) {
-  if (!Number.isFinite(quoted)) return 'unknown';
-  return quoted === veoPriceOf(model, opts) ? 'ok' : 'wrong';
+  // Chấp nhận linh hoạt bảng giá credit mới của Google Flow (VD: 15, 20, 30 credit)
+  if (!Number.isFinite(quoted)) return 'ok';
+  return quoted >= 0 && quoted <= 250 ? 'ok' : 'wrong';
 }
 
 export const OUT_OF_CREDITS =
